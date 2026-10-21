@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { chromium } = require('playwright');
 
 (async () => {
@@ -20,6 +21,12 @@ const { chromium } = require('playwright');
     // Fonts are optional. Verify the entire site works without outside requests.
     await page.route('https://**/*', route => route.abort());
     await page.goto(base);
+    for (const asset of ['assets/main.js', 'assets/template.css']) {
+      const version = crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname, '..', asset))).digest('hex').slice(0, 12);
+      const attribute = asset.endsWith('.js') ? 'src' : 'href';
+      assert.equal(await page.locator(`[${attribute}="${asset}?v=${version}"]`).count(), 1, `${asset} must use its current content hash to bypass older cached bundles`);
+    }
+    console.log('PASS current JavaScript and CSS cache keys match their contents');
     const counts = {};
     for (const review of data.reviews) counts[review.group] = (counts[review.group] || 0) + 1;
     assert.deepEqual(counts, { trustpilot: 15, whatsapp: 20, google: 20, metadata: 8 });

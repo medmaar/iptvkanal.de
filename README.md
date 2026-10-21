@@ -14,6 +14,12 @@ In der vorbereiteten Cloud-Umgebung sind Playwright und Chromium vorhanden.
 Bei laufendem Server prüft `node scripts/smoke-test.cjs` Preise, Bestelllinks,
 Navigation, responsive Ansichten und das vollständige Bewertungsarchiv.
 
+Nach Änderungen an JavaScript oder eigenem CSS vor den Tests
+`python3 scripts/version-assets.py` ausführen. Die HTML-Dateien verwenden dann
+den aktuellen Inhalts-Hash als Cache-Version. `_headers` lässt Cloudflare die
+Startseite und veränderliche Bundles revalidieren, damit ältere Browser-Caches
+die Geräteauswahl nach einem Deployment nicht außer Funktion setzen.
+
 ## Vorlage und Bewertungen
 
 Die Startseite übernimmt die Struktur aus dem bereitgestellten HTML von
