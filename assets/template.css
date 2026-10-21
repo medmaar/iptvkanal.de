@@ -36,12 +36,6 @@ main { overflow: clip; }
 @media(max-width:900px) { .nav-links { max-height:calc(100dvh - 76px); overflow-y:auto; } }
 @media(max-width:640px) { .logo { font-size:1rem; } .logo img, .footer .logo img { width:30px; height:30px; } .device-switch { width:100%; gap:2px; } .device-switch button { padding:10px 7px; font-size:.75rem; flex:1; justify-content:center; white-space:nowrap; } .device-switch button svg { display:none; } .cta-pair { flex-wrap:wrap; } .cta-box { padding:40px 20px; } .cta-box .btn { max-width:100%; font-size:.82rem; padding-inline:18px; } .faq summary { padding:18px; font-size:.9rem; } }
 
-/* Source-attributed review archive. */
-
-.reviews{background:linear-gradient(180deg,#0e0d16,#0b0b12);border-block:1px solid #ffffff07}.reviews .section-head{max-width:720px}.review-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.review-filters{display:flex;flex-wrap:wrap;gap:7px}.review-filters button{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:7px;background:transparent;color:#b2b2c0;font-size:11px}.review-filters button[aria-pressed=true]{border-color:#38bdf860;background:#38bdf812;color:var(--gold)}.review-filters button span{font-size:9px;opacity:.7}.review-search{display:flex;align-items:center;gap:8px;min-width:230px;border:1px solid var(--border);border-radius:7px;padding:9px 12px;background:#ffffff03}.review-search svg{color:var(--muted);width:15px;height:15px}.review-search input{width:100%;border:0;background:transparent;color:var(--text);font-size:11px;outline:none}.review-search:focus-within{outline:2px solid var(--gold);outline-offset:3px}.review-note{font-size:10px;color:#9696a9;line-height:1.7;margin:18px 0 14px;max-width:900px}.review-status{font-size:11px;color:var(--muted);margin-bottom:17px;min-height:19px}.review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.review-card{display:flex;flex-direction:column;min-width:0;padding:25px;background:linear-gradient(145deg,#181720,#111018);border:1px solid #ffffff10;border-radius:13px}.review-card-top{display:flex;justify-content:space-between;gap:8px;margin-bottom:18px;align-items:center}.source-badge{font-size:9px;font-weight:600;color:#b6b1ca;padding:4px 7px;border:1px solid #ffffff0e;border-radius:5px}.source-badge.trustpilot{color:#55d0aa;background:#55d0aa08}.source-badge.whatsapp{color:#78d794;background:#78d79408}.source-badge.google{color:#a4bcfa;background:#a4bcfa08}.review-rating{font-size:9px;letter-spacing:1px;color:var(--gold);white-space:nowrap}.review-card h3{font-size:14px;line-height:1.45;letter-spacing:-.015em;margin-bottom:12px}.review-card blockquote{margin:0 0 25px;font-size:12px;color:#b2b0c1;line-height:1.9;flex:1}.review-card blockquote p{margin:0}.review-author{display:flex;gap:10px;align-items:center;padding-top:18px;border-top:1px solid #ffffff0a}.avatar{display:grid;place-items:center;width:33px;height:33px;border-radius:50%;background:#38bdf80c;border:1px solid #38bdf81f;color:#8dd6fa;font-size:10px;font-weight:700}.review-author strong{display:block;font-size:11px;font-weight:600}.review-author a{display:block;font-size:9px;color:#9993ab}.review-author a:hover{color:var(--gold)}.review-actions{display:flex;justify-content:center;align-items:center;gap:22px;margin-top:30px}.review-actions .btn{font-size:11px}.review-actions .text-link{font-size:11px}
-
-@media(max-width:850px) { .review-toolbar { align-items:stretch; } .review-search { flex:1; } .review-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:540px) { .review-grid { grid-template-columns:1fr; } .review-filters { gap:6px; } .review-filters button { font-size:10px; padding:8px 10px; } .review-search { min-width:100%; padding:12px; } .review-search input { font-size:12px; } .review-note { font-size:10px; } .review-card { padding:23px; } .review-card h3 { font-size:15px; } .review-card blockquote { font-size:13px; } .review-author strong { font-size:12px; } .review-actions { flex-wrap:wrap; gap:17px; } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
 
 /* Wisteria Bloom: the four supplied swatches, with plum text for contrast. */
@@ -148,19 +142,6 @@ main { overflow: clip; }
 .slider-btn:disabled { opacity: .4; cursor: default; }
 .vod-card:hover { border-color: var(--violet); box-shadow: 0 24px 50px -20px rgba(148, 0, 211, .3); }
 
-/* Source labels remain readable throughout the lavender review archive. */
-.reviews { background: var(--lavender); border-color: rgba(148, 0, 211, .1); }
-.review-card { background: rgba(255, 255, 255, .85); border-color: rgba(94, 42, 126, .14); box-shadow: 0 10px 30px -22px rgba(73, 25, 110, .2); }
-.review-card blockquote, .review-card p { color: var(--text-2); }
-.review-card-top .source-badge { color: #6c287f; background: #f0e5f5; border-color: #ddc7e6; }
-.review-note, .review-status, .review-author a { color: #5d486e; }
-.review-author { border-color: var(--line); }
-.avatar { color: #5f1582; background: #ead7f2; border-color: #d5b9e2; }
-.review-filters button { color: #554161; background: rgba(255, 255, 255, .6); }
-.review-filters button[aria-pressed=true] { color: #fff; background: var(--violet); border-color: var(--violet); }
-.review-filters button span { opacity: 1; }
-.review-search { background: rgba(255, 255, 255, .85); }
-.review-search input::placeholder { color: #6b5679; opacity: 1; }
 .footer { background: var(--mauve); }
 .footer p, .footer .footer-title, .footer-bottom { color: var(--text-2); }
 
@@ -169,4 +150,88 @@ main { overflow: clip; }
   .hero-slides:has(.hero-posters) + .hero-overlay {
     background: linear-gradient(180deg, rgba(250, 247, 255, .94), rgba(211, 211, 255, .78) 55%, var(--bg));
   }
+}
+
+/* Maple4K reference layout: one featured review, two messages, three Google cards. */
+.platform-reviews { background: linear-gradient(180deg, #eeeaff, #f8f0fc 55%, #eeeaff); border-block: 1px solid var(--line); }
+.platform-reviews > .container { max-width: 1140px; }
+.platform-reviews .section-head { margin-bottom: 60px; }
+.reviews-pending { display: inline-block; margin-top: 20px; padding: 7px 15px; color: #68168c; background: #eadcf5; border: 1px solid #d9c0e8; border-radius: 999px; font-size: .75rem; }
+.review-platform { padding: 0; margin: 0 auto 64px; }
+.review-platform:last-child { margin-bottom: 0; }
+.review-platform-heading { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 28px; }
+.review-platform-heading h3 { margin: 0; color: var(--text); font: 800 1.65rem/1.3 Inter, system-ui, sans-serif; letter-spacing: -.035em; }
+.platform-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex: none; }
+.whatsapp-icon { background: #167c42; color: #fff; border-radius: 50%; padding: 7px; }
+.whatsapp-icon svg { width: 100%; height: 100%; }
+.google-wordmark { display: inline-flex; font: 600 1.65rem/1.3 Arial, sans-serif; letter-spacing: -.07em; }
+.google-wordmark span:nth-child(1), .google-wordmark span:nth-child(4) { color: #3267c9; }
+.google-wordmark span:nth-child(2), .google-wordmark span:nth-child(6) { color: #be3530; }
+.google-wordmark span:nth-child(3) { color: #9b7100; }
+.google-wordmark span:nth-child(5) { color: #278044; }
+.platform-review-viewport {
+  --per-view: 3;
+  --review-gap: 20px;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--per-view) - 1) * var(--review-gap)) / var(--per-view));
+  gap: var(--review-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 8px 0 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.platform-review-viewport::-webkit-scrollbar { display: none; }
+.review-platform--trustpilot { max-width: 780px; }
+.review-platform--trustpilot .platform-review-viewport { --per-view: 1; }
+.review-platform--whatsapp { max-width: 900px; }
+.review-platform--whatsapp .platform-review-viewport { --per-view: 2; }
+.platform-review-card { position: relative; min-width: 0; min-height: 270px; display: flex; flex-direction: column; padding: 30px 24px 24px; border: 1px solid rgba(94, 42, 126, .14); border-radius: 16px; background: rgba(255, 255, 255, .87); box-shadow: 0 6px 24px -18px rgba(73, 25, 110, .3); scroll-snap-align: start; scroll-margin-inline: 0; }
+.review-platform--trustpilot .platform-review-card { padding: 32px 36px; border-radius: 20px; min-height: 290px; }
+.card-preview-label { align-self: flex-end; font-size: 9px; line-height: 1.2; letter-spacing: .08em; text-transform: uppercase; color: #6c517a; margin-bottom: 12px; }
+.preview-stars { color: #8a6a9b; font-size: 24px; letter-spacing: 4px; margin-bottom: 18px; line-height: 1; }
+.review-platform--trustpilot .preview-stars { color: #50785e; }
+.platform-review-stars { color: var(--violet); font-size: 22px; letter-spacing: 3px; margin-bottom: 18px; }
+.platform-review-card h4 { font-family: Inter, system-ui, sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.5; color: var(--text); margin: 0 0 18px; }
+.review-platform--trustpilot h4 { font-size: 1.2rem; }
+.review-skeleton { display: grid; gap: 9px; margin-bottom: 28px; }
+.review-skeleton span { height: 7px; background: #e5dded; border-radius: 10px; }
+.review-skeleton span:nth-child(2) { width: 88%; }
+.review-skeleton span:nth-child(3) { width: 66%; }
+.platform-review-author { margin-top: auto; padding-top: 18px; display: flex; align-items: center; gap: 10px; font-size: .77rem; font-weight: 600; color: #685073; border-top: 1px solid var(--line); }
+.review-placeholder-avatar { width: 28px; height: 28px; background: var(--lavender); border-radius: 50%; flex: none; }
+.message-card-label { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; color: var(--text); font-weight: 700; font-size: .88rem; }
+.message-card-label .platform-icon { width: 25px; height: 25px; padding: 5px; }
+.review-platform--whatsapp .platform-review-card { background: linear-gradient(150deg, #fff, #f0e9f9); }
+.platform-review-card blockquote { margin: 0 0 24px; color: var(--text-2); line-height: 1.8; font-size: .92rem; }
+.platform-review-card blockquote p { margin: 0; }
+.review-platform-controls { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+.review-arrow { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255, 255, 255, .7); color: var(--violet); transition: background .2s; }
+.review-arrow:hover { background: #fff; }
+.review-arrow svg { width: 15px; height: 15px; }
+.review-arrow[data-review-prev] svg { transform: rotate(180deg); }
+.review-pagination { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 60%; }
+.review-pagination button { display: grid; place-items: center; width: 24px; height: 30px; padding: 0; }
+.review-pagination button::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 99px; background: #b4a0c4; transition: width .42s cubic-bezier(.34, 1.56, .64, 1), background .42s; }
+.review-pagination button[aria-current="page"] { width: 34px; }
+.review-pagination button[aria-current="page"]::before { width: 26px; background: var(--violet); }
+.review-pause { display: flex; gap: 7px; align-items: center; padding: 7px 0 7px 14px; border-left: 1px solid var(--line-2); font-size: .73rem; color: #5e486b; }
+.review-pause [data-review-pause-icon] { width: 14px; height: 14px; display: grid; place-items: center; }
+.review-pause [data-review-pause-icon]::before { content: ''; width: 9px; height: 11px; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
+.review-pause [data-icon="play"]::before { width: 0; height: 0; border: 0; border-block: 6px solid transparent; border-left: 9px solid currentColor; }
+@media(max-width:850px) { .review-platform--google .platform-review-viewport { --per-view: 2; } }
+@media(max-width:600px) {
+  .platform-review-viewport, .review-platform--whatsapp .platform-review-viewport, .review-platform--google .platform-review-viewport { --per-view: 1; }
+  .review-platform-heading h3, .google-wordmark { font-size: 1.45rem; }
+  .review-platform { margin-bottom: 52px; }
+  .review-platform--trustpilot .platform-review-card { padding: 26px 24px; }
+  .review-pagination { gap: 0; }
+  .review-pagination button { width: 20px; }
+  .review-pagination button[aria-current="page"] { width: 28px; }
+  .review-pagination button[aria-current="page"]::before { width: 22px; }
+  .review-platform-controls { gap: 9px; }
+  .review-pause { padding-left: 10px; }
 }

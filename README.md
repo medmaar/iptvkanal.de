@@ -12,7 +12,7 @@ python3 -m http.server 8000 --bind 127.0.0.1
 
 In der vorbereiteten Cloud-Umgebung sind Playwright und Chromium vorhanden.
 Bei laufendem Server prüft `node scripts/smoke-test.cjs` Preise, Bestelllinks,
-Navigation, responsive Ansichten und das vollständige Bewertungsarchiv.
+Navigation, responsive Ansichten und die unabhängigen Bewertungs-Karussells.
 
 Nach Änderungen an JavaScript, eigenem CSS oder dem Favicon vor den Tests
 `python3 scripts/version-assets.py` ausführen. Die HTML-Dateien verwenden dann
@@ -42,26 +42,33 @@ Das eigene Farbthema „Wisteria Bloom“ verwendet die vorgegebene Palette
 Flächen, dunkle Pflaumentöne für Text und violette Aktionen; Bildunterschriften
 bleiben weiß auf dunklen Fotoverläufen. Das Original-CSS bleibt unverändert.
 
-`assets/reviews.json` enthält alle 63 Bewertungsdatensätze aus dem vom Nutzer
-bereitgestellten HTML von mojo4k.de: 15 aus der Trustpilot-Gruppe, 20 aus der
-WhatsApp-Gruppe, 20 aus der Google-Gruppe sowie 3 aus JSON-LD und 5 aus Microdata.
-Letztere werden als „Weitere Stimmen“ angezeigt. Ähnliche Texte mit demselben
-Namen werden als eigenständige Datensätze erhalten, wenn ihr Wortlaut abweicht.
-Die Namen und Texte sind unverändert; die JSON-Datei dokumentiert die Fundstelle.
-Die Vollständigkeit bezieht sich auf den Upload, nicht auf sämtliche Bewertungen
-der Live-Seite oder externer Plattformen.
+## Bewertungsbereiche
 
-Die Plattformzuordnung stammt aus dem Quelltext und ist nicht unabhängig geprüft.
-Die importierten Einträge werden als Erfahrungen mit MOJO4K ausgewiesen, nicht
-als Kundenbewertungen oder Gesamtrating von IPTV Kanal. Die ursprünglichen
-Gesamtzahlen und Rating-Angaben der Quellseite werden nicht übernommen.
+Die aktuelle Gestaltung folgt dem vom Nutzer bereitgestellten HTML von maple4k.ca:
+Trustpilot mit einer großen Karte, WhatsApp mit zwei Nachrichtenkarten, Google
+mit drei Karten. Jeder Bereich hat eigene Pfeile, Seitenpunkte und eine
+Pause-/Abspielen-Steuerung. Auf schmalen Bildschirmen wird eine Karte angezeigt;
+Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells wechseln
+alle sieben Sekunden. Hover, Tastaturfokus, ausgeblendete Tabs und die explizite
+Pause halten den Wechsel an. Bei reduzierter Bewegung ist Autoplay zunächst aus.
 
-Nach Änderungen an `assets/reviews.json` das statische Archiv regenerieren:
+Die Inhalte folgen später. Deshalb werden aktuell ausdrücklich markierte
+Platzhalter ohne erfundene Namen, Bewertungswerte oder Kundenzitate angezeigt.
+Das alte MOJO4K-Archiv in `assets/reviews.json` bleibt erhalten, wird aber nicht
+mehr auf der Seite angezeigt.
+
+Echte Einträge werden später in `assets/review-platforms.json` unter der passenden
+Plattform ergänzt. Jeder Eintrag hat `author` und `text`, optional `title` und
+`rating` (ganze Zahl von 1 bis 5). Leere Plattformen erhalten Platzhalter.
+
+Nach dem Eintragen der gelieferten Inhalte:
 
 ```sh
 python3 scripts/render-reviews.py
+python3 scripts/version-assets.py
 ```
 
-Alle Datensätze stehen ohne JavaScript im HTML. JavaScript ergänzt Filter,
-Textsuche und schrittweises Nachladen. Zum Betrieb sind keine externen
-Bewertungsdienste erforderlich.
+Alle Karten sind statisches HTML und ohne JavaScript horizontal scrollbar.
+JavaScript ergänzt getrennte Seitensteuerung und automatische Bewegung. Die
+fremden Next.js-Anwendungsskripte, Bewertungen und Rating-Gesamtzahlen werden
+nicht übernommen.

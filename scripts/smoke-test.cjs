@@ -8,7 +8,6 @@ const { chromium } = require('playwright');
 
 (async () => {
   const base = process.env.SITE_URL || 'http://127.0.0.1:8000';
-  const data = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/reviews.json'), 'utf8'));
   const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--no-sandbox'] });
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -27,36 +26,56 @@ const { chromium } = require('playwright');
       assert.equal(await page.locator(`[${attribute}="${asset}?v=${version}"]`).count(), 1, `${asset} must use its current content hash to bypass older cached bundles`);
     }
     console.log('PASS current JavaScript and CSS cache keys match their contents');
-    const counts = {};
-    for (const review of data.reviews) counts[review.group] = (counts[review.group] || 0) + 1;
-    assert.deepEqual(counts, { trustpilot: 15, whatsapp: 20, google: 20, metadata: 8 });
-    assert.equal(new Set(data.reviews.map(review => review.id)).size, 63);
-    assert.equal(await page.locator('[data-review-id]').count(), 63);
-    for (const review of data.reviews) {
-      const card = page.locator(`[data-review-id="${review.id}"]`);
-      assert.equal(await card.locator('blockquote p').textContent(), review.text);
-      assert.equal(await card.locator('.review-author strong').textContent(), review.author);
-      assert.equal(await card.locator('.review-author a').getAttribute('href'), data.source_url);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    assert.deepEqual(await page.locator('[data-review-platform]').evaluateAll(sections => sections.map(section => section.dataset.reviewPlatform)), ['trustpilot', 'whatsapp', 'google']);
+    assert.equal(await page.locator('[data-placeholder="true"]').count(), 18);
+    assert.equal(await page.locator('[data-review-id]').count(), 0);
+    assert.equal(await page.locator('.review-toolbar').count(), 0);
+    for (const [platform, perView, count] of [['trustpilot', 1, 3], ['whatsapp', 2, 6], ['google', 3, 9]]) {
+      const section = page.locator(`[data-review-platform="${platform}"]`);
+      const viewport = section.locator('[data-review-viewport]');
+      await section.scrollIntoViewIfNeeded();
+      assert.equal(await viewport.evaluate(element => Number(getComputedStyle(element).getPropertyValue('--per-view'))), perView);
+      assert.equal(await section.locator('[data-review-card]').count(), count);
+      assert.equal(await section.locator('[data-review-dots] button').count(), 3);
+      assert.equal(await section.locator('[data-review-pause]').getAttribute('aria-pressed'), 'true');
+      await section.locator('[data-review-next]').click();
+      await page.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 10, platform);
+      assert.equal(await section.locator('[data-review-dots] button').nth(1).getAttribute('aria-current'), 'page');
+      await section.locator('[data-review-dots] button').last().click();
+      assert.equal(await section.locator('[data-review-dots] button').last().getAttribute('aria-current'), 'page');
+      await viewport.press('Home');
+      assert.equal(await section.locator('[data-review-dots] button').first().getAttribute('aria-current'), 'page');
+      await section.locator('[data-review-prev]').click();
+      assert.equal(await section.locator('[data-review-dots] button').last().getAttribute('aria-current'), 'page');
+      await viewport.press('Home');
     }
-    console.log('PASS all 63 review records, original wording, authors, and source links');
-    assert.equal(await page.locator('[data-review-id]:visible').count(), 6);
-    while (await page.locator('#reviews-more').isVisible()) await page.locator('#reviews-more').click();
-    assert.equal(await page.locator('[data-review-id]:visible').count(), 63);
-    for (const [group, count] of Object.entries(counts)) {
-      await page.locator(`[data-review-filter="${group}"]`).click();
-      assert.equal(await page.locator('[data-review-id]:visible').count(), 6);
-      while (await page.locator('#reviews-more').isVisible()) await page.locator('#reviews-more').click();
-      assert.equal(await page.locator('[data-review-id]:visible').count(), count);
-    }
-    await page.locator('[data-review-filter="all"]').click();
-    await page.locator('#review-search').fill('Thomas R.');
-    assert.equal(await page.locator('[data-review-id]:visible').count(), 2);
-    await page.locator('#review-search').fill('no-match-123456789');
-    assert.equal(await page.locator('[data-review-id]:visible').count(), 0);
-    assert.match(await page.locator('#review-status').textContent(), /Keine passenden/);
-    assert.equal(await page.locator('#reviews-more').isVisible(), false);
-    await page.locator('#review-search').fill('');
-    console.log('PASS review filtering, search, empty state, and loading every record');
+    console.log('PASS separate Trustpilot/WhatsApp/Google layouts, labeled placeholders, arrows, dots, keyboard navigation, and reduced-motion pause');
+
+    // Virtual time verifies real automatic advancement without a seven-second sleep.
+    const autoPage = await browser.newPage({ viewport: { width: 1200, height: 500 } });
+    await autoPage.clock.install();
+    await autoPage.route('https://**/*', route => route.abort());
+    await autoPage.goto(base);
+    const autoplay = autoPage.locator('[data-review-platform="trustpilot"]');
+    await autoplay.scrollIntoViewIfNeeded();
+    await autoPage.mouse.move(0, 0);
+    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"]').getBoundingClientRect().top < innerHeight);
+    await autoPage.clock.runFor(7500);
+    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-viewport]').scrollLeft > 10);
+    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-dots] [aria-current="page"]').getAttribute('aria-label').endsWith('Seite 2'));
+    await autoplay.locator('[data-review-pause]').click();
+    assert.equal(await autoplay.locator('[data-review-pause]').getAttribute('aria-pressed'), 'true');
+    const pausedPosition = await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label');
+    await autoPage.mouse.click(5, 200);
+    await autoPage.clock.runFor(15000);
+    assert.equal(await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label'), pausedPosition);
+    await autoplay.locator('[data-review-pause]').click();
+    await autoPage.mouse.click(5, 200);
+    await autoPage.clock.runFor(7500);
+    await autoPage.waitForFunction(previous => document.querySelector('[data-review-platform="trustpilot"] [data-review-dots] [aria-current="page"]').getAttribute('aria-label') !== previous, pausedPosition);
+    await autoPage.close();
+    console.log('PASS automatic review sliding, explicit pause, and resume');
 
     assert.equal(await page.locator('.hero-slide').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-posters.webp')), true);
     assert.equal(await page.locator('.tv-hero-img').evaluate(element => getComputedStyle(element).backgroundImage.includes('photo-keeper.jpg')), true);
@@ -91,6 +110,15 @@ const { chromium } = require('playwright');
     for (const width of [1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `Overflow at ${width}px`);
+      if (width <= 600) {
+        for (const [platform, count] of [['trustpilot', 3], ['whatsapp', 6], ['google', 9]]) {
+          await page.waitForFunction(({ platform, count }) => {
+            const section = document.querySelector(`[data-review-platform="${platform}"]`);
+            return Number(getComputedStyle(section.querySelector('[data-review-viewport]')).getPropertyValue('--per-view')) === 1
+              && section.querySelectorAll('[data-review-dots] button').length === count;
+          }, { platform, count });
+        }
+      }
     }
     await page.locator('.menu-btn').click();
     assert.equal(await page.locator('.menu-btn').getAttribute('aria-expanded'), 'true');
@@ -106,20 +134,23 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/reference/style.css', '/assets/img/photo-keeper.jpg', '/assets/reviews.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/reference/style.css', '/assets/img/photo-keeper.jpg', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
     const noJS = await browser.newContext({ javaScriptEnabled: false });
     const plain = await noJS.newPage();
     await plain.route('https://**/*', route => route.abort());
     await plain.goto(base);
-    assert.equal(await plain.locator('[data-review-id]:visible').count(), 63);
+    assert.equal(await plain.locator('[data-review-card]').count(), 18);
+    assert.equal(await plain.locator('[data-review-controls]:visible').count(), 0);
+    const plainRail = plain.locator('[data-review-viewport]').first();
+    await plainRail.evaluate(element => { element.scrollLeft = element.scrollWidth; });
+    assert.ok(await plainRail.evaluate(element => element.scrollLeft > 0));
     assert.equal(await plain.locator('.plan-btn[href^="mailto:"]').count(), 4);
-    assert.equal(await plain.locator('.review-toolbar').isVisible(), false);
     await noJS.close();
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);
-    console.log('PASS local routes, anchors, no-JavaScript archive, and no runtime errors');
+    console.log('PASS local routes, anchors, no-JavaScript review scrolling, and no runtime errors');
   } finally {
     await browser.close();
   }

@@ -1,0 +1,7 @@
+{
+  "platforms": [
+    {"id": "trustpilot", "label": "Trustpilot", "reviews": []},
+    {"id": "whatsapp", "label": "WhatsApp", "reviews": []},
+    {"id": "google", "label": "Google", "reviews": []}
+  ]
+}

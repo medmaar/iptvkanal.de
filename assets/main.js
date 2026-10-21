@@ -128,40 +128,119 @@
     updatePlanDots();
   }
 
-  // Reviews are static HTML for accessibility and no-JavaScript use.
-  // Enhancement adds filtering, text search, and progressive disclosure.
-  var cards = Array.from(document.querySelectorAll('[data-review-id]'));
-  if (cards.length) {
-    var filter = 'all';
-    var limit = 6;
-    var search = document.getElementById('review-search');
-    var status = document.getElementById('review-status');
-    var more = document.getElementById('reviews-more');
-    var filters = Array.from(document.querySelectorAll('[data-review-filter]'));
-    function normalize(text) { return text.toLocaleLowerCase('de-DE').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
-    var searchText = new Map(cards.map(function (card) {
-      return [card, normalize((card.querySelector('h3') ? card.querySelector('h3').textContent : '') + ' ' + card.querySelector('blockquote').textContent + ' ' + card.querySelector('.review-author strong').textContent)];
-    }));
-    function updateReviews() {
-      var query = normalize(search.value.trim());
-      var matches = cards.filter(function (card) {
-        return (filter === 'all' || card.dataset.reviewGroup === filter) && searchText.get(card).includes(query);
+  function initReviewCarousels() {
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    document.querySelectorAll('[data-review-platform]').forEach(function (section) {
+      var viewport = section.querySelector('[data-review-viewport]');
+      var cards = Array.from(viewport.querySelectorAll('[data-review-card]'));
+      var controls = section.querySelector('[data-review-controls]');
+      var dots = section.querySelector('[data-review-dots]');
+      var pause = section.querySelector('[data-review-pause]');
+      var position = section.querySelector('[data-review-position]');
+      var label = section.querySelector('h3').textContent;
+      var starts = [];
+      var current = 0;
+      var userPaused = motion.matches;
+      var hovered = false;
+      var focused = false;
+      var visible = !('IntersectionObserver' in window);
+      var timer;
+
+      function schedule() {
+        window.clearTimeout(timer);
+        if (starts.length < 2 || userPaused || hovered || focused || !visible || document.hidden) return;
+        timer = window.setTimeout(function () { goTo((current + 1) % starts.length, false); }, 7000);
+      }
+
+      function updateControls() {
+        Array.from(dots.children).forEach(function (dot, index) {
+          dot.setAttribute('aria-current', index === current ? 'page' : 'false');
+        });
+        var text = 'Seite ' + (current + 1) + ' von ' + starts.length;
+        if (position.textContent !== text) position.textContent = text;
+        pause.setAttribute('aria-pressed', String(userPaused));
+        pause.setAttribute('aria-label', label + ': automatischen Wechsel ' + (userPaused ? 'fortsetzen' : 'pausieren'));
+        pause.querySelector('[data-review-pause-icon]').dataset.icon = userPaused ? 'play' : 'pause';
+        pause.querySelector('[data-review-pause-text]').textContent = userPaused ? 'Abspielen' : 'Pause';
+      }
+
+      function goTo(page, announce) {
+        current = (page + starts.length) % starts.length;
+        position.setAttribute('aria-live', announce ? 'polite' : 'off');
+        viewport.scrollTo({ left: starts[current], behavior: motion.matches ? 'instant' : 'smooth' });
+        updateControls();
+        schedule();
+      }
+
+      function measure() {
+        var perView = Math.max(1, Number(window.getComputedStyle(viewport).getPropertyValue('--per-view')) || 1);
+        var maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+        starts = [];
+        for (var index = 0; index < cards.length; index += perView) {
+          starts.push(Math.min(cards[index].offsetLeft - cards[0].offsetLeft, maxScroll));
+        }
+        starts = starts.filter(function (start, index) { return index === 0 || Math.abs(start - starts[index - 1]) > 1; });
+        dots.replaceChildren();
+        starts.forEach(function (_, index) {
+          var dot = document.createElement('button');
+          dot.type = 'button';
+          dot.setAttribute('aria-label', label + ': Seite ' + (index + 1));
+          dot.addEventListener('click', function () { goTo(index, true); });
+          dots.appendChild(dot);
+        });
+        controls.hidden = starts.length < 2;
+        current = Math.min(current, starts.length - 1);
+        viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
+        updateControls();
+        schedule();
+      }
+
+      section.querySelector('[data-review-prev]').addEventListener('click', function () { goTo(current - 1, true); });
+      section.querySelector('[data-review-next]').addEventListener('click', function () { goTo(current + 1, true); });
+      pause.addEventListener('click', function () { userPaused = !userPaused; updateControls(); schedule(); });
+      viewport.addEventListener('keydown', function (event) {
+        var page;
+        if (event.key === 'ArrowRight') page = current + 1;
+        if (event.key === 'ArrowLeft') page = current - 1;
+        if (event.key === 'Home') page = 0;
+        if (event.key === 'End') page = starts.length - 1;
+        if (page === undefined) return;
+        event.preventDefault();
+        goTo(page, true);
       });
-      var visible = new Set(matches.slice(0, limit));
-      cards.forEach(function (card) { card.hidden = !visible.has(card); });
-      filters.forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.reviewFilter === filter)); });
-      status.textContent = matches.length ? visible.size + ' von ' + matches.length + ' Einträgen angezeigt' : 'Keine passenden Bewertungen gefunden. Versuchen Sie einen anderen Suchbegriff oder Filter.';
-      more.hidden = visible.size >= matches.length;
-    }
-    filters.forEach(function (button) {
-      button.addEventListener('click', function () { filter = button.dataset.reviewFilter; limit = 6; updateReviews(); });
+      viewport.addEventListener('scroll', function () {
+        var closest = starts.reduce(function (best, start, index) {
+          return Math.abs(start - viewport.scrollLeft) < Math.abs(starts[best] - viewport.scrollLeft) ? index : best;
+        }, 0);
+        if (closest !== current) { current = closest; updateControls(); }
+      }, { passive: true });
+      viewport.addEventListener('pointerdown', function () { window.clearTimeout(timer); });
+      viewport.addEventListener('pointerup', schedule);
+      viewport.addEventListener('pointercancel', schedule);
+      section.addEventListener('mouseenter', function () { hovered = true; schedule(); });
+      section.addEventListener('mouseleave', function () { hovered = false; schedule(); });
+      section.addEventListener('focusin', function () { focused = true; schedule(); });
+      section.addEventListener('focusout', function (event) { focused = section.contains(event.relatedTarget); schedule(); });
+      document.addEventListener('visibilitychange', schedule);
+      motion.addEventListener('change', function (event) {
+        if (event.matches) userPaused = true;
+        updateControls();
+        schedule();
+      });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          visible = entries[0].isIntersecting;
+          schedule();
+        }, { threshold: .2 }).observe(section);
+      }
+      if ('ResizeObserver' in window) new ResizeObserver(measure).observe(viewport);
+      else window.addEventListener('resize', measure);
+      measure();
     });
-    search.addEventListener('input', function () { limit = 6; updateReviews(); });
-    more.addEventListener('click', function () { limit += 6; updateReviews(); });
-    document.querySelector('.review-toolbar').hidden = false;
-    document.querySelector('.review-actions').hidden = false;
-    updateReviews();
   }
+
+  // Each platform has an independent, progressively enhanced carousel.
+  initReviewCarousels();
 
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
