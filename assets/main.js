@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  // Preise in Euro: [1 Monat, 3 Monate, 6 Monate, 1 Jahr]
+  // Existing IPTV Kanal prices, in euros: 1, 3, 6 and 12 months.
   var PRICES = {
     1: [9, 29, 39, 49],
     2: [18, 50, 69, 89],
@@ -9,112 +9,105 @@
     4: [36, 99, 140, 180],
     5: [45, 120, 175, 225]
   };
-  var TERMS = [
-    { label: '1 Monat', months: 1 },
-    { label: '3 Monate', months: 3 },
-    { label: '6 Monate', months: 6 },
-    { label: '1 Jahr', months: 12, best: true }
-  ];
-  var EMAIL = 'info@iptvkanal.de';
+  var TERMS = ['1 Monat', '3 Monate', '6 Monate', '1 Jahr'];
+  var tabs = Array.from(document.querySelectorAll('.device-switch [data-devices]'));
+  var plans = Array.from(document.querySelectorAll('#plans .plan'));
 
-  function euro(n) {
-    return n.toLocaleString('de-DE', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
-  }
+  function deviceLabel(n) { return n + (n === 1 ? ' Gerät' : ' Geräte'); }
+  function euro(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
-  function deviceLabel(n) {
-    return n + (n === 1 ? ' Gerät' : ' Geräte');
-  }
-
-  function orderLink(devices, term, price) {
-    var subject = 'IPTV Bestellung: ' + term.label + ', ' + deviceLabel(devices) + ' (' + price + ' €)';
-    var body = 'Hallo,\n\nich möchte folgendes Paket bestellen:\n' +
-      '- Laufzeit: ' + term.label + '\n- Geräte: ' + devices + '\n- Preis: ' + price + ' €\n\nMein Gerät: ';
-    return 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-  }
-
-  function renderPlans(devices) {
-    var prices = PRICES[devices];
-    var monthly = prices[0];
-    var html = TERMS.map(function (term, i) {
-      var price = prices[i];
-      var perMonth = price / term.months;
-      var saving = Math.round((1 - price / (monthly * term.months)) * 100);
-      return '<article class="plan' + (term.best ? ' plan--best' : '') + '">' +
-        (term.best ? '<span class="plan__badge">Bester Preis</span>' : '') +
-        '<h3>' + term.label + '</h3>' +
-        '<p class="plan__price"><span>' + price + '</span> €</p>' +
-        '<p class="plan__per">' + (term.months === 1 ? 'monatlich flexibel' : 'nur ' + euro(perMonth) + ' € / Monat') + '</p>' +
-        (saving > 0 ? '<p class="plan__save">Du sparst ' + saving + ' %</p>' : '<p class="plan__save plan__save--none">Ohne Bindung</p>') +
-        '<ul class="plan__list">' +
-          '<li>' + deviceLabel(devices) + ' gleichzeitig</li>' +
-          '<li>20.000+ Sender</li>' +
-          '<li>Filme &amp; Serien (VOD)</li>' +
-          '<li>HD / FHD / 4K</li>' +
-        '</ul>' +
-        '<a class="btn btn--block' + (term.best ? '' : ' btn--outline') + '" href="' + orderLink(devices, term, price) + '">Jetzt bestellen</a>' +
-      '</article>';
-    }).join('');
-    document.getElementById('plans').innerHTML = html;
-    document.getElementById('devices-hint').innerHTML =
-      'Gleichzeitig auf <strong>' + deviceLabel(devices) + '</strong> schauen';
-  }
-
-  // Geräte-Auswahl
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.devices__btn'));
-  function select(btn) {
-    tabs.forEach(function (t) {
-      var on = t === btn;
-      t.classList.toggle('is-active', on);
-      t.setAttribute('aria-selected', on ? 'true' : 'false');
-      t.tabIndex = on ? 0 : -1;
+  function selectDevices(button) {
+    var devices = Number(button.dataset.devices);
+    tabs.forEach(function (tab) {
+      var active = tab === button;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-pressed', String(active));
+      tab.tabIndex = active ? 0 : -1;
     });
-    renderPlans(Number(btn.dataset.devices));
+    plans.forEach(function (plan, index) {
+      var price = PRICES[devices][index];
+      var months = Number(plan.dataset.months);
+      var saving = Math.round((1 - price / (PRICES[devices][0] * months)) * 100);
+      plan.querySelector('.plan-price b').textContent = price;
+      plan.querySelector('.plan-devices').textContent = deviceLabel(devices) + ' gleichzeitig';
+      plan.querySelector('.plan-monthly').textContent = months === 1 ? 'einmalig, ohne Verlängerung' : 'nur ' + euro(price / months) + ' pro Monat';
+      plan.querySelector('.plan-save').textContent = saving > 0 ? 'Sie sparen ' + saving + ' %' : '';
+      var subject = 'IPTV Bestellung: ' + TERMS[index] + ', ' + deviceLabel(devices) + ' (' + price + ' €)';
+      var body = 'Hallo,\n\nich möchte folgendes Paket bestellen:\n- Laufzeit: ' + TERMS[index] + '\n- Geräte: ' + devices + '\n- Preis: ' + price + ' €\n\nMein Gerät: ';
+      plan.querySelector('.plan-btn').href = 'mailto:info@iptvkanal.de?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    });
+    document.getElementById('devices-hint').textContent = 'Gleichzeitig auf ' + deviceLabel(devices) + ' schauen. Wählen Sie Ihre passende Laufzeit.';
   }
-  tabs.forEach(function (btn, i) {
-    btn.addEventListener('click', function () { select(btn); });
-    btn.addEventListener('keydown', function (e) {
-      var next = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : null;
-      if (next === null) return;
-      e.preventDefault();
-      var target = tabs[(next + tabs.length) % tabs.length];
-      target.focus();
-      select(target);
+
+  tabs.forEach(function (button, index) {
+    button.addEventListener('click', function () { selectDevices(button); });
+    button.addEventListener('keydown', function (event) {
+      var next;
+      if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+      if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = tabs.length - 1;
+      if (next === undefined) return;
+      event.preventDefault();
+      selectDevices(tabs[next]);
+      tabs[next].focus();
     });
   });
-  if (tabs.length) select(tabs[0]);
+  if (tabs.length) selectDevices(tabs[0]);
 
-  // Mobile Navigation
-  var toggle = document.querySelector('.nav__toggle');
+  var menu = document.querySelector('.menu-btn');
   var links = document.getElementById('nav-links');
-  if (toggle && links) {
-    toggle.addEventListener('click', function () {
-      var open = links.classList.toggle('is-open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      toggle.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+  if (menu && links) {
+    function setMenu(open) {
+      links.classList.toggle('is-open', open);
+      menu.setAttribute('aria-expanded', String(open));
+      menu.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
       document.body.classList.toggle('no-scroll', open);
+    }
+    menu.addEventListener('click', function () { setMenu(menu.getAttribute('aria-expanded') !== 'true'); });
+    links.addEventListener('click', function (event) { if (event.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') {
+        setMenu(false);
+        menu.focus();
+      }
     });
-    links.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A' && links.classList.contains('is-open')) toggle.click();
-    });
+    window.matchMedia('(min-width: 851px)').addEventListener('change', function (event) { if (event.matches) setMenu(false); });
   }
 
-  // Header-Schatten beim Scrollen
-  var nav = document.querySelector('.nav');
-  function onScroll() { nav.classList.toggle('is-scrolled', window.scrollY > 10); }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  // Einblend-Animationen
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
+  // Reviews are static HTML for accessibility and no-JavaScript use.
+  // Enhancement adds filtering, text search, and progressive disclosure.
+  var cards = Array.from(document.querySelectorAll('[data-review-id]'));
+  if (cards.length) {
+    var filter = 'all';
+    var limit = 6;
+    var search = document.getElementById('review-search');
+    var status = document.getElementById('review-status');
+    var more = document.getElementById('reviews-more');
+    var filters = Array.from(document.querySelectorAll('[data-review-filter]'));
+    function normalize(text) { return text.toLocaleLowerCase('de-DE').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    var searchText = new Map(cards.map(function (card) {
+      return [card, normalize((card.querySelector('h3') ? card.querySelector('h3').textContent : '') + ' ' + card.querySelector('blockquote').textContent + ' ' + card.querySelector('.review-author strong').textContent)];
+    }));
+    function updateReviews() {
+      var query = normalize(search.value.trim());
+      var matches = cards.filter(function (card) {
+        return (filter === 'all' || card.dataset.reviewGroup === filter) && searchText.get(card).includes(query);
       });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.feature, .step, .device-grid li, .section__head').forEach(function (el) {
-      el.classList.add('reveal');
-      io.observe(el);
+      var visible = new Set(matches.slice(0, limit));
+      cards.forEach(function (card) { card.hidden = !visible.has(card); });
+      filters.forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.reviewFilter === filter)); });
+      status.textContent = matches.length ? visible.size + ' von ' + matches.length + ' Einträgen angezeigt' : 'Keine passenden Bewertungen gefunden. Versuchen Sie einen anderen Suchbegriff oder Filter.';
+      more.hidden = visible.size >= matches.length;
+    }
+    filters.forEach(function (button) {
+      button.addEventListener('click', function () { filter = button.dataset.reviewFilter; limit = 6; updateReviews(); });
     });
+    search.addEventListener('input', function () { limit = 6; updateReviews(); });
+    more.addEventListener('click', function () { limit += 6; updateReviews(); });
+    document.querySelector('.review-toolbar').hidden = false;
+    document.querySelector('.review-actions').hidden = false;
+    updateReviews();
   }
 
   var year = document.getElementById('year');

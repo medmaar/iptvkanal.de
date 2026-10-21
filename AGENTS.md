@@ -1,0 +1,16 @@
+# Delivery workflow
+
+The repository owner has requested that completed tasks be committed and pushed
+to `main` on `medmaar/iptvkanal.de`, then deployed to Cloudflare automatically.
+This is standing authorization for this repository's normal delivery workflow.
+
+- Preserve unrelated changes. Run relevant checks before committing.
+- Start the static server and use `node scripts/smoke-test.cjs` for site changes
+  when Playwright and Chromium are available in the cloud environment.
+- Push without force; reconcile upstream changes before delivery.
+- Use the existing Cloudflare project and deployment integration. Verify its
+  deployment result when access is available. A successful Git push alone does
+  not confirm a successful Cloudflare deployment.
+- If deployment configuration or access is missing, finish the GitHub delivery
+  and report the precise deployment blocker. Keep credentials out of repository
+  files, logs, and chat.
