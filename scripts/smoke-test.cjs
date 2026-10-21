@@ -41,7 +41,10 @@ const { chromium } = require('playwright');
       await section.scrollIntoViewIfNeeded();
       assert.equal(await viewport.evaluate(element => Number(getComputedStyle(element).getPropertyValue('--per-view'))), perView);
       assert.equal(await section.locator('[data-review-card]').count(), count);
-      assert.equal(await section.locator('[data-review-dots] button').count(), Math.ceil(count / perView));
+      const pages = String(Math.ceil(count / perView)).padStart(2, '0');
+      assert.equal(await section.locator('[data-review-total]').textContent(), pages);
+      assert.equal(await section.locator('[data-review-controls] button').count(), 2);
+      assert.equal(await section.locator('[data-review-dots]').count(), 0);
       const reviews = supplied.platforms.find(item => item.id === platform).reviews;
       for (let index = 0; index < reviews.length; index++) {
         const card = section.locator('[data-review-card]').nth(index);
@@ -52,16 +55,16 @@ const { chromium } = require('playwright');
       }
       await section.locator('[data-review-next]').click();
       await page.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 10, platform);
-      assert.equal(await section.locator('[data-review-dots] button').nth(1).getAttribute('aria-current'), 'page');
-      await section.locator('[data-review-dots] button').last().click();
-      assert.equal(await section.locator('[data-review-dots] button').last().getAttribute('aria-current'), 'page');
+      assert.equal(await section.locator('[data-review-current]').textContent(), '02');
+      await viewport.press('End');
+      assert.equal(await section.locator('[data-review-current]').textContent(), pages);
       await viewport.press('Home');
-      assert.equal(await section.locator('[data-review-dots] button').first().getAttribute('aria-current'), 'page');
+      assert.equal(await section.locator('[data-review-current]').textContent(), '01');
       await section.locator('[data-review-prev]').click();
-      assert.equal(await section.locator('[data-review-dots] button').last().getAttribute('aria-current'), 'page');
+      assert.equal(await section.locator('[data-review-current]').textContent(), pages);
       await viewport.press('Home');
     }
-    console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, arrows, dots and keyboard navigation; no pause buttons');
+    console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, compact counters, arrows and keyboard navigation; no pause buttons');
 
     // Virtual time verifies real automatic advancement without a seven-second sleep.
     const autoPage = await browser.newPage({ viewport: { width: 1200, height: 500 } });
@@ -74,22 +77,22 @@ const { chromium } = require('playwright');
     await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"]').getBoundingClientRect().top < innerHeight);
     await autoPage.clock.runFor(7500);
     await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-viewport]').scrollLeft > 10);
-    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-dots] [aria-current="page"]').getAttribute('aria-label').endsWith('Seite 2'));
+    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-current]').textContent === '02');
     await autoplay.hover();
-    const hoveredPosition = await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label');
+    const hoveredPosition = await autoplay.locator('[data-review-current]').textContent();
     await autoPage.clock.runFor(15000);
-    assert.equal(await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label'), hoveredPosition);
+    assert.equal(await autoplay.locator('[data-review-current]').textContent(), hoveredPosition);
     await autoPage.mouse.move(0, 0);
     await autoPage.clock.runFor(7500);
-    await autoPage.waitForFunction(previous => document.querySelector('[data-review-platform="trustpilot"] [data-review-dots] [aria-current="page"]').getAttribute('aria-label') !== previous, hoveredPosition);
+    await autoPage.waitForFunction(previous => document.querySelector('[data-review-platform="trustpilot"] [data-review-current]').textContent !== previous, hoveredPosition);
     await autoplay.locator('[data-review-viewport]').focus();
-    const focusedPosition = await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label');
+    const focusedPosition = await autoplay.locator('[data-review-current]').textContent();
     await autoPage.clock.runFor(15000);
-    assert.equal(await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label'), focusedPosition);
+    assert.equal(await autoplay.locator('[data-review-current]').textContent(), focusedPosition);
     await autoplay.locator('[data-review-viewport]').evaluate(element => element.blur());
     await autoPage.emulateMedia({ reducedMotion: 'reduce' });
     await autoPage.clock.runFor(15000);
-    assert.equal(await autoplay.locator('[data-review-dots] [aria-current="page"]').getAttribute('aria-label'), focusedPosition);
+    assert.equal(await autoplay.locator('[data-review-current]').textContent(), focusedPosition);
     await autoPage.close();
     console.log('PASS automatic review sliding, hover/focus hold, and reduced-motion preference without pause controls');
 
@@ -131,7 +134,7 @@ const { chromium } = require('playwright');
           await page.waitForFunction(({ platform, count }) => {
             const section = document.querySelector(`[data-review-platform="${platform}"]`);
             return Number(getComputedStyle(section.querySelector('[data-review-viewport]')).getPropertyValue('--per-view')) === 1
-              && section.querySelectorAll('[data-review-dots] button').length === count;
+              && Number(section.querySelector('[data-review-total]').textContent) === count;
           }, { platform, count });
         }
       }

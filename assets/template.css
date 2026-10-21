@@ -208,25 +208,19 @@ main { overflow: clip; }
 .review-platform--whatsapp .platform-review-card { background: linear-gradient(150deg, #fff, #f0e9f9); }
 .platform-review-card blockquote { margin: 0 0 24px; color: var(--text-2); line-height: 1.8; font-size: .92rem; }
 .platform-review-card blockquote p { margin: 0; }
-.review-platform-controls { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
-.review-arrow { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255, 255, 255, .7); color: var(--violet); transition: background .2s; }
-.review-arrow:hover { background: #fff; }
+.review-platform-controls { display: flex; justify-content: center; align-items: center; gap: 10px; width: fit-content; max-width: 100%; margin: 20px auto 0; padding: 5px 8px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255, 255, 255, .7); }
+.review-arrow { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: #762395; transition: background .2s; }
+.review-arrow:hover { background: #eee4fa; }
 .review-arrow svg { width: 15px; height: 15px; }
 .review-arrow[data-review-prev] svg { transform: rotate(180deg); }
-.review-pagination { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 60%; }
-.review-pagination button { display: grid; place-items: center; width: 24px; height: 30px; padding: 0; }
-.review-pagination button::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 99px; background: #b4a0c4; transition: width .42s cubic-bezier(.34, 1.56, .64, 1), background .42s; }
-.review-pagination button[aria-current="page"] { width: 34px; }
-.review-pagination button[aria-current="page"]::before { width: 26px; background: var(--violet); }
+.review-page-count { display: inline-flex; justify-content: center; align-items: baseline; gap: 9px; min-width: 64px; color: var(--text-3); font-size: .75rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.review-page-count [data-review-current] { color: var(--text); font-weight: 700; }
+.review-page-separator { color: #8d759b; }
 @media(max-width:850px) { .review-platform--google .platform-review-viewport { --per-view: 2; } }
 @media(max-width:600px) {
   .platform-review-viewport, .review-platform--whatsapp .platform-review-viewport, .review-platform--google .platform-review-viewport { --per-view: 1; }
   .review-platform-heading h3, .google-wordmark { font-size: 1.45rem; }
   .review-platform { margin-bottom: 52px; }
   .review-platform--trustpilot .platform-review-card { padding: 26px 24px; }
-  .review-pagination { gap: 0; }
-  .review-pagination button { width: 20px; }
-  .review-pagination button[aria-current="page"] { width: 28px; }
-  .review-pagination button[aria-current="page"]::before { width: 22px; }
-  .review-platform-controls { gap: 9px; }
+  .review-arrow { width: 42px; height: 42px; }
 }

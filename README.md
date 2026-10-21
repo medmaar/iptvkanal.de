@@ -46,8 +46,8 @@ bleiben weiß auf dunklen Fotoverläufen. Das Original-CSS bleibt unverändert.
 
 Die aktuelle Gestaltung folgt dem vom Nutzer bereitgestellten HTML von maple4k.ca:
 Trustpilot mit einer großen Karte, WhatsApp mit zwei Nachrichtenkarten, Google
-mit drei Karten. Jeder Bereich hat eigene Pfeile, Seitenpunkte und eine
-Seitensteuerung. Auf schmalen Bildschirmen wird eine Karte angezeigt;
+mit drei Karten. Alle drei Bereiche verwenden denselben kompakten Seitenzähler
+mit zwei dezenten Pfeilen statt langer Punktreihen. Auf schmalen Bildschirmen wird eine Karte angezeigt;
 Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells wechseln
 alle sieben Sekunden. Hover, Tastaturfokus und ausgeblendete Tabs halten den Wechsel an.
 Ein sichtbarer Pause-Button wird nicht angezeigt. Bei reduzierter Bewegung ist Autoplay zunächst aus.

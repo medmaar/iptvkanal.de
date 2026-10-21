@@ -134,9 +134,9 @@
       var viewport = section.querySelector('[data-review-viewport]');
       var cards = Array.from(viewport.querySelectorAll('[data-review-card]'));
       var controls = section.querySelector('[data-review-controls]');
-      var dots = section.querySelector('[data-review-dots]');
+      var currentPage = section.querySelector('[data-review-current]');
+      var totalPages = section.querySelector('[data-review-total]');
       var position = section.querySelector('[data-review-position]');
-      var label = section.querySelector('h3').textContent;
       var starts = [];
       var current = 0;
       var hovered = false;
@@ -157,9 +157,8 @@
       }
 
       function updateControls() {
-        Array.from(dots.children).forEach(function (dot, index) {
-          dot.setAttribute('aria-current', index === current ? 'page' : 'false');
-        });
+        currentPage.textContent = String(current + 1).padStart(2, '0');
+        totalPages.textContent = String(starts.length).padStart(2, '0');
         var text = 'Seite ' + (current + 1) + ' von ' + starts.length;
         if (position.textContent !== text) position.textContent = text;
       }
@@ -180,14 +179,6 @@
           starts.push(Math.min(cards[index].offsetLeft - cards[0].offsetLeft, maxScroll));
         }
         starts = starts.filter(function (start, index) { return index === 0 || Math.abs(start - starts[index - 1]) > 1; });
-        dots.replaceChildren();
-        starts.forEach(function (_, index) {
-          var dot = document.createElement('button');
-          dot.type = 'button';
-          dot.setAttribute('aria-label', label + ': Seite ' + (index + 1));
-          dot.addEventListener('click', function () { goTo(index, true); });
-          dots.appendChild(dot);
-        });
         controls.hidden = starts.length < 2;
         current = Math.min(current, starts.length - 1);
         viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });

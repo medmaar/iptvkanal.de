@@ -63,7 +63,7 @@ for platform in ORDER:
 </div>
 <div class="review-platform-controls" data-review-controls hidden>
 <button type="button" class="review-arrow" data-review-prev aria-label="{label}: vorherige Seite"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-<div class="review-pagination" data-review-dots role="group" aria-label="{label}: Seite auswählen"></div>
+<span class="review-page-count" aria-hidden="true"><span data-review-current>01</span><span class="review-page-separator">/</span><span data-review-total>20</span></span>
 <button type="button" class="review-arrow" data-review-next aria-label="{label}: nächste Seite"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
 </div>
 <p class="sr-only" data-review-position aria-live="off"></p>
