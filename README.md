@@ -32,6 +32,7 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 - `assets/img/`: lokal gespeicherte Fotos und VOD-Poster.
 - `assets/fonts/`: lokale variable WOFF2-Schriften und vollständige Font-Lizenzen.
 - `assets/flags/`: lokale Länderflaggen als SVG-Grafiken.
+- `assets/brand/iptvkanal-logo.webp`: transparentes weiß-goldenes IPTVKanal-Logo.
 
 Die Schriften Inter und Sora werden lokal aus den Paketen
 `@fontsource-variable/inter@5.3.0` und `@fontsource-variable/sora@5.2.8`
@@ -51,6 +52,13 @@ das Preisangebot steht darunter und verdeckt keine Gesichter. Der Start-Button
 und die Geräteauswahl bleiben erreichbar. Preiskarten lassen sich per
 Wischgeste vergleichen. Eine lokale Bildschirm-Illustration zeigt TV und Handy.
 Animationen respektieren die Einstellung für reduzierte Bewegung.
+
+Alle Aktionsbuttons verwenden einen warmen Goldverlauf. Das Jahrespaket setzt
+sich mit einem dunklen, goldschimmernden Hintergrund ab. Die Preiskarten
+wechseln beim Hover weich zwischen Position und Schatten. Der Bewertungsbereich
+verwendet denselben dunklen Hintergrund wie die übrige Seitenfläche;
+Trustpilot-Sterne bleiben grün und Google-Sterne gelb. Logo und Favicon sind
+lokal gespeichert und verwenden Inhalts-Hashes als Cache-Versionen.
 
 ## Bewertungsbereiche
 
