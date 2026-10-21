@@ -1,4 +1,4 @@
-/* IPTV Kanal integration. Original template CSS is kept in reference/style.css. */
+/* IPTV Kanal theme and component styling. */
 :root { --muted: var(--text-2); --border: var(--line); }
 body.no-scroll { overflow: hidden; }
 main { overflow: clip; }
@@ -152,7 +152,7 @@ main { overflow: clip; }
   }
 }
 
-/* Maple4K reference layout: one featured review, two messages, three Google cards. */
+/* Platform review layouts: one featured review, two messages, three Google cards. */
 .platform-reviews { background: linear-gradient(180deg, #eeeaff, #f8f0fc 55%, #eeeaff); border-block: 1px solid var(--line); }
 .platform-reviews > .container { max-width: 1140px; }
 .platform-reviews .section-head { margin-bottom: 60px; }

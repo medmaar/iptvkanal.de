@@ -14,14 +14,20 @@ const { chromium } = require('playwright');
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
     const errors = [];
     const failures = [];
+    const externalRequests = [];
+    page.on('request', request => {
+      if (new URL(request.url()).origin !== new URL(base).origin) externalRequests.push(request.url());
+    });
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => {
       if (response.url().startsWith(base) && response.status() >= 400) failures.push(response.url());
     });
-    // Fonts are optional. Verify the entire site works without outside requests.
-    await page.route('https://**/*', route => route.abort());
+    // All application assets, including fonts, must load from the site itself.
+    await page.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
     await page.goto(base);
-    for (const asset of ['assets/main.js', 'assets/template.css']) {
+    await page.evaluate(() => document.fonts.ready);
+    assert.equal(await page.evaluate(() => document.fonts.check('16px Inter') && document.fonts.check('16px Sora')), true);
+    for (const asset of ['assets/main.js', 'assets/base.css', 'assets/template.css']) {
       const version = crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname, '..', asset))).digest('hex').slice(0, 12);
       const attribute = asset.endsWith('.js') ? 'src' : 'href';
       assert.equal(await page.locator(`[${attribute}="${asset}?v=${version}"]`).count(), 1, `${asset} must use its current content hash to bypass older cached bundles`);
@@ -73,7 +79,7 @@ const { chromium } = require('playwright');
     // Virtual time verifies real automatic advancement without a seven-second sleep.
     const autoPage = await browser.newPage({ viewport: { width: 1200, height: 500 } });
     await autoPage.clock.install();
-    await autoPage.route('https://**/*', route => route.abort());
+    await autoPage.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
     await autoPage.goto(base);
     const autoplay = autoPage.locator('[data-review-platform="trustpilot"]');
     await autoplay.scrollIntoViewIfNeeded();
@@ -159,12 +165,18 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/reference/style.css', '/assets/img/photo-keeper.jpg', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/photo-keeper.jpg', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html']) {
+      await page.goto(base + target);
+      await page.evaluate(() => document.fonts.ready);
+    }
+    assert.deepEqual(externalRequests, [], 'Pages must not request externally hosted assets');
+    console.log('PASS all pages and fonts load locally with no external asset requests');
     const noJS = await browser.newContext({ javaScriptEnabled: false });
     const plain = await noJS.newPage();
-    await plain.route('https://**/*', route => route.abort());
+    await plain.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
     await plain.goto(base);
     assert.equal(await plain.locator('[data-review-card]').count(), 60);
     assert.equal(await plain.locator('[data-review-controls]:visible').count(), 0);

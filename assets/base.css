@@ -1,4 +1,20 @@
-/* IPTV Welt Premium – Stylesheet */
+/* Local variable fonts; font licenses are included in assets/fonts. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/inter-latin-variable.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("fonts/sora-latin-variable.woff2") format("woff2");
+}
+
+/* IPTV Kanal base layout */
 :root {
   --bg: #07070d;
   --bg-2: #0d0d18;
