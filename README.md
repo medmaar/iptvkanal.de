@@ -32,7 +32,7 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 - `assets/img/`: lokal gespeicherte Fotos und VOD-Poster.
 - `assets/fonts/`: lokale variable WOFF2-Schriften und vollständige Font-Lizenzen.
 - `assets/flags/`: lokale Länderflaggen als SVG-Grafiken.
-- `assets/brand/iptvkanal-logo.webp`: transparentes weiß-goldenes IPTVKanal-Logo.
+- `assets/brand/iptvkanal-logo.svg`: flaches weiß-goldenes Vektorlogo mit Play-Symbol.
 
 Die Schriften Inter und Sora werden lokal aus den Paketen
 `@fontsource-variable/inter@5.3.0` und `@fontsource-variable/sora@5.2.8`
@@ -58,7 +58,10 @@ sich mit einem dunklen, goldschimmernden Hintergrund ab. Die Preiskarten
 wechseln beim Hover weich zwischen Position und Schatten. Der Bewertungsbereich
 verwendet denselben dunklen Hintergrund wie die übrige Seitenfläche;
 Trustpilot-Sterne bleiben grün und Google-Sterne gelb. Logo und Favicon sind
-lokal gespeichert und verwenden Inhalts-Hashes als Cache-Versionen.
+lokal als SVG gespeichert und verwenden Inhalts-Hashes als Cache-Versionen.
+Die Wortmarke besteht aus Inter-Buchstaben als Vektorpfaden und benötigt keine
+zusätzlichen Schriftanfragen. Sie verwendet flache Farben ohne Glanz- oder
+3D-Effekte; das Play-Symbol wird auch als Favicon verwendet.
 
 ## Bewertungsbereiche
 

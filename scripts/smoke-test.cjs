@@ -36,7 +36,7 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('.brand-wordmark').count(), 2);
     for (const wordmark of await page.locator('.brand-wordmark').all()) {
       await wordmark.evaluate(image => image.decode());
-      assert.equal(await wordmark.getAttribute('alt'), 'IPTV Kanal Premium');
+      assert.equal(await wordmark.getAttribute('alt'), 'IPTV Kanal');
     }
     assert.equal(await page.locator('#bewertungen').evaluate(element => getComputedStyle(element).backgroundColor), await page.locator('body').evaluate(element => getComputedStyle(element).backgroundColor));
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -189,7 +189,7 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-logo.webp', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-logo.svg', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
     for (const target of ['/impressum.html', '/datenschutz.html', '/404.html']) {
