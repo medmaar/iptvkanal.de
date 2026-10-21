@@ -73,13 +73,37 @@
         menu.focus();
       }
     });
+    document.addEventListener('click', function (event) {
+      if (menu.getAttribute('aria-expanded') === 'true' && !event.target.closest('.nav')) setMenu(false);
+    });
     window.matchMedia('(min-width: 901px)').addEventListener('change', function (event) { if (event.matches) setMenu(false); });
   }
 
   var header = document.querySelector('.header');
   if (header) {
-    function updateHeader() { header.classList.toggle('scrolled', window.scrollY > 10); }
-    window.addEventListener('scroll', updateHeader, { passive: true });
+    var destinations = links ? Array.from(links.querySelectorAll('a[href^="#"]')).map(function (link) {
+      return { link: link, section: document.getElementById(link.hash.slice(1)) };
+    }).filter(function (item) { return item.section; }) : [];
+    var headerFrame = false;
+    var currentDestination;
+    function updateHeader() {
+      headerFrame = false;
+      header.classList.toggle('scrolled', window.scrollY > 10);
+      var active = destinations.find(function (item) {
+        var bounds = item.section.getBoundingClientRect();
+        return bounds.top <= 160 && bounds.bottom > 160;
+      });
+      if (active !== currentDestination) {
+        destinations.forEach(function (item) { item.link.removeAttribute('aria-current'); });
+        if (active) active.link.setAttribute('aria-current', 'location');
+        currentDestination = active;
+      }
+    }
+    function scheduleHeader() {
+      if (!headerFrame) { headerFrame = true; window.requestAnimationFrame(updateHeader); }
+    }
+    window.addEventListener('scroll', scheduleHeader, { passive: true });
+    window.addEventListener('resize', scheduleHeader);
     updateHeader();
   }
 

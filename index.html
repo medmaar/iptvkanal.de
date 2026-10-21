@@ -6,7 +6,7 @@
   <title>IPTV Kanal – Premium IPTV in 4K für Deutschland | iptvkanal.de</title>
   <meta name="description" content="IPTV Kanal: über 20.000 Sender, Filme und Serien in HD, Full HD und 4K. Stabil, ohne Vertrag, für Smart TV, Fire TV, Handy und PC. Ab 9 € im Monat, bis zu 5 Geräte.">
   <link rel="canonical" href="https://iptvkanal.de/">
-  <meta name="theme-color" content="#D3D3FF">
+  <meta name="theme-color" content="#100d18">
   <link rel="icon" href="assets/favicon.svg?v=6e525248eec0" type="image/svg+xml">
 
   <meta property="og:type" content="website">
@@ -16,8 +16,9 @@
   <meta property="og:description" content="Tausende Sender, Filme und Serien auf allen Geräten. Ab 9 € im Monat, ohne Vertrag.">
   <meta property="og:url" content="https://iptvkanal.de/">
 
+  <link rel="preload" as="image" href="assets/img/hero-posters.webp" fetchpriority="high">
   <link rel="stylesheet" href="assets/base.css?v=a1940dfae1ff">
-  <link rel="stylesheet" href="assets/template.css?v=92e3de7ab9c4">
+  <link rel="stylesheet" href="assets/template.css?v=a4c9257c3771">
 
   <script type="application/ld+json">
   {
@@ -75,51 +76,27 @@
 </nav></header>
 <main id="main">
 <section class="hero" aria-label="Einleitung">
-    <div class="hero-slides" aria-hidden="true"><div class="hero-slide hero-posters active" style="background-image:url('assets/img/hero-posters.webp')"></div></div>
+    <div class="hero-slides" aria-hidden="true"><div class="hero-slide hero-backdrop active" style="background-image:url('assets/img/hero-posters.webp')"></div></div>
     <div class="hero-overlay" aria-hidden="true"></div>
     <div class="container">
       <div class="hero-grid">
-        <div>
-          <span class="pill reveal"><b>IPTV KANAL</b><span class="live-dot" aria-hidden="true"></span> 20.000+ Sender entdecken</span>
-          <h1 class="display reveal d1">IPTV auf <span class="grad-text">Premium-Niveau.</span> Überall.</h1>
-          <p class="lead reveal d2">Premium IPTV für Deutschland: Live-TV, Sport, Filme und Serien in gestochen scharfem 4K, auf jedem Gerät, ohne Vertrag und ohne Satellitenschüssel. Einrichtung in wenigen Minuten.</p>
-          <div class="hero-actions reveal d3">
-            <a href="#preise" class="btn btn-primary">Jetzt starten <svg><use href="#i-arrow"/></svg></a>
-            <a href="#kontakt" class="btn btn-ghost">Kontakt aufnehmen</a>
+        <div class="hero-copy">
+          <span class="hero-kicker"><span class="live-dot" aria-hidden="true"></span> LIVE TV. FILME. SERIEN.</span>
+          <h1 class="display">Großes Fernsehen.<br><span class="grad-text">Ganz Ihr Moment.</span></h1>
+          <p class="lead">Vom Anpfiff bis zum Abspann. Entdecken Sie Live-Sport, Filme und Serien in bis zu 4K – auf Ihren Geräten, zu Ihrer Zeit.</p>
+          <div class="hero-actions">
+            <a href="#preise" class="btn btn-primary">Ihr Paket entdecken <svg><use href="#i-arrow"/></svg></a>
+            <a href="#highlights" class="btn btn-ghost"><svg><use href="#i-play"/></svg> Programm entdecken</a>
           </div>
-          <div class="hero-trust reveal d3">
-            <span><svg><use href="#i-check-c"/></svg>Ab 4,08&nbsp;€ pro Monat</span>
-            <span><svg><use href="#i-check-c"/></svg>Keine Verlängerung</span>
-            <span><svg><use href="#i-check-c"/></svg>Aktiv in Minuten</span>
+          <div class="hero-trust">
+            <span><svg><use href="#i-check-c"/></svg>Ohne automatische Verlängerung</span>
+            <span><svg><use href="#i-check-c"/></svg>Auf bis zu 5 Geräten</span>
           </div>
         </div>
-
-        <div class="tv-wrap reveal d2" aria-hidden="true">
-          <div class="tv">
-            <div class="tv-screen">
-              <div class="tv-hero-img" style="background-image:url('assets/img/photo-keeper.jpg')"></div>
-              <div class="tv-ui">
-                <div class="tv-top">
-                  <span class="tv-badge"><span class="live-dot"></span> LIVE</span>
-                  <span class="tv-badge uhd">4K UHD</span>
-                </div>
-                <div class="tv-bottom">
-                  <div class="tv-title">Topspiel des Abends</div>
-                  <div class="tv-sub">Live-Sport · 2. Halbzeit · 67:12</div>
-                  <div class="tv-progress"><i></i></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tv-stand"></div>
-          <div class="float-card fc-1">
-            <div class="ic"><svg style="color:var(--green)"><use href="#i-bolt"/></svg></div>
-            <div><strong>1–5 Geräte</strong><small>Gleichzeitig schauen</small></div>
-          </div>
-          <div class="float-card fc-2">
-            <div class="ic"><svg style="color:var(--gold)"><use href="#i-film"/></svg></div>
-            <div><strong>Filme &amp; Serien</strong><small>Auf Abruf · VOD</small></div>
-          </div>
+        <div class="hero-scene" aria-hidden="true">
+          <span class="scene-quality">4K <small>ULTRA HD</small></span>
+          <div class="scene-caption"><span class="scene-line"></span><span>Für die Momente,<br><strong>die bleiben.</strong></span></div>
+          <div class="scene-price"><span>Ihr Jahrespaket ab</span><strong>4,08 € <small>/ Monat</small></strong><span>49 € einmalig · 1 Gerät</span></div>
         </div>
       </div>
 
@@ -132,8 +109,8 @@
 
       <div class="marquee" aria-label="Kategorien">
         <div class="marquee-track">
-          <span>⚽ Fußball live</span><span>🏎️ Motorsport</span><span>🎾 Tennis</span><span>🏀 Basketball</span><span>🎬 Kinofilme</span><span>📺 Serien</span><span>📰 Nachrichten</span><span>🧸 Kinder</span><span>🌍 International</span><span>🎵 Musik</span><span>🥊 Kampfsport</span><span>🎞️ Dokus</span>
-          <span>⚽ Fußball live</span><span>🏎️ Motorsport</span><span>🎾 Tennis</span><span>🏀 Basketball</span><span>🎬 Kinofilme</span><span>📺 Serien</span><span>📰 Nachrichten</span><span>🧸 Kinder</span><span>🌍 International</span><span>🎵 Musik</span><span>🥊 Kampfsport</span><span>🎞️ Dokus</span>
+          <span>Fußball live</span><span>Motorsport</span><span>Tennis</span><span>Basketball</span><span>Kinofilme</span><span>Serien</span><span>Nachrichten</span><span>Kinder</span><span>International</span><span>Musik</span><span>Kampfsport</span><span>Dokus</span>
+          <span>Fußball live</span><span>Motorsport</span><span>Tennis</span><span>Basketball</span><span>Kinofilme</span><span>Serien</span><span>Nachrichten</span><span>Kinder</span><span>International</span><span>Musik</span><span>Kampfsport</span><span>Dokus</span>
         </div>
       </div>
     </div>
@@ -315,6 +292,7 @@
         </article>
       </div>
       <div class="plans-dots" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i></div>
+      <p class="plan-swipe-hint">Wischen, um alle Laufzeiten zu vergleichen</p>
       <!-- plans:end -->
 
       <div class="pay-note reveal">
@@ -687,6 +665,6 @@
 <section id="kontakt"><div class="container"><div class="cta-box"><span class="eyebrow">Wir sind für Sie da</span><h2 class="display">Bereit für <span class="grad-text">besseres Fernsehen?</span></h2><p>Fragen zum passenden Paket oder zur Einrichtung? Schreiben Sie uns. Wir helfen Ihnen beim Start.</p><div class="cta-pair"><a class="btn btn-primary" href="mailto:info@iptvkanal.de?subject=IPTV%20Anfrage"><svg><use href="#i-mail"/></svg> info@iptvkanal.de</a><a href="#preise" class="btn btn-ghost">Preise ansehen <svg><use href="#i-arrow"/></svg></a></div><div class="cta-perks"><span>1–5 Geräte</span><span>Keine automatische Verlängerung</span><span>Persönliche Hilfe</span></div></div></div></section>
 </main>
 <footer class="footer"><div class="container"><div class="footer-grid"><div><a class="logo" href="#top"><img src="assets/favicon.svg?v=6e525248eec0" alt="" width="34" height="34"><span>IPTV<span class="grad-text">Kanal</span></span></a><p>Live-TV, Filme und Serien.<br>Auf Ihrem Bildschirm zu Hause.</p></div><div><p class="footer-title">Entdecken</p><a href="#inhalte">Unterhaltung</a><a href="#geraete">Geräte &amp; Apps</a><a href="#preise">Pakete &amp; Preise</a></div><div><p class="footer-title">Service</p><a href="#kontakt">Kontakt</a><a href="#faq">Häufige Fragen</a><a href="#bewertungen">Bewertungen</a></div><div><p class="footer-title">Rechtliches</p><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> IPTV Kanal</span><a href="#top">Nach oben ↑</a></div></div></footer>
-<script src="assets/main.js?v=f6c6c6735722" defer></script>
+<script src="assets/main.js?v=f626ae216fb1" defer></script>
 </body>
 </html>

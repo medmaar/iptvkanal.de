@@ -106,8 +106,10 @@ const { chromium } = require('playwright');
     await autoPage.close();
     console.log('PASS automatic review sliding, hover/focus hold, and reduced-motion preference without pause controls');
 
-    assert.equal(await page.locator('.hero-slide').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-posters.webp')), true);
-    assert.equal(await page.locator('.tv-hero-img').evaluate(element => getComputedStyle(element).backgroundImage.includes('photo-keeper.jpg')), true);
+    assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-posters.webp')), true);
+    assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');
+    assert.equal(await page.locator('[data-review-platform="trustpilot"] .platform-review-stars').first().evaluate(element => getComputedStyle(element).color), 'rgb(0, 182, 122)');
+    assert.equal(await page.locator('[data-review-platform="google"] .platform-review-stars').first().evaluate(element => getComputedStyle(element).color), 'rgb(251, 188, 4)');
     assert.equal(await page.locator('.highlights .slide').count(), 6);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.locator('.slider-btn[data-dir="1"]').click();
@@ -117,7 +119,7 @@ const { chromium } = require('playwright');
     for (const image of await page.locator('.vod img').all()) {
       assert.equal((await page.request.get(new URL(await image.getAttribute('src'), base).href)).status(), 200);
     }
-    console.log('PASS original background images, highlights controls, and VOD posters');
+    console.log('PASS local hero backdrop, dark theme, platform star colors, highlights controls, and VOD posters');
 
     const expected = [[9, 29, 39, 49], [18, 50, 69, 89], [27, 75, 105, 135], [36, 99, 140, 180], [45, 120, 175, 225]];
     for (let devices = 1; devices <= 5; devices++) {
@@ -136,12 +138,21 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('[data-devices="5"]').getAttribute('aria-pressed'), 'true');
     console.log('PASS all 20 prices, order details, and keyboard device selection');
 
-    for (const width of [1440, 768, 390, 320]) {
+    await page.locator('#preise').evaluate(section => scrollTo(0, section.getBoundingClientRect().top + scrollY));
+    await page.waitForFunction(() => document.querySelector('#nav-links a[href="#preise"]').getAttribute('aria-current') === 'location');
+    await page.locator('#bewertungen').evaluate(section => scrollTo(0, section.getBoundingClientRect().top + scrollY));
+    await page.waitForFunction(() => document.querySelector('#nav-links a[href="#bewertungen"]').getAttribute('aria-current') === 'location');
+    assert.equal(await page.locator('#nav-links [aria-current="location"]').count(), 1);
+    console.log('PASS navigation follows the visible section');
+
+    for (const width of [1920, 1440, 1080, 900, 768, 640, 390, 320]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `Overflow at ${width}px`);
       assert.equal(await page.locator('.review-country-flag').count(), 60);
       assert.equal(await page.locator('.review-country-flag').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0 && image.getBoundingClientRect().width === 20 && image.getBoundingClientRect().height === 12)), true, `Flag graphics must load and retain their size at ${width}px`);
       if (width <= 600) {
+        assert.equal(await page.locator('.nav-cta .btn-primary').isVisible(), true, `Header action must stay visible at ${width}px`);
+        assert.equal(await page.locator('[data-devices]').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height >= 44)), true, `Device controls must have usable touch targets at ${width}px`);
         for (const [platform, count] of [['trustpilot', 20], ['whatsapp', 20], ['google', 20]]) {
           await page.waitForFunction(({ platform, count }) => {
             const section = document.querySelector(`[data-review-platform="${platform}"]`);
@@ -161,7 +172,7 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('body').evaluate(body => body.classList.contains('no-scroll')), false);
     await page.locator('.faq summary').first().click();
     assert.equal(await page.locator('.faq details').first().getAttribute('open'), '');
-    console.log('PASS mobile navigation, FAQ, and layouts from 320px to 1440px');
+    console.log('PASS mobile navigation, FAQ, visible header action, touch targets, and layouts from 320px to 1920px');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);

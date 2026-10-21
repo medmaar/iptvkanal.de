@@ -40,9 +40,13 @@ bei den Font-Dateien. Es werden keine externen Font- oder Bilddienste benötigt.
 Technische Namensräume in SVG, Sitemap und strukturierten Daten sind keine
 externen Ressourcenanfragen.
 
-Das Farbthema „Wisteria Bloom“ verwendet `#D3D3FF` (Lavendel), `#9400D3`
-(Violett), `#D8BFD8` (Mauve) und `#ED80E9` (Pink). Bildunterschriften bleiben
-weiß auf dunklen Fotoverläufen.
+Das Farbthema „Midnight Wisteria“ verbindet `#100D18` als dunklen Hintergrund
+mit Lavendel (`#D3D3FF`), Mauve (`#D8BFD8`) und Pink (`#ED80E9`). Eine
+schwebende Navigation, großzügige Typografie und dezente Kartenoberflächen
+bilden den Rahmen. Der Hero verwendet ein lokales Bild mit responsiven
+Verläufen für gut lesbaren Text. Auf Mobilgeräten bleiben der Start-Button
+und die Geräteauswahl sichtbar; Preiskarten sind per Wischgeste erreichbar.
+Animationen berücksichtigen die Systemeinstellung für reduzierte Bewegung.
 
 ## Bewertungsbereiche
 
