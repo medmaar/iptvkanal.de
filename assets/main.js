@@ -166,6 +166,7 @@
       var hovered = false;
       var focused = false;
       var visible = !('IntersectionObserver' in window);
+      var scrollTarget = null;
       var timer;
 
       function canAutoSlide() {
@@ -190,7 +191,8 @@
       function goTo(page, announce) {
         current = (page + starts.length) % starts.length;
         position.setAttribute('aria-live', announce ? 'polite' : 'off');
-        viewport.scrollTo({ left: starts[current], behavior: motion.matches ? 'instant' : 'smooth' });
+        scrollTarget = starts[current];
+        viewport.scrollTo({ left: scrollTarget, behavior: motion.matches ? 'instant' : 'smooth' });
         updateControls();
         schedule();
       }
@@ -205,7 +207,8 @@
         starts = starts.filter(function (start, index) { return index === 0 || Math.abs(start - starts[index - 1]) > 1; });
         controls.hidden = starts.length < 2;
         current = Math.min(current, starts.length - 1);
-        viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
+        scrollTarget = starts[current] || 0;
+        viewport.scrollTo({ left: scrollTarget, behavior: 'instant' });
         updateControls();
         schedule();
       }
@@ -223,12 +226,19 @@
         goTo(page, true);
       });
       viewport.addEventListener('scroll', function () {
+        // An animated transition passes other pages on its way to the target.
+        // Keep its destination stable so focus or reduced motion cannot rewind it.
+        if (scrollTarget !== null) {
+          if (Math.abs(viewport.scrollLeft - scrollTarget) > 2) return;
+          scrollTarget = null;
+        }
         var closest = starts.reduce(function (best, start, index) {
           return Math.abs(start - viewport.scrollLeft) < Math.abs(starts[best] - viewport.scrollLeft) ? index : best;
         }, 0);
         if (closest !== current) { current = closest; updateControls(); }
       }, { passive: true });
-      viewport.addEventListener('pointerdown', function () { window.clearTimeout(timer); });
+      viewport.addEventListener('pointerdown', function () { scrollTarget = null; window.clearTimeout(timer); });
+      viewport.addEventListener('wheel', function () { scrollTarget = null; schedule(); }, { passive: true });
       viewport.addEventListener('pointerup', schedule);
       viewport.addEventListener('pointercancel', schedule);
       section.addEventListener('mouseenter', function () { hovered = true; schedule(); });

@@ -106,7 +106,7 @@ const { chromium } = require('playwright');
     await autoPage.close();
     console.log('PASS automatic review sliding, hover/focus hold, and reduced-motion preference without pause controls');
 
-    assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-posters.webp')), true);
+    assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-carnival.webp')), true);
     assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');
     assert.equal(await page.locator('[data-review-platform="trustpilot"] .platform-review-stars').first().evaluate(element => getComputedStyle(element).color), 'rgb(0, 182, 122)');
     assert.equal(await page.locator('[data-review-platform="google"] .platform-review-stars').first().evaluate(element => getComputedStyle(element).color), 'rgb(251, 188, 4)');
@@ -153,6 +153,13 @@ const { chromium } = require('playwright');
       if (width <= 600) {
         assert.equal(await page.locator('.nav-cta .btn-primary').isVisible(), true, `Header action must stay visible at ${width}px`);
         assert.equal(await page.locator('[data-devices]').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height >= 44)), true, `Device controls must have usable touch targets at ${width}px`);
+        const photoLayout = await page.evaluate(() => {
+          const photo = document.querySelector('.hero-backdrop').getBoundingClientRect();
+          const offer = document.querySelector('.hero-offer').getBoundingClientRect();
+          return { height: photo.height, ratio: photo.width / photo.height, unobstructed: offer.top >= photo.bottom - 2 };
+        });
+        assert.ok(photoLayout.height > 150 && Math.abs(photoLayout.ratio - 16 / 9) < .03, `Hero photo must retain its full landscape composition at ${width}px`);
+        assert.equal(photoLayout.unobstructed, true, `Price offer must not cover the mobile hero photo at ${width}px`);
         for (const [platform, count] of [['trustpilot', 20], ['whatsapp', 20], ['google', 20]]) {
           await page.waitForFunction(({ platform, count }) => {
             const section = document.querySelector(`[data-review-platform="${platform}"]`);
@@ -176,7 +183,7 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/photo-keeper.jpg', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
     for (const target of ['/impressum.html', '/datenschutz.html', '/404.html']) {
