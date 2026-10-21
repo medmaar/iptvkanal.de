@@ -3,6 +3,9 @@
 The repository owner has requested that completed tasks be committed and pushed
 to `main` on `medmaar/iptvkanal.de`, then deployed to Cloudflare automatically.
 This is standing authorization for this repository's normal delivery workflow.
+The owner has confirmed that Cloudflare Pages is connected to this repository
+and automatically deploys from `main`. A normal push is the deployment trigger;
+no separate manual deployment or Cloudflare API token is needed for that trigger.
 
 - Preserve unrelated changes. Run relevant checks before committing.
 - Start the static server and use `node scripts/smoke-test.cjs` for site changes
