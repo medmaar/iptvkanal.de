@@ -2,6 +2,7 @@
 """Render independent review carousels, with labeled placeholders until supplied."""
 import html
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +65,6 @@ for platform in ORDER:
 <button type="button" class="review-arrow" data-review-prev aria-label="{label}: vorherige Seite"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
 <div class="review-pagination" data-review-dots role="group" aria-label="{label}: Seite auswählen"></div>
 <button type="button" class="review-arrow" data-review-next aria-label="{label}: nächste Seite"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-<button type="button" class="review-pause" data-review-pause aria-pressed="false" aria-label="{label}: automatischen Wechsel pausieren"><span data-review-pause-icon data-icon="pause" aria-hidden="true"></span><span data-review-pause-text>Pause</span></button>
 </div>
 <p class="sr-only" data-review-position aria-live="off"></p>
 </section>''')
@@ -73,5 +73,8 @@ page = ROOT / 'index.html'
 start, end = '<!-- reviews:start -->', '<!-- reviews:end -->'
 before, rest = page.read_text().split(start)
 _, after = rest.split(end)
-page.write_text(before + start + '\n' + '\n'.join(sections) + '\n' + end + after)
-print('Rendered three independent platform carousels; empty platforms use labeled placeholders.')
+content = before + start + '\n' + '\n'.join(sections) + '\n' + end + after
+if all(platforms[platform]['reviews'] for platform in ORDER):
+    content = re.sub(r'<span class="reviews-pending">.*?</span>', '', content)
+page.write_text(content)
+print('Rendered platform carousels:', {platform: len(platforms[platform]['reviews']) for platform in ORDER})

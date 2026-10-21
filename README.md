@@ -47,17 +47,20 @@ bleiben weiß auf dunklen Fotoverläufen. Das Original-CSS bleibt unverändert.
 Die aktuelle Gestaltung folgt dem vom Nutzer bereitgestellten HTML von maple4k.ca:
 Trustpilot mit einer großen Karte, WhatsApp mit zwei Nachrichtenkarten, Google
 mit drei Karten. Jeder Bereich hat eigene Pfeile, Seitenpunkte und eine
-Pause-/Abspielen-Steuerung. Auf schmalen Bildschirmen wird eine Karte angezeigt;
+Seitensteuerung. Auf schmalen Bildschirmen wird eine Karte angezeigt;
 Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells wechseln
-alle sieben Sekunden. Hover, Tastaturfokus, ausgeblendete Tabs und die explizite
-Pause halten den Wechsel an. Bei reduzierter Bewegung ist Autoplay zunächst aus.
+alle sieben Sekunden. Hover, Tastaturfokus und ausgeblendete Tabs halten den Wechsel an.
+Ein sichtbarer Pause-Button wird nicht angezeigt. Bei reduzierter Bewegung ist Autoplay zunächst aus.
 
-Die Inhalte folgen später. Deshalb werden aktuell ausdrücklich markierte
-Platzhalter ohne erfundene Namen, Bewertungswerte oder Kundenzitate angezeigt.
+Die bereitgestellten 60 Rezensionen sind eingepflegt: 20 Kundenbewertungen im
+Trustpilot-Bereich, 20 WhatsApp-Nachrichten und 20 Google-Bewertungen. Wortlaut,
+Titel, Namen, Länderangaben und mitgelieferte Sterne bleiben erhalten.
+Platzhalter und der Hinweis auf kommende Bewertungen werden nicht angezeigt.
 Das alte MOJO4K-Archiv in `assets/reviews.json` bleibt erhalten, wird aber nicht
-mehr auf der Seite angezeigt.
+mehr auf der Seite angezeigt. Die neuen Inhalte stammen aus der Nutzerdatei;
+zusätzliche Verifizierungs- oder Rating-Gesamtangaben werden nicht ergänzt.
 
-Echte Einträge werden später in `assets/review-platforms.json` unter der passenden
+Weitere Einträge werden in `assets/review-platforms.json` unter der passenden
 Plattform ergänzt. Jeder Eintrag hat `author` und `text`, optional `title` und
 `rating` (ganze Zahl von 1 bis 5). Leere Plattformen erhalten Platzhalter.
 

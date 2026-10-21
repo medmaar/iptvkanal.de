@@ -135,21 +135,25 @@
       var cards = Array.from(viewport.querySelectorAll('[data-review-card]'));
       var controls = section.querySelector('[data-review-controls]');
       var dots = section.querySelector('[data-review-dots]');
-      var pause = section.querySelector('[data-review-pause]');
       var position = section.querySelector('[data-review-position]');
       var label = section.querySelector('h3').textContent;
       var starts = [];
       var current = 0;
-      var userPaused = motion.matches;
       var hovered = false;
       var focused = false;
       var visible = !('IntersectionObserver' in window);
       var timer;
 
+      function canAutoSlide() {
+        return starts.length > 1 && !motion.matches && !hovered && !focused && visible && !document.hidden;
+      }
+
       function schedule() {
         window.clearTimeout(timer);
-        if (starts.length < 2 || userPaused || hovered || focused || !visible || document.hidden) return;
-        timer = window.setTimeout(function () { goTo((current + 1) % starts.length, false); }, 7000);
+        if (!canAutoSlide()) return;
+        timer = window.setTimeout(function () {
+          if (canAutoSlide()) goTo((current + 1) % starts.length, false);
+        }, 7000);
       }
 
       function updateControls() {
@@ -158,10 +162,6 @@
         });
         var text = 'Seite ' + (current + 1) + ' von ' + starts.length;
         if (position.textContent !== text) position.textContent = text;
-        pause.setAttribute('aria-pressed', String(userPaused));
-        pause.setAttribute('aria-label', label + ': automatischen Wechsel ' + (userPaused ? 'fortsetzen' : 'pausieren'));
-        pause.querySelector('[data-review-pause-icon]').dataset.icon = userPaused ? 'play' : 'pause';
-        pause.querySelector('[data-review-pause-text]').textContent = userPaused ? 'Abspielen' : 'Pause';
       }
 
       function goTo(page, announce) {
@@ -197,7 +197,6 @@
 
       section.querySelector('[data-review-prev]').addEventListener('click', function () { goTo(current - 1, true); });
       section.querySelector('[data-review-next]').addEventListener('click', function () { goTo(current + 1, true); });
-      pause.addEventListener('click', function () { userPaused = !userPaused; updateControls(); schedule(); });
       viewport.addEventListener('keydown', function (event) {
         var page;
         if (event.key === 'ArrowRight') page = current + 1;
@@ -223,8 +222,7 @@
       section.addEventListener('focusout', function (event) { focused = section.contains(event.relatedTarget); schedule(); });
       document.addEventListener('visibilitychange', schedule);
       motion.addEventListener('change', function (event) {
-        if (event.matches) userPaused = true;
-        updateControls();
+        if (event.matches) viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
         schedule();
       });
       if ('IntersectionObserver' in window) {

@@ -218,10 +218,6 @@ main { overflow: clip; }
 .review-pagination button::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 99px; background: #b4a0c4; transition: width .42s cubic-bezier(.34, 1.56, .64, 1), background .42s; }
 .review-pagination button[aria-current="page"] { width: 34px; }
 .review-pagination button[aria-current="page"]::before { width: 26px; background: var(--violet); }
-.review-pause { display: flex; gap: 7px; align-items: center; padding: 7px 0 7px 14px; border-left: 1px solid var(--line-2); font-size: .73rem; color: #5e486b; }
-.review-pause [data-review-pause-icon] { width: 14px; height: 14px; display: grid; place-items: center; }
-.review-pause [data-review-pause-icon]::before { content: ''; width: 9px; height: 11px; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
-.review-pause [data-icon="play"]::before { width: 0; height: 0; border: 0; border-block: 6px solid transparent; border-left: 9px solid currentColor; }
 @media(max-width:850px) { .review-platform--google .platform-review-viewport { --per-view: 2; } }
 @media(max-width:600px) {
   .platform-review-viewport, .review-platform--whatsapp .platform-review-viewport, .review-platform--google .platform-review-viewport { --per-view: 1; }
@@ -233,5 +229,4 @@ main { overflow: clip; }
   .review-pagination button[aria-current="page"] { width: 28px; }
   .review-pagination button[aria-current="page"]::before { width: 22px; }
   .review-platform-controls { gap: 9px; }
-  .review-pause { padding-left: 10px; }
 }
