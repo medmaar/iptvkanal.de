@@ -60,6 +60,12 @@ Das alte MOJO4K-Archiv in `assets/reviews.json` bleibt erhalten, wird aber nicht
 mehr auf der Seite angezeigt. Die neuen Inhalte stammen aus der Nutzerdatei;
 zusätzliche Verifizierungs- oder Rating-Gesamtangaben werden nicht ergänzt.
 
+Länderflaggen werden beim Rendern aus den gelieferten Emoji-Codes in lokale
+SVG-Bilder umgewandelt (`assets/flags/`). Dadurch sind sie auch auf Systemen ohne
+Flaggen-Emoji-Schrift als Grafik sichtbar. Bei neuen Ländern die entsprechende
+SVG-Datei unter dem ISO-Ländercode ergänzen; fehlende Dateien führen zu einem
+Renderfehler, statt unbemerkt Länderbuchstaben auszugeben.
+
 Weitere Einträge werden in `assets/review-platforms.json` unter der passenden
 Plattform ergänzt. Jeder Eintrag hat `author` und `text`, optional `title` und
 `rating` (ganze Zahl von 1 bis 5). Leere Plattformen erhalten Platzhalter.

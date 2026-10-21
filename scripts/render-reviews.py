@@ -9,10 +9,31 @@ ROOT = Path(__file__).resolve().parents[1]
 data = json.loads((ROOT / 'assets/review-platforms.json').read_text())
 ORDER = ('trustpilot', 'whatsapp', 'google')
 PLACEHOLDERS = {'trustpilot': 3, 'whatsapp': 6, 'google': 9}
+FLAG = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
 
 
 def esc(value):
     return html.escape(str(value), quote=True)
+
+
+def author_markup(author):
+    """Render supplied flag emoji as local images, independent of system fonts."""
+    name, separator, country = author.partition(' — ')
+    country_label = FLAG.sub('', country).strip()
+
+    def flag_image(match):
+        code = ''.join(chr(ord(char) - 0x1F1E6 + ord('a')) for char in match[0])
+        asset = f'assets/flags/{code}.svg'
+        if not (ROOT / asset).is_file():
+            raise ValueError(f'Missing local flag graphic: {asset}')
+        # The adjacent country name provides the accessible label.
+        alt = '' if country_label else code.upper()
+        return (f'<img class="review-country-flag" src="{asset}" width="20" height="12" '
+                f'alt="{alt}" title="{esc(country_label or code.upper())}" data-country="{code}">')
+
+    if separator:
+        return esc(name) + ' — <span class="review-author-country">' + FLAG.sub(flag_image, esc(country)) + '</span>'
+    return FLAG.sub(flag_image, esc(author))
 
 
 def icon(platform):
@@ -43,7 +64,7 @@ def review_card(review, platform):
     top = ('<div class="message-card-label">' + icon(platform) + '<span>WhatsApp</span></div>') if platform == 'whatsapp' else stars
     return f'''<article class="platform-review-card" data-review-card>
 {top}{title}<blockquote><p>{esc(review['text'])}</p></blockquote>
-<footer class="platform-review-author"><span>{esc(review['author'])}</span></footer></article>'''
+<footer class="platform-review-author"><span>{author_markup(review['author'])}</span></footer></article>'''
 
 
 platforms = {item['id']: item for item in data['platforms']}

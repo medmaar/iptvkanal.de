@@ -49,7 +49,11 @@ const { chromium } = require('playwright');
       for (let index = 0; index < reviews.length; index++) {
         const card = section.locator('[data-review-card]').nth(index);
         assert.equal(await card.locator('blockquote p').textContent(), reviews[index].text);
-        assert.equal(await card.locator('.platform-review-author').textContent(), reviews[index].author);
+        const author = reviews[index].author.replace(/[\u{1F1E6}-\u{1F1FF}]{2}/gu, '').trim();
+        assert.equal((await card.locator('.platform-review-author').textContent()).trim(), author);
+        const flag = card.locator('.review-country-flag');
+        assert.equal(await flag.getAttribute('src'), 'assets/flags/de.svg');
+        assert.equal(await flag.evaluate(image => image.complete && image.naturalWidth > 0), true);
         if (reviews[index].title) assert.equal(await card.locator('h4').textContent(), reviews[index].title);
         if (reviews[index].rating) assert.equal(await card.locator('.platform-review-stars').textContent(), '★'.repeat(reviews[index].rating));
       }
@@ -129,6 +133,8 @@ const { chromium } = require('playwright');
     for (const width of [1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `Overflow at ${width}px`);
+      assert.equal(await page.locator('.review-country-flag').count(), 60);
+      assert.equal(await page.locator('.review-country-flag').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0 && image.getBoundingClientRect().width === 20 && image.getBoundingClientRect().height === 12)), true, `Flag graphics must load and retain their size at ${width}px`);
       if (width <= 600) {
         for (const [platform, count] of [['trustpilot', 20], ['whatsapp', 20], ['google', 20]]) {
           await page.waitForFunction(({ platform, count }) => {
