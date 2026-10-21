@@ -195,6 +195,8 @@ main { overflow: clip; }
 .preview-stars { color: #8a6a9b; font-size: 24px; letter-spacing: 4px; margin-bottom: 18px; line-height: 1; }
 .review-platform--trustpilot .preview-stars { color: #50785e; }
 .platform-review-stars { color: var(--violet); font-size: 22px; letter-spacing: 3px; margin-bottom: 18px; }
+.review-platform--trustpilot .platform-review-stars { color: #00b67a; }
+.review-platform--google .platform-review-stars { color: #fbbc04; }
 .platform-review-card h4 { font-family: Inter, system-ui, sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.5; color: var(--text); margin: 0 0 18px; }
 .review-platform--trustpilot h4 { font-size: 1.2rem; }
 .review-skeleton { display: grid; gap: 9px; margin-bottom: 28px; }
