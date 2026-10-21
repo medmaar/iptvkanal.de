@@ -1,0 +1,125 @@
+{
+  "downloaded_on": "2026-10-21",
+  "assets": [
+    {
+      "path": "assets/reference/style.css",
+      "source": "https://iptvweltpremium.de/assets/css/style.css?v=14",
+      "bytes": 62015,
+      "sha256": "5c79361de3507f675132bbfd05a9081e992bd2a66da6728a8dce34915649fb26"
+    },
+    {
+      "path": "assets/img/hero-posters.webp",
+      "source": "https://iptvweltpremium.de/assets/img/hero-posters.webp",
+      "bytes": 147928,
+      "sha256": "4ab8d83f49f865437de81f67f95d9ede2c13030c52dc1988c7fbc6d045663793"
+    },
+    {
+      "path": "assets/img/photo-2.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/photo-2.jpg",
+      "bytes": 184133,
+      "sha256": "cdc2a6578f01b8a5eaaf76607d0a10e676dd51cedcb7ca209985d14c5027eae1"
+    },
+    {
+      "path": "assets/img/photo-3.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/photo-3.jpg",
+      "bytes": 261314,
+      "sha256": "f68917f8c24f9e9576258158c6055c48db5515f06127a46324c0d8edd90f480e"
+    },
+    {
+      "path": "assets/img/photo-keeper.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/photo-keeper.jpg",
+      "bytes": 79033,
+      "sha256": "776b55be680344ad743e3fd13fe11392416edc047ebc3d53c9204308fede0cb9"
+    },
+    {
+      "path": "assets/img/slide-events.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/slide-events.jpg",
+      "bytes": 139354,
+      "sha256": "57334ff9f488705d5f60d9e9dfa2dc2efb9722e4f6c40a7aa9cb43f0bef2ac3f"
+    },
+    {
+      "path": "assets/img/slide-kids.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/slide-kids.jpg",
+      "bytes": 41797,
+      "sha256": "1af0ae4882c3e0bc9d6980ce6b3a43aeea441741d5b5db806a86aff54fc89687"
+    },
+    {
+      "path": "assets/img/slide-kino.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/slide-kino.jpg",
+      "bytes": 59443,
+      "sha256": "81e99aefa8b5c50fc8355425ea0665f576d542b7a843484c5377899b7211d432"
+    },
+    {
+      "path": "assets/img/slide-motorsport.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/slide-motorsport.jpg",
+      "bytes": 93558,
+      "sha256": "4742b9537d50650715bb04408130ade3caaa77ad5f5693016883604dbd36757c"
+    },
+    {
+      "path": "assets/img/slide-serien.jpg",
+      "source": "https://iptvweltpremium.de/assets/img/slide-serien.jpg",
+      "bytes": 209898,
+      "sha256": "148b3665f22a3202462fa7b01615ab25e54de8a36d9450d0905f893058504314"
+    },
+    {
+      "path": "assets/img/vod/4-blocks.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/4-blocks.webp",
+      "bytes": 36246,
+      "sha256": "f4c2f44d201dffe67b464ae46140da85ef6dcf9c61cdfd72e970576c926d2ef2"
+    },
+    {
+      "path": "assets/img/vod/achtsam-morden.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/achtsam-morden.webp",
+      "bytes": 13392,
+      "sha256": "90cd0a16d9e8706fdd36028c167321604f81fbda3caf7bccffa0e8ea8fc46841"
+    },
+    {
+      "path": "assets/img/vod/babylon-berlin.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/babylon-berlin.webp",
+      "bytes": 20690,
+      "sha256": "49d559613601db7cb727ba612c0221bb4a6795d636f996855a4229dc4a40ee06"
+    },
+    {
+      "path": "assets/img/vod/chantal-im-maerchenland.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/chantal-im-maerchenland.webp",
+      "bytes": 41512,
+      "sha256": "d8e37213b39452b6fa73db5ea75d885f292f99c59d90dba0fc8261aba2da0761"
+    },
+    {
+      "path": "assets/img/vod/dark.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/dark.webp",
+      "bytes": 55574,
+      "sha256": "ef05f474a572bcb50fd1f7a1a6085a9f3e42d6d94306a09cea32877584aa5495"
+    },
+    {
+      "path": "assets/img/vod/das-lehrerzimmer.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/das-lehrerzimmer.webp",
+      "bytes": 12870,
+      "sha256": "c8033c7d919da216418d446c33a35d920e886f0795f7bfe33072f8fa8291f7af"
+    },
+    {
+      "path": "assets/img/vod/die-kaiserin.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/die-kaiserin.webp",
+      "bytes": 23224,
+      "sha256": "ff2f073193038f7696c0d52aa5d9c1523e26bfccbeb9eba21a233f35279c52cc"
+    },
+    {
+      "path": "assets/img/vod/im-westen-nichts-neues.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/im-westen-nichts-neues.webp",
+      "bytes": 17096,
+      "sha256": "277176f659cf8341db48fee180b2a1dfa16012fd3da72a75944c48c5fcde9f10"
+    },
+    {
+      "path": "assets/img/vod/kaulitz-und-kaulitz.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/kaulitz-und-kaulitz.webp",
+      "bytes": 25702,
+      "sha256": "8c9200bf9273d3e71a6f1abd21d28c71da8e2b0d33445afdf32dae16696a31a1"
+    },
+    {
+      "path": "assets/img/vod/unfamiliar.webp",
+      "source": "https://iptvweltpremium.de/assets/img/vod/unfamiliar.webp",
+      "bytes": 17860,
+      "sha256": "d7808c66c6319812f877593dbac7f23966cb1afa9e77c20e7c432b7b5ef83934"
+    }
+  ]
+}

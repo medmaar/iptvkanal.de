@@ -63,6 +63,7 @@
       menu.setAttribute('aria-expanded', String(open));
       menu.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
       document.body.classList.toggle('no-scroll', open);
+      document.body.classList.toggle('menu-open', open);
     }
     menu.addEventListener('click', function () { setMenu(menu.getAttribute('aria-expanded') !== 'true'); });
     links.addEventListener('click', function (event) { if (event.target.closest('a')) setMenu(false); });
@@ -72,7 +73,59 @@
         menu.focus();
       }
     });
-    window.matchMedia('(min-width: 851px)').addEventListener('change', function (event) { if (event.matches) setMenu(false); });
+    window.matchMedia('(min-width: 901px)').addEventListener('change', function (event) { if (event.matches) setMenu(false); });
+  }
+
+  var header = document.querySelector('.header');
+  if (header) {
+    function updateHeader() { header.classList.toggle('scrolled', window.scrollY > 10); }
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    updateHeader();
+  }
+
+  var slider = document.querySelector('.highlights .slider');
+  if (slider) {
+    var arrows = Array.from(document.querySelectorAll('.highlights .slider-btn'));
+    var progress = document.querySelector('.slider-progress i');
+    function updateSlider() {
+      var maxScroll = slider.scrollWidth - slider.clientWidth;
+      if (progress) progress.style.width = (maxScroll > 0 ? slider.scrollLeft / maxScroll * 100 : 100) + '%';
+      arrows.forEach(function (arrow) {
+        arrow.disabled = Number(arrow.dataset.dir) < 0 ? slider.scrollLeft < 2 : slider.scrollLeft >= maxScroll - 2;
+      });
+    }
+    function moveSlider(direction) {
+      var slide = slider.querySelector('.slide');
+      slider.scrollBy({ left: direction * (slide.getBoundingClientRect().width + 18), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    }
+    arrows.forEach(function (arrow) { arrow.addEventListener('click', function () { moveSlider(Number(arrow.dataset.dir)); }); });
+    slider.addEventListener('keydown', function (event) {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      event.preventDefault();
+      moveSlider(event.key === 'ArrowRight' ? 1 : -1);
+    });
+    slider.addEventListener('scroll', updateSlider, { passive: true });
+    window.addEventListener('resize', updateSlider);
+    updateSlider();
+  }
+
+  var planStrip = document.getElementById('plans');
+  var planDots = Array.from(document.querySelectorAll('.plans-dots i'));
+  if (planStrip && planDots.length) {
+    function updatePlanDots() {
+      var inVisualOrder = plans.slice().sort(function (a, b) { return a.offsetLeft - b.offsetLeft; });
+      var nearest = 0;
+      var distance = Infinity;
+      inVisualOrder.forEach(function (plan, index) {
+        var center = plan.getBoundingClientRect().left + plan.getBoundingClientRect().width / 2;
+        var delta = Math.abs(center - (planStrip.getBoundingClientRect().left + planStrip.clientWidth / 2));
+        if (delta < distance) { nearest = index; distance = delta; }
+      });
+      planDots.forEach(function (dot, index) { dot.classList.toggle('active', index === nearest); });
+    }
+    planStrip.addEventListener('scroll', updatePlanDots, { passive: true });
+    window.addEventListener('resize', updatePlanDots);
+    updatePlanDots();
   }
 
   // Reviews are static HTML for accessibility and no-JavaScript use.

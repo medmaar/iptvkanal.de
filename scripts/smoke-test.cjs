@@ -51,6 +51,19 @@ const { chromium } = require('playwright');
     await page.locator('#review-search').fill('');
     console.log('PASS review filtering, search, empty state, and loading every record');
 
+    assert.equal(await page.locator('.hero-slide').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-posters.webp')), true);
+    assert.equal(await page.locator('.tv-hero-img').evaluate(element => getComputedStyle(element).backgroundImage.includes('photo-keeper.jpg')), true);
+    assert.equal(await page.locator('.highlights .slide').count(), 6);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.locator('.slider-btn[data-dir="1"]').click();
+    await page.waitForFunction(() => document.querySelector('.highlights .slider').scrollLeft > 10);
+    await page.locator('.slider-btn[data-dir="-1"]').click();
+    await page.waitForFunction(() => document.querySelector('.highlights .slider').scrollLeft < 2);
+    for (const image of await page.locator('.vod img').all()) {
+      assert.equal((await page.request.get(new URL(await image.getAttribute('src'), base).href)).status(), 200);
+    }
+    console.log('PASS original background images, highlights controls, and VOD posters');
+
     const expected = [[9, 29, 39, 49], [18, 50, 69, 89], [27, 75, 105, 135], [36, 99, 140, 180], [45, 120, 175, 225]];
     for (let devices = 1; devices <= 5; devices++) {
       await page.locator(`[data-devices="${devices}"]`).click();
@@ -86,7 +99,7 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/stadium.svg', '/assets/reviews.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/reference/style.css', '/assets/img/photo-keeper.jpg', '/assets/reviews.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
     const noJS = await browser.newContext({ javaScriptEnabled: false });

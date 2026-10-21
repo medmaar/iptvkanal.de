@@ -17,14 +17,18 @@ Navigation, responsive Ansichten und das vollständige Bewertungsarchiv.
 ## Vorlage und Bewertungen
 
 Die Startseite übernimmt die Struktur aus dem bereitgestellten HTML von
-iptvweltpremium.de und verwendet lokale Styles in `assets/template.css`.
-Das externe Original-CSS, JavaScript und die Fotos waren nicht im Upload enthalten.
-Direkter Zugriff auf beide Quellseiten wurde vom Netzwerk-Proxy mit HTTP 403
-abgewiesen. Deshalb ist die Gestaltung eine lokale Rekonstruktion; die
-Stadion-Illustration ist ein lokales SVG. Ein exakter visueller Abgleich mit der
-Live-Seite steht noch aus. Die bestehenden IPTV-Kanal-Preise und Kontaktdaten
+iptvweltpremium.de. Das Original-Stylesheet wurde am 21.10.2026 direkt heruntergeladen
+und liegt unverändert in `assets/reference/style.css`. Die verwendeten Fotos und
+Poster liegen lokal unter `assets/img/`. Herkunft, Größe und SHA-256-Prüfsummen
+stehen in `assets/reference/sources.json`. Der Betrieb benötigt keinen Zugriff
+auf die Quellseite. `assets/template.css` ergänzt die Integration der eigenen
+Marke, das Bewertungsarchiv und die Zugänglichkeit ohne JavaScript.
+
+Die Startseite verwendet auch die originalen Hintergrundbilder, die Highlights
+und die VOD-Posterreihen. Die bestehenden IPTV-Kanal-Preise und Kontaktdaten
 bleiben erhalten. Fremde Checkout-, WhatsApp- und Tracking-Verbindungen werden
-nicht übernommen.
+nicht übernommen. Das JavaScript für die eigene Navigation und Preiswahl bleibt
+lokal; das fremde Anwendungsskript wird nicht eingebunden.
 
 `assets/reviews.json` enthält alle 63 Bewertungsdatensätze aus dem vom Nutzer
 bereitgestellten HTML von mojo4k.de: 15 aus der Trustpilot-Gruppe, 20 aus der
