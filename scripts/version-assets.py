@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Keep browser cache keys in sync with the site's JavaScript and custom CSS."""
+"""Keep browser cache keys in sync with JavaScript, custom CSS, and the favicon."""
 import hashlib
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-for asset in ('assets/main.js', 'assets/template.css'):
+for asset in ('assets/main.js', 'assets/template.css', 'assets/favicon.svg'):
     version = hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()[:12]
     pattern = re.compile(r'(?P<prefix>(?:src|href)=")' + re.escape(asset)
                          + r'(?:\?[^"\s]*)?(?P<suffix>")')

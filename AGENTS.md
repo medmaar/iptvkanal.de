@@ -8,7 +8,7 @@ and automatically deploys from `main`. A normal push is the deployment trigger;
 no separate manual deployment or Cloudflare API token is needed for that trigger.
 
 - Preserve unrelated changes. Run relevant checks before committing.
-- Run `python3 scripts/version-assets.py` after editing JavaScript or custom CSS,
+- Run `python3 scripts/version-assets.py` after editing JavaScript, custom CSS, or the favicon,
   before tests and commits, to update the browser cache keys in the HTML pages.
 - Start the static server and use `node scripts/smoke-test.cjs` for site changes
   when Playwright and Chromium are available in the cloud environment.

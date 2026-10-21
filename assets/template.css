@@ -43,3 +43,130 @@ main { overflow: clip; }
 @media(max-width:850px) { .review-toolbar { align-items:stretch; } .review-search { flex:1; } .review-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:540px) { .review-grid { grid-template-columns:1fr; } .review-filters { gap:6px; } .review-filters button { font-size:10px; padding:8px 10px; } .review-search { min-width:100%; padding:12px; } .review-search input { font-size:12px; } .review-note { font-size:10px; } .review-card { padding:23px; } .review-card h3 { font-size:15px; } .review-card blockquote { font-size:13px; } .review-author strong { font-size:12px; } .review-actions { flex-wrap:wrap; gap:17px; } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
+/* Wisteria Bloom: the four supplied swatches, with plum text for contrast. */
+:root {
+  color-scheme: light;
+  --lavender: #D3D3FF;
+  --violet: #9400D3;
+  --mauve: #D8BFD8;
+  --pink: #ED80E9;
+  --bg: #faf7ff;
+  --bg-2: #f0eafa;
+  --surface: rgba(255, 255, 255, .76);
+  --surface-2: #fff;
+  --line: rgba(94, 42, 126, .15);
+  --line-2: rgba(94, 42, 126, .28);
+  --text: #291636;
+  --text-2: #554161;
+  --text-3: #5e486b;
+  --gold: var(--violet);
+  --gold-2: #7510a1;
+  --cyan: var(--pink);
+  --green: #762395;
+  --grad: linear-gradient(120deg, #9400D3, #7d159f);
+  --grad-cool: linear-gradient(120deg, #9400D3, #ED80E9);
+  --shadow: 0 28px 70px -30px rgba(73, 25, 110, .28);
+}
+
+/* Pastel canvas and a light glass navigation. */
+.bg-orbs span:nth-child(1) { background: var(--lavender); opacity: .65; }
+.bg-orbs span:nth-child(2) { background: var(--pink); opacity: .2; }
+.bg-orbs span:nth-child(3) { background: var(--mauve); opacity: .35; }
+.bg-grid { opacity: .2; }
+.header, .header.scrolled {
+  background: rgba(250, 247, 255, .91);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-color: var(--line);
+}
+.header.scrolled { box-shadow: 0 5px 24px rgba(73, 25, 110, .05); }
+.menu-open .header, .menu-open .nav-links { background: rgba(250, 247, 255, .98); }
+.nav-links a:hover { color: var(--violet); }
+.menu-btn { background: rgba(255, 255, 255, .6); }
+.btn-primary { box-shadow: 0 10px 30px -14px rgba(148, 0, 211, .6); }
+.btn-primary:hover { box-shadow: 0 14px 36px -14px rgba(148, 0, 211, .7); }
+.btn-ghost { background: rgba(255, 255, 255, .68); color: var(--text); }
+.btn-ghost:hover { border-color: var(--violet); background: #fff; }
+.skip { color: #fff; }
+::selection { background: var(--pink); color: var(--text); }
+
+/* Keep the poster wall atmospheric and the headline easy to read. */
+.hero-slide.hero-posters { opacity: .23; }
+.hero-slides:has(.hero-posters) + .hero-overlay {
+  background:
+    radial-gradient(65% 60% at 85% 40%, rgba(237, 128, 233, .22), transparent 75%),
+    linear-gradient(90deg, rgba(250, 247, 255, .99) 0%, rgba(250, 247, 255, .94) 38%, rgba(211, 211, 255, .67) 100%),
+    linear-gradient(180deg, rgba(250, 247, 255, .2), var(--bg));
+}
+.pill { background: rgba(255, 255, 255, .85); }
+.pill b { background: var(--lavender); color: #5f1582; }
+.live-dot { background: var(--pink); box-shadow: 0 0 0 4px rgba(237, 128, 233, .2); animation: none; }
+.tv { background: linear-gradient(145deg, #503762, #291636); border-color: rgba(148, 0, 211, .2); }
+.tv-stand { background: linear-gradient(180deg, #6c4c7e, var(--mauve)); }
+.tv-title, .tv-badge { color: #fff; }
+.tv-sub { color: #e4ddf1; }
+.float-card { background: rgba(255, 255, 255, .93); border-color: rgba(148, 0, 211, .15); }
+.float-card .ic { background: #eee4fa; }
+.stat { background: var(--lavender); }
+.marquee-track span { background: rgba(255, 255, 255, .72); }
+.guarantee {
+  border-color: rgba(148, 0, 211, .15);
+  background: linear-gradient(115deg, #eee5f8, #f8e4f7);
+}
+.guarantee-icon { background: var(--mauve); border-color: rgba(148, 0, 211, .13); }
+
+/* White cards, violet actions, and lavender/pink emphasis. */
+.pricing { background: linear-gradient(180deg, transparent, rgba(211, 211, 255, .65) 45%, transparent); }
+.device-switch { background: #fff; border-color: rgba(148, 0, 211, .18); box-shadow: 0 6px 20px rgba(73, 25, 110, .05); }
+.device-switch button:hover:not(.active) { background: #f0e6fa; color: var(--violet); }
+.plan { background: linear-gradient(155deg, #fff, #f7f1fc); box-shadow: 0 12px 32px -22px rgba(73, 25, 110, .2); }
+.plan::after { background: linear-gradient(115deg, rgba(211, 211, 255, .3) 0 28%, transparent 28.2%); }
+.plan:hover { border-color: rgba(148, 0, 211, .35); }
+.plan.featured {
+  background: linear-gradient(#fff, #f4e9fa) padding-box, var(--grad-cool) border-box;
+  box-shadow: 0 0 0 1px rgba(148, 0, 211, .15), 0 28px 65px -28px rgba(148, 0, 211, .42);
+}
+.plan-tag { background: var(--pink); color: var(--text); box-shadow: 0 8px 24px -10px rgba(148, 0, 211, .35); }
+.plan-save { color: #68168c; background: #eee1f8; border-color: #d7b8e8; }
+.card:hover { border-color: rgba(148, 0, 211, .3); }
+.card::before { background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 0%), rgba(237, 128, 233, .16), transparent 60%); }
+.icon { background: linear-gradient(135deg, var(--lavender), #f3d5f2); border-color: rgba(148, 0, 211, .15); }
+.res-badges span { background: #fff; }
+.res-badges span:first-child { background: var(--grad); }
+.device:hover { border-color: var(--violet); }
+.device svg { color: var(--violet); }
+.cta-box {
+  background: radial-gradient(circle at 12% 0%, rgba(237, 128, 233, .45), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(211, 211, 255, .8), transparent 65%), #f1e2f2;
+  border-color: rgba(148, 0, 211, .2);
+}
+
+/* Photo cards retain white captions over their dark image scrims. */
+.slide-body h3, .slide-tag, .tile b { color: #fff; }
+.slide-body p, .tile small { color: #eee8f6; }
+.slider-btn:disabled { opacity: .4; cursor: default; }
+.vod-card:hover { border-color: var(--violet); box-shadow: 0 24px 50px -20px rgba(148, 0, 211, .3); }
+
+/* Source labels remain readable throughout the lavender review archive. */
+.reviews { background: var(--lavender); border-color: rgba(148, 0, 211, .1); }
+.review-card { background: rgba(255, 255, 255, .85); border-color: rgba(94, 42, 126, .14); box-shadow: 0 10px 30px -22px rgba(73, 25, 110, .2); }
+.review-card blockquote, .review-card p { color: var(--text-2); }
+.review-card-top .source-badge { color: #6c287f; background: #f0e5f5; border-color: #ddc7e6; }
+.review-note, .review-status, .review-author a { color: #5d486e; }
+.review-author { border-color: var(--line); }
+.avatar { color: #5f1582; background: #ead7f2; border-color: #d5b9e2; }
+.review-filters button { color: #554161; background: rgba(255, 255, 255, .6); }
+.review-filters button[aria-pressed=true] { color: #fff; background: var(--violet); border-color: var(--violet); }
+.review-filters button span { opacity: 1; }
+.review-search { background: rgba(255, 255, 255, .85); }
+.review-search input::placeholder { color: #6b5679; opacity: 1; }
+.footer { background: var(--mauve); }
+.footer p, .footer .footer-title, .footer-bottom { color: var(--text-2); }
+
+@media(max-width:900px) {
+  .hero-slide.hero-posters { opacity: .15; }
+  .hero-slides:has(.hero-posters) + .hero-overlay {
+    background: linear-gradient(180deg, rgba(250, 247, 255, .94), rgba(211, 211, 255, .78) 55%, var(--bg));
+  }
+}

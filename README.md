@@ -14,7 +14,7 @@ In der vorbereiteten Cloud-Umgebung sind Playwright und Chromium vorhanden.
 Bei laufendem Server prüft `node scripts/smoke-test.cjs` Preise, Bestelllinks,
 Navigation, responsive Ansichten und das vollständige Bewertungsarchiv.
 
-Nach Änderungen an JavaScript oder eigenem CSS vor den Tests
+Nach Änderungen an JavaScript, eigenem CSS oder dem Favicon vor den Tests
 `python3 scripts/version-assets.py` ausführen. Die HTML-Dateien verwenden dann
 den aktuellen Inhalts-Hash als Cache-Version. `_headers` lässt Cloudflare die
 Startseite und veränderliche Bundles revalidieren, damit ältere Browser-Caches
@@ -35,6 +35,12 @@ und die VOD-Posterreihen. Die bestehenden IPTV-Kanal-Preise und Kontaktdaten
 bleiben erhalten. Fremde Checkout-, WhatsApp- und Tracking-Verbindungen werden
 nicht übernommen. Das JavaScript für die eigene Navigation und Preiswahl bleibt
 lokal; das fremde Anwendungsskript wird nicht eingebunden.
+
+Das eigene Farbthema „Wisteria Bloom“ verwendet die vorgegebene Palette
+`#D3D3FF` (Lavendel), `#9400D3` (Violett), `#D8BFD8` (Mauve) und
+`#ED80E9` (Pink). Die Theme-Overrides in `assets/template.css` gestalten helle
+Flächen, dunkle Pflaumentöne für Text und violette Aktionen; Bildunterschriften
+bleiben weiß auf dunklen Fotoverläufen. Das Original-CSS bleibt unverändert.
 
 `assets/reviews.json` enthält alle 63 Bewertungsdatensätze aus dem vom Nutzer
 bereitgestellten HTML von mojo4k.de: 15 aus der Trustpilot-Gruppe, 20 aus der
