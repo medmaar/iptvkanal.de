@@ -154,7 +154,7 @@
 
   function initReviewCarousels() {
     var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var delays = { trustpilot: 3000, whatsapp: 5000, google: 8000 };
+    var delays = { trustpilot: 1900, whatsapp: 2300, google: 2900 };
     document.querySelectorAll('[data-review-platform]').forEach(function (section) {
       var viewport = section.querySelector('[data-review-viewport]');
       var cards = Array.from(viewport.querySelectorAll('[data-review-card]'));

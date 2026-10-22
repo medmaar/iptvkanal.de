@@ -72,8 +72,8 @@ Trustpilot zeigt eine große Karte, WhatsApp zwei Nachrichtenkarten und Google
 drei Karten. Alle drei Bereiche verwenden denselben kompakten Seitenzähler
 mit zwei dezenten Pfeilen. Auf schmalen Bildschirmen wird eine Karte angezeigt;
 Touch-Scrolling und Tastatursteuerung sind möglich. Nach jeder vollständig
-abgeschlossenen Bewegung bleibt die Ansicht stehen: Trustpilot für drei,
-WhatsApp für fünf und Google für acht Sekunden. Anschließend gleitet die
+abgeschlossenen Bewegung bleibt die Ansicht stehen: Trustpilot für 1,9 Sekunden,
+WhatsApp für 2,3 Sekunden und Google für 2,9 Sekunden. Anschließend gleitet die
 jeweilige Reihe in 550 Millisekunden um genau eine Bewertung weiter, auch in
 den mehrspaltigen Desktop-Ansichten. Der Zähler zeigt die erste Bewertung der
 Ansicht von insgesamt 20. Visuelle, für Screenreader verborgene Kopien der

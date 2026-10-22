@@ -93,7 +93,7 @@ const { chromium } = require('playwright');
       await autoPage.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
       await autoPage.goto(base);
       await autoPage.evaluate(() => document.fonts.ready);
-      for (const [platform, delay] of [['trustpilot', 3000], ['whatsapp', 5000], ['google', 8000]]) {
+      for (const [platform, delay] of [['trustpilot', 1900], ['whatsapp', 2300], ['google', 2900]]) {
         const section = autoPage.locator(`[data-review-platform="${platform}"]`);
         const rail = section.locator('[data-review-viewport]');
         await rail.scrollIntoViewIfNeeded();
@@ -165,7 +165,7 @@ const { chromium } = require('playwright');
       }
       await autoPage.close();
     }
-    console.log('PASS full 3s/5s/8s holds, one-review slides, manual-control recovery, forward loops and matching reduced-motion timing on desktop/mobile');
+    console.log('PASS full 1.9s/2.3s/2.9s holds, one-review slides, manual-control recovery, forward loops and matching reduced-motion timing on desktop/mobile');
 
     assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-carnival.webp')), true);
     assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');
