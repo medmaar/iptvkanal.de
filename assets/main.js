@@ -154,6 +154,7 @@
 
   function initReviewCarousels() {
     var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var delays = { trustpilot: 3000, whatsapp: 5000, google: 8000 };
     document.querySelectorAll('[data-review-platform]').forEach(function (section) {
       var viewport = section.querySelector('[data-review-viewport]');
       var cards = Array.from(viewport.querySelectorAll('[data-review-card]'));
@@ -161,20 +162,18 @@
       var currentPage = section.querySelector('[data-review-current]');
       var totalPages = section.querySelector('[data-review-total]');
       var status = section.querySelector('[data-review-position]');
+      var delay = delays[section.dataset.reviewPlatform] || 5000;
       var starts = [];
       var current = 0;
-      var position = 0;
       var loopWidth = 0;
       var interacting = false;
+      var manualScroll = false;
       var visible = !('IntersectionObserver' in window);
-      var manualUntil = 0;
-      var manualTarget = null;
-      var reducedAt = performance.now() + 6000;
-      var lastTime = null;
-      var frame = null;
+      var transition = null;
+      var timer;
+      var frame;
 
-      // One extra screen makes the end join the beginning without a visible jump.
-      // Copies are visual only; the supplied reviews remain the accessible content.
+      // Visual-only copies let the final review slide forward into the first.
       var copies = cards.slice(0, 3).map(function (card) {
         var copy = card.cloneNode(true);
         copy.removeAttribute('data-review-card');
@@ -189,128 +188,118 @@
       function updateControls() {
         currentPage.textContent = String(current + 1).padStart(2, '0');
         totalPages.textContent = String(starts.length).padStart(2, '0');
-        var text = 'Seite ' + (current + 1) + ' von ' + starts.length;
+        var text = 'Bewertung ' + (current + 1) + ' von ' + starts.length;
         if (status.textContent !== text) status.textContent = text;
       }
 
       function updatePage() {
         var offset = loopWidth ? viewport.scrollLeft % loopWidth : 0;
-        var closest = starts.reduce(function (best, start, index) {
+        current = starts.reduce(function (best, start, index) {
           return Math.abs(start - offset) < Math.abs(starts[best] - offset) ? index : best;
         }, 0);
-        if (closest !== current) { current = closest; updateControls(); }
-      }
-
-      function hold() {
-        manualUntil = performance.now() + 3000;
-        reducedAt = manualUntil + 6000;
-        position = viewport.scrollLeft;
-      }
-
-      function goTo(page, announce) {
-        current = (page + starts.length) % starts.length;
-        status.setAttribute('aria-live', announce ? 'polite' : 'off');
-        manualTarget = starts[current];
-        position = manualTarget;
-        viewport.scrollTo({ left: manualTarget, behavior: motion.matches ? 'instant' : 'smooth' });
         updateControls();
-        if (announce) hold();
+      }
+
+      function schedule() {
+        window.clearTimeout(timer);
+        if (!visible || document.hidden || interacting || transition || starts.length < 2) return;
+        timer = window.setTimeout(function () { goTo(current + 1, false); }, delay);
+      }
+
+      function settle() {
+        window.cancelAnimationFrame(frame);
+        transition = null;
+        manualScroll = false;
+        viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
       }
 
       function animate(time) {
-        frame = null;
-        if (!visible || document.hidden || !loopWidth || starts.length < 2) { lastTime = null; return; }
-        var elapsed = lastTime === null ? 0 : Math.min(time - lastTime, 64);
-        lastTime = time;
-        if (!interacting && time >= manualUntil) {
-          status.setAttribute('aria-live', 'off');
-          if (motion.matches) {
-            if (time >= reducedAt) { goTo(current + 1, false); reducedAt = time + 6000; }
-          } else {
-            manualTarget = null;
-            position = (position + elapsed * .024) % loopWidth;
-            viewport.scrollTo({ left: position, behavior: 'instant' });
-            updatePage();
-          }
+        if (!transition) return;
+        var progress = Math.min(1, (time - transition.started) / 550);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        viewport.scrollTo({ left: transition.from + (transition.to - transition.from) * eased, behavior: 'instant' });
+        if (progress < 1) frame = window.requestAnimationFrame(animate);
+        else {
+          settle();
+          // Give the next review its full reading time after the slide finishes.
+          schedule();
         }
-        frame = window.requestAnimationFrame(animate);
       }
 
-      function resume() {
-        if (frame !== null) window.cancelAnimationFrame(frame);
-        frame = null;
-        lastTime = null;
-        if (visible && !document.hidden) frame = window.requestAnimationFrame(animate);
+      function goTo(review, announce) {
+        window.clearTimeout(timer);
+        window.cancelAnimationFrame(frame);
+        current = (review + starts.length) % starts.length;
+        var target = review >= starts.length && current === 0 ? loopWidth : starts[current];
+        status.setAttribute('aria-live', announce ? 'polite' : 'off');
+        updateControls();
+        manualScroll = false;
+        if (motion.matches || Math.abs(viewport.scrollLeft - target) < 1 || review < 0) {
+          settle();
+          schedule();
+        } else {
+          transition = { from: viewport.scrollLeft, to: target, started: performance.now() };
+          frame = window.requestAnimationFrame(animate);
+        }
       }
 
       function measure() {
         var previousWidth = loopWidth;
-        var previousPages = starts.length;
-        var perView = Math.max(1, Number(window.getComputedStyle(viewport).getPropertyValue('--per-view')) || 1);
-        starts = [];
-        for (var index = 0; index < cards.length; index += perView) starts.push(cards[index].offsetLeft - cards[0].offsetLeft);
+        var previousCount = starts.length;
+        // Every advance moves one review, including the multi-card desktop rows.
+        starts = cards.map(function (card) { return card.offsetLeft - cards[0].offsetLeft; });
         loopWidth = copies.length ? copies[0].offsetLeft - cards[0].offsetLeft : 0;
         controls.hidden = starts.length < 2;
-        if (loopWidth === previousWidth && starts.length === previousPages) return;
-        // Font loading and mobile browser chrome can change height repeatedly.
-        // Preserve progress instead of rewinding the visible review on each resize.
-        position = previousWidth ? (viewport.scrollLeft / previousWidth) * loopWidth : 0;
-        manualTarget = null;
-        viewport.scrollTo({ left: position, behavior: 'instant' });
-        updatePage();
+        if (loopWidth === previousWidth && starts.length === previousCount) return;
+        current = Math.min(current, Math.max(0, starts.length - 1));
+        settle();
         updateControls();
-        resume();
+        schedule();
+      }
+
+      function beginManualScroll() {
+        window.clearTimeout(timer);
+        window.cancelAnimationFrame(frame);
+        transition = null;
+        manualScroll = true;
+        updatePage();
       }
 
       section.querySelector('[data-review-prev]').addEventListener('click', function () { goTo(current - 1, true); });
       section.querySelector('[data-review-next]').addEventListener('click', function () { goTo(current + 1, true); });
       viewport.addEventListener('keydown', function (event) {
-        var page;
-        if (event.key === 'ArrowRight') page = current + 1;
-        if (event.key === 'ArrowLeft') page = current - 1;
-        if (event.key === 'Home') page = 0;
-        if (event.key === 'End') page = starts.length - 1;
-        if (page === undefined) return;
+        var review;
+        if (event.key === 'ArrowRight') review = current + 1;
+        if (event.key === 'ArrowLeft') review = current - 1;
+        if (event.key === 'Home') review = 0;
+        if (event.key === 'End') review = starts.length - 1;
+        if (review === undefined) return;
         event.preventDefault();
-        goTo(page, true);
+        goTo(review, true);
       });
       viewport.addEventListener('scroll', function () {
-        if (manualTarget !== null) {
-          if (Math.abs(viewport.scrollLeft - manualTarget) > 2) return;
-          manualTarget = null;
-        }
-        if (interacting || performance.now() < manualUntil || motion.matches) position = viewport.scrollLeft;
+        if (transition || !manualScroll) return;
         updatePage();
+        schedule();
       }, { passive: true });
-      viewport.addEventListener('pointerdown', function () {
-        manualTarget = null;
-        interacting = true;
-        hold();
-      });
-      window.addEventListener('pointerup', function () { if (interacting) { interacting = false; hold(); } });
-      viewport.addEventListener('pointercancel', function () { interacting = false; hold(); });
+      viewport.addEventListener('pointerdown', function () { interacting = true; beginManualScroll(); });
+      window.addEventListener('pointerup', function () { if (interacting) { interacting = false; schedule(); } });
+      viewport.addEventListener('pointercancel', function () { interacting = false; schedule(); });
       viewport.addEventListener('wheel', function (event) {
-        // Scrolling down the page should not pause a horizontal review row.
-        if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey) {
-          manualTarget = null;
-          hold();
-        }
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey) { beginManualScroll(); schedule(); }
       }, { passive: true });
-      section.addEventListener('keydown', hold);
-      window.addEventListener('blur', function () { interacting = false; hold(); });
+      section.addEventListener('keydown', schedule);
+      window.addEventListener('blur', function () { interacting = false; schedule(); });
       document.addEventListener('visibilitychange', function () {
-        if (document.hidden) interacting = false;
-        resume();
+        if (document.hidden) { interacting = false; if (transition) settle(); }
+        schedule();
       });
-      motion.addEventListener('change', function () {
-        position = viewport.scrollLeft;
-        reducedAt = performance.now() + 6000;
-        resume();
-      });
+      motion.addEventListener('change', function () { if (transition) settle(); schedule(); });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
           visible = entries[0].isIntersecting;
-          resume();
+          if (!visible && transition) settle();
+          schedule();
         }, { threshold: 0 }).observe(viewport);
       }
       if ('ResizeObserver' in window) new ResizeObserver(measure).observe(viewport);

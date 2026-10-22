@@ -56,7 +56,7 @@ const { chromium } = require('playwright');
       await section.scrollIntoViewIfNeeded();
       assert.equal(await viewport.evaluate(element => Number(getComputedStyle(element).getPropertyValue('--per-view'))), perView);
       assert.equal(await section.locator('[data-review-card]').count(), count);
-      const pages = String(Math.ceil(count / perView)).padStart(2, '0');
+      const pages = String(count).padStart(2, '0');
       assert.equal(await section.locator('[data-review-total]').textContent(), pages);
       assert.equal(await section.locator('[data-review-controls] button').count(), 2);
       assert.equal(await section.locator('[data-review-dots]').count(), 0);
@@ -72,6 +72,7 @@ const { chromium } = require('playwright');
         if (reviews[index].title) assert.equal(await card.locator('h4').textContent(), reviews[index].title);
         if (reviews[index].rating) assert.equal(await card.locator('.platform-review-stars').textContent(), '★'.repeat(reviews[index].rating));
       }
+      await viewport.press('Home');
       await section.locator('[data-review-next]').click();
       await page.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 10, platform);
       assert.equal(await section.locator('[data-review-current]').textContent(), '02');
@@ -85,72 +86,86 @@ const { chromium } = require('playwright');
     }
     console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, compact counters, arrows and keyboard navigation; no pause buttons');
 
-    // Check actual movement, not just a counter changing before scrolling starts.
+    // Measure both the stationary reading time and the actual one-review movement.
     for (const mobile of [false, true]) {
       const autoPage = await browser.newPage({ viewport: { width: mobile ? 390 : 1200, height: 700 }, isMobile: mobile, hasTouch: mobile });
       await autoPage.clock.install();
       await autoPage.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
       await autoPage.goto(base);
       await autoPage.evaluate(() => document.fonts.ready);
-      for (const platform of ['trustpilot', 'whatsapp', 'google']) {
+      for (const [platform, delay] of [['trustpilot', 3000], ['whatsapp', 5000], ['google', 8000]]) {
         const section = autoPage.locator(`[data-review-platform="${platform}"]`);
         const rail = section.locator('[data-review-viewport]');
         await rail.scrollIntoViewIfNeeded();
-        if (!mobile) await rail.hover();
-        // Let the browser report intersection before advancing its virtual clock.
-        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 1, platform, { timeout: 3000 });
-        const start = await rail.evaluate(element => element.scrollLeft);
-        await autoPage.clock.runFor(1200);
-        assert.ok(await rail.evaluate((element, start) => element.scrollLeft > start + 15, start), `${platform} must visibly move within 1.2 seconds (${mobile ? 'mobile' : 'desktop'})`);
+        if (mobile) await rail.tap();
+        else await rail.hover();
+        const position = index => rail.evaluate((element, index) => {
+          const cards = element.querySelectorAll('[data-review-card]');
+          return cards[index].offsetLeft - cards[0].offsetLeft;
+        }, index);
+        const at = async index => assert.ok(Math.abs(await rail.evaluate(element => element.scrollLeft) - await position(index)) < 2, `${platform} must show review ${index + 1} (${mobile ? 'mobile' : 'desktop'})`);
+        const home = async () => {
+          await rail.press('Home');
+          await autoPage.clock.runFor(600);
+          await at(0);
+          await rail.press('Home');
+        };
+        await home();
+        await autoPage.clock.runFor(delay - 150);
+        await at(0);
+        await autoPage.clock.runFor(850);
+        await at(1);
+        assert.equal(await section.locator('[data-review-current]').textContent(), '02');
+        // The second review also gets a full hold after its transition finishes.
+        await autoPage.clock.runFor(delay - 250);
+        await at(1);
+        await autoPage.clock.runFor(850);
+        await at(2);
 
-        if (!mobile) {
-          const beforePageScroll = await rail.evaluate(element => element.scrollLeft);
-          await autoPage.mouse.wheel(0, 30);
-          await autoPage.clock.runFor(1200);
-          assert.ok(await rail.evaluate((element, previous) => element.scrollLeft > previous + 15, beforePageScroll), 'Vertical page scrolling must not stop the reviews');
-        }
         await section.locator('[data-review-next]').click();
-        await autoPage.waitForFunction(id => {
-          const rail = document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`);
-          const cards = rail.querySelectorAll('[data-review-card]');
-          const perView = Number(getComputedStyle(rail).getPropertyValue('--per-view'));
-          return Math.abs(rail.scrollLeft - (cards[perView].offsetLeft - cards[0].offsetLeft)) < 2;
-        }, platform);
-        const clickedPosition = await rail.evaluate(element => element.scrollLeft);
-        await autoPage.clock.runFor(4200);
-        assert.ok(await rail.evaluate((element, previous) => element.scrollLeft > previous + 15, clickedPosition), 'An arrow click must not leave autoplay stopped');
-
-        await rail.press('Home');
-        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft < 2, platform);
-        await autoPage.clock.runFor(2000);
-        assert.ok(await rail.evaluate(element => element.scrollLeft < 2), 'Allow a short break after keyboard input');
-        await autoPage.clock.runFor(2200);
-        assert.ok(await rail.evaluate(element => element.scrollLeft > 15), 'Autoplay must resume even if keyboard focus remains');
+        await autoPage.clock.runFor(600);
+        await at(3);
+        await autoPage.clock.runFor(delay - 200);
+        await at(3);
+        await autoPage.clock.runFor(900);
+        await at(4);
         if (mobile) {
           await rail.tap();
-          const tappedPosition = await rail.evaluate(element => element.scrollLeft);
-          await autoPage.clock.runFor(4200);
-          assert.ok(await rail.evaluate((element, previous) => element.scrollLeft > previous + 15, tappedPosition), 'A tap must not leave autoplay stopped');
+          await autoPage.clock.runFor(delay - 150);
+          await at(4);
+          await autoPage.clock.runFor(850);
+          await at(5);
+        } else {
+          await home();
+          await autoPage.clock.runFor(delay - 150);
+          await autoPage.mouse.wheel(0, 30);
+          await autoPage.clock.runFor(850);
+          await at(1);
         }
 
-        // Put the rail just before the loop boundary and watch it join the first card.
-        await rail.evaluate(element => {
-          element.scrollLeft = element.querySelector('[data-review-clone]').offsetLeft - element.querySelector('[data-review-card]').offsetLeft - 8;
-          element.dispatchEvent(new WheelEvent('wheel', { deltaX: 10 }));
-        });
-        await autoPage.clock.runFor(4200);
-        assert.ok(await rail.evaluate(element => element.scrollLeft < 80), 'The last review must wrap seamlessly to the first');
+        await rail.press('End');
+        await autoPage.clock.runFor(600);
+        await at(19);
+        await rail.press('End');
+        await autoPage.clock.runFor(delay - 150);
+        await at(19);
+        await autoPage.clock.runFor(350);
+        assert.ok(await rail.evaluate((element, last) => element.scrollLeft > last + 2, await position(19)), 'The final review must slide forward into the loop');
+        await autoPage.clock.runFor(500);
+        await at(0);
+        assert.equal(await section.locator('[data-review-current]').textContent(), '01');
 
-        await rail.press('Home');
-        await rail.evaluate(element => element.blur());
         await autoPage.emulateMedia({ reducedMotion: 'reduce' });
-        await autoPage.clock.runFor(6500);
-        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== '01', platform);
+        await rail.press('Home');
+        await autoPage.clock.runFor(delay - 150);
+        await at(0);
+        await autoPage.clock.runFor(200);
+        await at(1);
         await autoPage.emulateMedia({ reducedMotion: 'no-preference' });
       }
       await autoPage.close();
     }
-    console.log('PASS continuous movement in all three rails on desktop/mobile, automatic recovery after controls/taps/keyboard input, seamless loops and reduced-motion page changes');
+    console.log('PASS full 3s/5s/8s holds, one-review slides, manual-control recovery, forward loops and matching reduced-motion timing on desktop/mobile');
 
     assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-carnival.webp')), true);
     assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');

@@ -71,14 +71,18 @@ dasselbe Symbol als lokale SVG-Grafik.
 Trustpilot zeigt eine große Karte, WhatsApp zwei Nachrichtenkarten und Google
 drei Karten. Alle drei Bereiche verwenden denselben kompakten Seitenzähler
 mit zwei dezenten Pfeilen. Auf schmalen Bildschirmen wird eine Karte angezeigt;
-Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells bewegen
-sich kontinuierlich mit 24 Pixeln pro Sekunde. Visuelle, für Screenreader
-verborgene Kopien der ersten Karten schließen den Übergang am Ende nahtlos.
-Hover und bleibender Fokus stoppen die Bewegung nicht. Nach manueller Bedienung
-setzt die Bewegung nach drei Sekunden wieder ein; während einer Wischgeste und
-in ausgeblendeten Tabs wird pausiert. Bei reduzierter Bewegung wechseln die
-Karten stattdessen alle sechs Sekunden ohne Animation. Ein sichtbarer
-Pause-Button wird nicht angezeigt.
+Touch-Scrolling und Tastatursteuerung sind möglich. Nach jeder vollständig
+abgeschlossenen Bewegung bleibt die Ansicht stehen: Trustpilot für drei,
+WhatsApp für fünf und Google für acht Sekunden. Anschließend gleitet die
+jeweilige Reihe in 550 Millisekunden um genau eine Bewertung weiter, auch in
+den mehrspaltigen Desktop-Ansichten. Der Zähler zeigt die erste Bewertung der
+Ansicht von insgesamt 20. Visuelle, für Screenreader verborgene Kopien der
+ersten Karten schließen den Übergang am Ende nahtlos.
+Hover und bleibender Fokus stoppen den automatischen Wechsel nicht. Nach
+manueller Bedienung beginnt die plattformspezifische Wartezeit erneut; während
+einer Wischgeste und in ausgeblendeten Tabs wird pausiert. Bei reduzierter
+Bewegung gelten dieselben Wartezeiten, der Wechsel erfolgt ohne Animation.
+Ein sichtbarer Pause-Button wird nicht angezeigt.
 
 Die gelieferten 60 Rezensionen stehen in `assets/review-platforms.json`:
 20 Einträge pro Plattform. Texte, Namen, Länderangaben und Sterne entsprechen

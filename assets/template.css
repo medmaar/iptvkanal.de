@@ -329,7 +329,7 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
   padding: 8px 0 16px;
   -webkit-overflow-scrolling: touch;
 }
-/* Native snap points would pin the slow automatic movement to a single card. */
+/* Programmatic slides control their own smooth transition and final position. */
 .platform-review-viewport.review-autoplay { scroll-snap-type: none; scroll-behavior: auto; }
 .platform-review-viewport::-webkit-scrollbar { display: none; }
 .review-platform--trustpilot { max-width: 780px; }
