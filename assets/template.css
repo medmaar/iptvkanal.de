@@ -359,27 +359,28 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
 .review-platform--whatsapp .platform-review-card { background: linear-gradient(145deg, #19251f, #15161d); }
 .platform-review-card blockquote { margin: 0 0 24px; color: var(--text-2); line-height: 1.8; font-size: .92rem; }
 .platform-review-card blockquote p { margin: 0; }
-.review-platform-controls { display: flex; justify-content: center; align-items: center; gap: 10px; width: fit-content; max-width: 100%; margin: 20px auto 0; padding: 5px 8px; border: 1px solid var(--line); border-radius: 999px; background: #17171f; }
-.review-arrow { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--button-gold); color: var(--button-ink); border: 1px solid transparent; transition: transform .3s, box-shadow .3s; }
-.review-arrow:hover { background: var(--button-gold); box-shadow: 0 0 18px #e4bd7020; transform: translateY(-1px); }
-.review-arrow svg { width: 15px; height: 15px; }
-.review-arrow[data-review-prev] svg { transform: rotate(180deg); }
-.review-page-count { display: inline-flex; justify-content: center; align-items: baseline; gap: 9px; min-width: 64px; color: var(--text-3); font-size: .75rem; line-height: 1; font-variant-numeric: tabular-nums; }
-.review-page-count [data-review-current] { color: var(--text); font-weight: 700; }
-.review-page-separator { color: #a193aa; }
+.review-platform-controls { display: flex; justify-content: center; margin: 22px auto 0; }
+/* Seven dots show at once; the outer ones fade so the strip reads as endless. */
+.review-dots { --dot: 16px; width: calc(var(--dot) * 7); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 38%, #000 62%, transparent); mask-image: linear-gradient(90deg, transparent, #000 38%, #000 62%, transparent); }
+.review-dots-track { display: flex; width: calc(var(--dot) * 9); margin-left: calc(var(--dot) * -1); transform: translateX(calc(var(--dot) * var(--dot-shift, 0))); }
+.review-dots-track.is-moving { transition: transform .55s cubic-bezier(.22, .61, .36, 1); }
+.review-dot { flex: none; display: grid; place-items: center; width: var(--dot); height: 12px; }
+.review-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #5d5866; transition: transform .55s cubic-bezier(.22, .61, .36, 1), background-color .55s; }
+.review-dot:nth-child(5)::before { background: var(--gold, #e4bd70); transform: scale(1.45); }
+.review-dots-track.is-moving .review-dot:nth-child(5)::before { background: #5d5866; transform: none; }
+.review-dots-track[data-direction="next"].is-moving .review-dot:nth-child(6)::before,
+.review-dots-track[data-direction="prev"].is-moving .review-dot:nth-child(4)::before { background: var(--gold, #e4bd70); transform: scale(1.45); }
 @media(max-width:850px) { .review-platform--google .platform-review-viewport { --per-view: 2; } }
 @media(max-width:600px) {
   .platform-review-viewport, .review-platform--whatsapp .platform-review-viewport, .review-platform--google .platform-review-viewport { --per-view: 1; }
   .review-platform-heading h3, .google-wordmark { font-size: 1.45rem; }
   .review-platform { margin-bottom: 52px; }
   .review-platform--trustpilot .platform-review-card { padding: 26px 24px; }
-  .review-arrow { width: 42px; height: 42px; }
 }
 
 
 
 /* Art direction changes on mobile: the photograph gets its own visible space. */
-.review-arrow { width: 44px; height: 44px; }
 .platform-reviews .section-head { max-width: 900px; margin: 0 auto 60px; text-align: center; }
 .platform-reviews .eyebrow { justify-content: center; }
 .platform-reviews .section-head p { margin-inline: auto; }

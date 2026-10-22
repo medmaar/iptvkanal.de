@@ -56,10 +56,10 @@ const { chromium } = require('playwright');
       await section.scrollIntoViewIfNeeded();
       assert.equal(await viewport.evaluate(element => Number(getComputedStyle(element).getPropertyValue('--per-view'))), perView);
       assert.equal(await section.locator('[data-review-card]').count(), count);
-      const pages = String(count).padStart(2, '0');
-      assert.equal(await section.locator('[data-review-total]').textContent(), pages);
-      assert.equal(await section.locator('[data-review-controls] button').count(), 2);
-      assert.equal(await section.locator('[data-review-dots]').count(), 0);
+      const status = () => section.locator('[data-review-position]').textContent();
+      assert.equal(await section.locator('[data-review-controls] button').count(), 0);
+      assert.equal(await section.locator('[data-review-total], [data-review-current]').count(), 0);
+      assert.equal(await section.locator('[data-review-dots] .review-dot').count(), 9);
       const reviews = supplied.platforms.find(item => item.id === platform).reviews;
       for (let index = 0; index < reviews.length; index++) {
         const card = section.locator('[data-review-card]').nth(index);
@@ -73,18 +73,17 @@ const { chromium } = require('playwright');
         if (reviews[index].rating) assert.equal(await card.locator('.platform-review-stars').textContent(), '★'.repeat(reviews[index].rating));
       }
       await viewport.press('Home');
-      await section.locator('[data-review-next]').click();
-      await page.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 10, platform);
-      assert.equal(await section.locator('[data-review-current]').textContent(), '02');
+      await viewport.press('ArrowRight');
+      assert.equal(await status(), `Bewertung 2 von ${count}`);
       await viewport.press('End');
-      assert.equal(await section.locator('[data-review-current]').textContent(), pages);
-      await viewport.press('Home');
-      assert.equal(await section.locator('[data-review-current]').textContent(), '01');
-      await section.locator('[data-review-prev]').click();
-      assert.equal(await section.locator('[data-review-current]').textContent(), pages);
+      assert.equal(await status(), `Bewertung ${count} von ${count}`);
+      await viewport.press('ArrowRight');
+      assert.equal(await status(), `Bewertung 1 von ${count}`);
+      await viewport.press('ArrowLeft');
+      assert.equal(await status(), `Bewertung ${count} von ${count}`);
       await viewport.press('Home');
     }
-    console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, compact counters, arrows and keyboard navigation; no pause buttons');
+    console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, fading endless dots and keyboard navigation; no pause buttons');
 
     // Measure both the stationary reading time and the actual one-review movement.
     for (const mobile of [false, true]) {
@@ -101,7 +100,7 @@ const { chromium } = require('playwright');
         else await rail.hover();
         const position = index => rail.evaluate((element, index) => {
           const cards = element.querySelectorAll('[data-review-card]');
-          return cards[index].offsetLeft - cards[0].offsetLeft;
+          return cards[index].offsetLeft - element.firstElementChild.offsetLeft;
         }, index);
         const at = async index => assert.ok(Math.abs(await rail.evaluate(element => element.scrollLeft) - await position(index)) < 2, `${platform} must show review ${index + 1} (${mobile ? 'mobile' : 'desktop'})`);
         const home = async () => {
@@ -115,14 +114,14 @@ const { chromium } = require('playwright');
         await at(0);
         await autoPage.clock.runFor(850);
         await at(1);
-        assert.equal(await section.locator('[data-review-current]').textContent(), '02');
+        assert.equal(await section.locator('[data-review-position]').textContent(), 'Bewertung 2 von 20');
         // The second review also gets a full hold after its transition finishes.
         await autoPage.clock.runFor(delay - 250);
         await at(1);
         await autoPage.clock.runFor(850);
         await at(2);
 
-        await section.locator('[data-review-next]').click();
+        await rail.press('ArrowRight');
         await autoPage.clock.runFor(600);
         await at(3);
         await autoPage.clock.runFor(delay - 200);
@@ -153,7 +152,15 @@ const { chromium } = require('playwright');
         assert.ok(await rail.evaluate((element, last) => element.scrollLeft > last + 2, await position(19)), 'The final review must slide forward into the loop');
         await autoPage.clock.runFor(500);
         await at(0);
-        assert.equal(await section.locator('[data-review-current]').textContent(), '01');
+        assert.equal(await section.locator('[data-review-position]').textContent(), 'Bewertung 1 von 20');
+        // Going back from the first review slides left into the last one, with no jump across the rail.
+        await rail.press('ArrowLeft');
+        await autoPage.clock.runFor(250);
+        assert.ok(await rail.evaluate((element, first) => element.scrollLeft < first - 2, await position(0)), 'The first review must slide backward into the loop');
+        await autoPage.clock.runFor(400);
+        await at(19);
+        await rail.press('Home');
+        await autoPage.clock.runFor(600);
 
         await autoPage.emulateMedia({ reducedMotion: 'reduce' });
         await rail.press('Home');

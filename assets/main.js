@@ -159,45 +159,75 @@
       var viewport = section.querySelector('[data-review-viewport]');
       var cards = Array.from(viewport.querySelectorAll('[data-review-card]'));
       var controls = section.querySelector('[data-review-controls]');
-      var currentPage = section.querySelector('[data-review-current]');
-      var totalPages = section.querySelector('[data-review-total]');
+      var dotsTrack = section.querySelector('[data-review-dots-track]');
       var status = section.querySelector('[data-review-position]');
       var delay = delays[section.dataset.reviewPlatform] || 5000;
       var starts = [];
       var current = 0;
+      var base = 0;
       var loopWidth = 0;
       var interacting = false;
       var manualScroll = false;
       var visible = !('IntersectionObserver' in window);
       var transition = null;
+      var dotTimer;
       var timer;
       var frame;
 
-      // Visual-only copies let the final review slide forward into the first.
-      var copies = cards.slice(0, 3).map(function (card) {
-        var copy = card.cloneNode(true);
-        copy.removeAttribute('data-review-card');
-        copy.setAttribute('data-review-clone', '');
-        copy.setAttribute('aria-hidden', 'true');
-        copy.setAttribute('inert', '');
-        viewport.appendChild(copy);
-        return copy;
-      });
+      // Visual-only copies on both ends let the rail keep moving in either direction.
+      function copy(card) {
+        var clone = card.cloneNode(true);
+        clone.removeAttribute('data-review-card');
+        clone.setAttribute('data-review-clone', '');
+        clone.setAttribute('aria-hidden', 'true');
+        clone.setAttribute('inert', '');
+        return clone;
+      }
+      var copies = cards.slice(0, 3).map(function (card) { return viewport.appendChild(copy(card)); });
+      cards.slice(-3).reverse().forEach(function (card) { viewport.insertBefore(copy(card), viewport.firstElementChild); });
       viewport.classList.add('review-autoplay');
 
+      function wrap(value, size) { return ((value % size) + size) % size; }
+      function position(index) { return base + starts[index]; }
+
       function updateControls() {
-        currentPage.textContent = String(current + 1).padStart(2, '0');
-        totalPages.textContent = String(starts.length).padStart(2, '0');
         var text = 'Bewertung ' + (current + 1) + ' von ' + starts.length;
         if (status.textContent !== text) status.textContent = text;
       }
 
-      function updatePage() {
-        var offset = loopWidth ? viewport.scrollLeft % loopWidth : 0;
-        current = starts.reduce(function (best, start, index) {
-          return Math.abs(start - offset) < Math.abs(starts[best] - offset) ? index : best;
-        }, 0);
+      // The dots never count pages: they drift one step per review and fade out at the edges.
+      function resetDots() {
+        window.clearTimeout(dotTimer);
+        dotsTrack.classList.remove('is-moving');
+        dotsTrack.style.removeProperty('--dot-shift');
+        dotsTrack.removeAttribute('data-direction');
+      }
+      function stepDots(direction) {
+        if (!dotsTrack || !direction) return;
+        resetDots();
+        if (motion.matches) return;
+        void dotsTrack.offsetWidth;
+        dotsTrack.setAttribute('data-direction', direction > 0 ? 'next' : 'prev');
+        dotsTrack.classList.add('is-moving');
+        dotsTrack.style.setProperty('--dot-shift', String(-direction));
+        dotTimer = window.setTimeout(resetDots, 560);
+      }
+
+      function setCurrent(index) {
+        var next = wrap(index, starts.length);
+        var diff = next - current;
+        if (diff > starts.length / 2) diff -= starts.length;
+        if (diff < -starts.length / 2) diff += starts.length;
+        current = next;
+        if (diff) stepDots(diff > 0 ? 1 : -1);
         updateControls();
+      }
+
+      function updatePage() {
+        var offset = loopWidth ? wrap(viewport.scrollLeft - base, loopWidth) : 0;
+        setCurrent(starts.reduce(function (best, start, index) {
+          return Math.abs(start - offset) < Math.abs(starts[best] - offset) ? index : best;
+        }, 0));
       }
 
       function schedule() {
@@ -210,7 +240,7 @@
         window.cancelAnimationFrame(frame);
         transition = null;
         manualScroll = false;
-        viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
+        viewport.scrollTo({ left: starts.length ? position(current) : 0, behavior: 'instant' });
       }
 
       function animate(time) {
@@ -229,12 +259,13 @@
       function goTo(review, announce) {
         window.clearTimeout(timer);
         window.cancelAnimationFrame(frame);
-        current = (review + starts.length) % starts.length;
-        var target = review >= starts.length && current === 0 ? loopWidth : starts[current];
+        transition = null;
+        setCurrent(review);
+        // Past either end the rail slides into the copies, then quietly re-centres.
+        var target = position(current) + (review >= starts.length ? loopWidth : review < 0 ? -loopWidth : 0);
         status.setAttribute('aria-live', announce ? 'polite' : 'off');
-        updateControls();
         manualScroll = false;
-        if (motion.matches || Math.abs(viewport.scrollLeft - target) < 1 || review < 0) {
+        if (motion.matches || Math.abs(viewport.scrollLeft - target) < 1) {
           settle();
           schedule();
         } else {
@@ -248,6 +279,7 @@
         var previousCount = starts.length;
         // Every advance moves one review, including the multi-card desktop rows.
         starts = cards.map(function (card) { return card.offsetLeft - cards[0].offsetLeft; });
+        base = cards.length ? cards[0].offsetLeft - viewport.firstElementChild.offsetLeft : 0;
         loopWidth = copies.length ? copies[0].offsetLeft - cards[0].offsetLeft : 0;
         controls.hidden = starts.length < 2;
         if (loopWidth === previousWidth && starts.length === previousCount) return;
@@ -265,8 +297,6 @@
         updatePage();
       }
 
-      section.querySelector('[data-review-prev]').addEventListener('click', function () { goTo(current - 1, true); });
-      section.querySelector('[data-review-next]').addEventListener('click', function () { goTo(current + 1, true); });
       viewport.addEventListener('keydown', function (event) {
         var review;
         if (event.key === 'ArrowRight') review = current + 1;
@@ -278,7 +308,12 @@
         goTo(review, true);
       });
       viewport.addEventListener('scroll', function () {
-        if (transition || !manualScroll) return;
+        if (transition || !manualScroll || !loopWidth) return;
+        // Swiping into the copies jumps to the identical real cards, so there is no end.
+        var edge = (starts[1] || 0) / 2;
+        var max = viewport.scrollWidth - viewport.clientWidth;
+        if (viewport.scrollLeft < edge) viewport.scrollLeft += loopWidth;
+        else if (viewport.scrollLeft > max - edge) viewport.scrollLeft -= loopWidth;
         updatePage();
         schedule();
       }, { passive: true });
@@ -294,7 +329,7 @@
         if (document.hidden) { interacting = false; if (transition) settle(); }
         schedule();
       });
-      motion.addEventListener('change', function () { if (transition) settle(); schedule(); });
+      motion.addEventListener('change', function () { if (transition) settle(); resetDots(); schedule(); });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
           visible = entries[0].isIntersecting;

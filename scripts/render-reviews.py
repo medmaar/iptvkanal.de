@@ -83,9 +83,7 @@ for platform in ORDER:
 {chr(10).join(cards)}
 </div>
 <div class="review-platform-controls" data-review-controls hidden>
-<button type="button" class="review-arrow" data-review-prev aria-label="{label}: vorherige Seite"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-<span class="review-page-count" aria-hidden="true"><span data-review-current>01</span><span class="review-page-separator">/</span><span data-review-total>20</span></span>
-<button type="button" class="review-arrow" data-review-next aria-label="{label}: nächste Seite"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+<div class="review-dots" data-review-dots aria-hidden="true"><span class="review-dots-track" data-review-dots-track>{'<span class="review-dot"></span>' * 9}</span></div>
 </div>
 <p class="sr-only" data-review-position aria-live="off"></p>
 </section>''')
