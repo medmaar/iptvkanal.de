@@ -32,7 +32,7 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 - `assets/img/`: lokal gespeicherte Fotos und VOD-Poster.
 - `assets/fonts/`: lokale variable WOFF2-Schriften und vollständige Font-Lizenzen.
 - `assets/flags/`: lokale Länderflaggen als SVG-Grafiken.
-- `assets/brand/iptvkanal-logo.svg`: typografische Wortmarke in Weiß und Gold ohne Bildsymbol.
+- `assets/brand/iptvkanal-supplied-logo.webp`: lokal gespeicherte, aufbereitete Fassung des vom Nutzer gelieferten weiß-goldenen Logos.
 
 Die Schriften Inter und Sora werden lokal aus den Paketen
 `@fontsource-variable/inter@5.3.0` und `@fontsource-variable/sora@5.2.8`
@@ -42,7 +42,7 @@ Technische Namensräume in SVG, Sitemap und strukturierten Daten sind keine
 externen Ressourcenanfragen.
 
 Die Gestaltung verbindet Anthrazit (`#0D0E14`) mit Lavendel, Mauve und einer
-sehr dezenten gelb-goldenen Hintergrundaufhellung. Seitenfläche, Preise und
+sehr dezenten gelb-goldenen Hintergrundaufhellung. Seitenfläche, Filmsektion, Preise und
 Bewertungen teilen denselben festen Hintergrundverlauf. Der gerahmte Hero nutzt
 `assets/img/hero-carnival.webp`: eine mit dem Bildwerkzeug aufbereitete Variante
 des gelieferten Karnevalsfotos, lokal als WebP mit ca. 209 KB gespeichert.
@@ -55,19 +55,15 @@ Wischgeste vergleichen. Eine lokale Bildschirm-Illustration zeigt TV und Handy.
 Animationen respektieren die Einstellung für reduzierte Bewegung.
 
 Die Aktionsbuttons verwenden dunkle Bronze-Gold-Flächen mit hellgoldener
-Beschriftung, abgerundeten Ecken und zurückhaltenden Konturen. Die Flächen
+Beschriftung, abgerundeten Ecken ohne sichtbare Konturen. Die Flächen
 bleiben klar gezeichnet und verwenden keine Weichzeichner oder Kantenmasken. Das Jahrespaket setzt
 sich mit einem dunklen, goldschimmernden Hintergrund ab. Die Preiskarten
 wechseln beim Hover weich zwischen Position und Schatten. Der Bewertungsbereich
 verwendet denselben dunklen Hintergrund wie die übrige Seitenfläche;
-Trustpilot-Sterne bleiben grün und Google-Sterne gelb. Logo und Favicon sind
-lokal als SVG gespeichert und verwenden Inhalts-Hashes als Cache-Versionen.
-Die Wortmarke kombiniert kleine, gesperrte Inter-Versalien mit einer
-aufrechten DM-Serif-Display-Schrift für „Kanal“. Die Buchstaben sind lokale
-SVG-Pfade und benötigen keine zusätzlichen Schriftanfragen. Die DM-Serif-
-Display-Lizenz liegt unter `assets/fonts/DM-SERIF-DISPLAY-LICENSE.txt`; die
-Umrisse stammen aus `@fontsource/dm-serif-display@5.3.0`. Das Favicon verwendet
-dasselbe typografische K.
+Trustpilot-Sterne bleiben grün und Google-Sterne gelb. Das gelieferte Logo wird in Kopf- und Fußzeile aller Seiten als lokale WebP-Grafik
+verwendet und trägt einen Inhalts-Hash als Cache-Version. Die Grafik wurde aus
+dem Bildanhang mit dem Bildwerkzeug aufbereitet und zugeschnitten; sie ist keine
+byte-identische Kopie der ursprünglichen Windows-Datei.
 
 ## Bewertungsbereiche
 
@@ -75,9 +71,10 @@ Trustpilot zeigt eine große Karte, WhatsApp zwei Nachrichtenkarten und Google
 drei Karten. Alle drei Bereiche verwenden denselben kompakten Seitenzähler
 mit zwei dezenten Pfeilen. Auf schmalen Bildschirmen wird eine Karte angezeigt;
 Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells wechseln
-alle sieben Sekunden. Hover, Tastaturfokus und ausgeblendete Tabs halten den
-Wechsel an. Ein sichtbarer Pause-Button wird nicht angezeigt. Bei reduzierter
-Bewegung ist Autoplay aus.
+alle sechs Sekunden. Ein ruhender Mauszeiger sowie Klicks und Taps verhindern
+den automatischen Wechsel nicht. Während einer Wischgeste, bei Tastaturfokus
+und in ausgeblendeten Tabs wird pausiert. Ein sichtbarer Pause-Button wird nicht
+angezeigt. Bei reduzierter Bewegung erfolgt der Seitenwechsel ohne Animation.
 
 Die gelieferten 60 Rezensionen stehen in `assets/review-platforms.json`:
 20 Einträge pro Plattform. Texte, Namen, Länderangaben und Sterne entsprechen

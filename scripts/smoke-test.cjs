@@ -38,7 +38,10 @@ const { chromium } = require('playwright');
       await wordmark.evaluate(image => image.decode());
       assert.equal(await wordmark.getAttribute('alt'), 'IPTV Kanal');
     }
-    assert.equal(await page.locator('#bewertungen').evaluate(element => getComputedStyle(element).backgroundColor), await page.locator('body').evaluate(element => getComputedStyle(element).backgroundColor));
+    for (const section of ['#bewertungen', '#vod']) {
+      assert.equal(await page.locator(section).evaluate(element => getComputedStyle(element).backgroundColor), await page.locator('body').evaluate(element => getComputedStyle(element).backgroundColor));
+      assert.equal(await page.locator(section).evaluate(element => getComputedStyle(element).backgroundImage), await page.locator('body').evaluate(element => getComputedStyle(element).backgroundImage));
+    }
     await page.emulateMedia({ reducedMotion: 'reduce' });
     assert.deepEqual(await page.locator('[data-review-platform]').evaluateAll(sections => sections.map(section => section.dataset.reviewPlatform)), ['trustpilot', 'whatsapp', 'google']);
     assert.equal(await page.locator('[data-placeholder="true"]').count(), 0);
@@ -82,35 +85,40 @@ const { chromium } = require('playwright');
     }
     console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, compact counters, arrows and keyboard navigation; no pause buttons');
 
-    // Virtual time verifies real automatic advancement without a seven-second sleep.
-    const autoPage = await browser.newPage({ viewport: { width: 1200, height: 500 } });
-    await autoPage.clock.install();
-    await autoPage.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
-    await autoPage.goto(base);
-    const autoplay = autoPage.locator('[data-review-platform="trustpilot"]');
-    await autoplay.scrollIntoViewIfNeeded();
-    await autoPage.mouse.move(0, 0);
-    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"]').getBoundingClientRect().top < innerHeight);
-    await autoPage.clock.runFor(7500);
-    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-viewport]').scrollLeft > 10);
-    await autoPage.waitForFunction(() => document.querySelector('[data-review-platform="trustpilot"] [data-review-current]').textContent === '02');
-    await autoplay.hover();
-    const hoveredPosition = await autoplay.locator('[data-review-current]').textContent();
-    await autoPage.clock.runFor(15000);
-    assert.equal(await autoplay.locator('[data-review-current]').textContent(), hoveredPosition);
-    await autoPage.mouse.move(0, 0);
-    await autoPage.clock.runFor(7500);
-    await autoPage.waitForFunction(previous => document.querySelector('[data-review-platform="trustpilot"] [data-review-current]').textContent !== previous, hoveredPosition);
-    await autoplay.locator('[data-review-viewport]').focus();
-    const focusedPosition = await autoplay.locator('[data-review-current]').textContent();
-    await autoPage.clock.runFor(15000);
-    assert.equal(await autoplay.locator('[data-review-current]').textContent(), focusedPosition);
-    await autoplay.locator('[data-review-viewport]').evaluate(element => element.blur());
-    await autoPage.emulateMedia({ reducedMotion: 'reduce' });
-    await autoPage.clock.runFor(15000);
-    assert.equal(await autoplay.locator('[data-review-current]').textContent(), focusedPosition);
-    await autoPage.close();
-    console.log('PASS automatic review sliding, hover/focus hold, and reduced-motion preference without pause controls');
+    // Visible rails must advance with an idle pointer, after clicks, and after taps.
+    for (const mobile of [false, true]) {
+      const autoPage = await browser.newPage({ viewport: { width: mobile ? 390 : 1200, height: 700 }, isMobile: mobile, hasTouch: mobile });
+      await autoPage.clock.install();
+      await autoPage.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
+      await autoPage.goto(base);
+      for (const platform of ['trustpilot', 'whatsapp', 'google']) {
+        const section = autoPage.locator(`[data-review-platform="${platform}"]`);
+        const rail = section.locator('[data-review-viewport]');
+        await rail.press('Home');
+        await rail.evaluate(element => element.blur());
+        if (mobile) await section.locator('blockquote').first().tap();
+        else await section.locator('blockquote').first().hover();
+        await autoPage.clock.runFor(6500);
+        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== '01', platform);
+        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 10, platform);
+        await section.locator('[data-review-next]').click();
+        const clickedPosition = await section.locator('[data-review-current]').textContent();
+        await autoPage.clock.runFor(6500);
+        await autoPage.waitForFunction(({ id, previous }) => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== previous, { id: platform, previous: clickedPosition });
+
+        await rail.press('ArrowRight');
+        const focusedPosition = await section.locator('[data-review-current]').textContent();
+        await autoPage.clock.runFor(13000);
+        assert.equal(await section.locator('[data-review-current]').textContent(), focusedPosition);
+        await rail.evaluate(element => element.blur());
+        await autoPage.emulateMedia({ reducedMotion: 'reduce' });
+        await autoPage.clock.runFor(6500);
+        await autoPage.waitForFunction(({ id, previous }) => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== previous, { id: platform, previous: focusedPosition });
+        await autoPage.emulateMedia({ reducedMotion: 'no-preference' });
+      }
+      await autoPage.close();
+    }
+    console.log('PASS Trustpilot, WhatsApp and Google autoplay on desktop and touch screens; idle hover/click/tap recovery, keyboard hold, and reduced-motion fallback');
 
     assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-carnival.webp')), true);
     assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');
@@ -189,7 +197,7 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-logo.svg', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-supplied-logo.webp', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
     for (const target of ['/impressum.html', '/datenschutz.html', '/404.html']) {

@@ -163,14 +163,14 @@
       var position = section.querySelector('[data-review-position]');
       var starts = [];
       var current = 0;
-      var hovered = false;
       var focused = false;
+      var interacting = false;
       var visible = !('IntersectionObserver' in window);
       var scrollTarget = null;
       var timer;
 
       function canAutoSlide() {
-        return starts.length > 1 && !motion.matches && !hovered && !focused && visible && !document.hidden;
+        return starts.length > 1 && !focused && !interacting && visible && !document.hidden;
       }
 
       function schedule() {
@@ -178,7 +178,7 @@
         if (!canAutoSlide()) return;
         timer = window.setTimeout(function () {
           if (canAutoSlide()) goTo((current + 1) % starts.length, false);
-        }, 7000);
+        }, 6000);
       }
 
       function updateControls() {
@@ -237,14 +237,25 @@
         }, 0);
         if (closest !== current) { current = closest; updateControls(); }
       }, { passive: true });
-      viewport.addEventListener('pointerdown', function () { scrollTarget = null; window.clearTimeout(timer); });
+      viewport.addEventListener('pointerdown', function () {
+        scrollTarget = null;
+        interacting = true;
+        focused = false;
+        schedule();
+      });
       viewport.addEventListener('wheel', function () { scrollTarget = null; schedule(); }, { passive: true });
-      viewport.addEventListener('pointerup', schedule);
-      viewport.addEventListener('pointercancel', schedule);
-      section.addEventListener('mouseenter', function () { hovered = true; schedule(); });
-      section.addEventListener('mouseleave', function () { hovered = false; schedule(); });
-      section.addEventListener('focusin', function () { focused = true; schedule(); });
-      section.addEventListener('focusout', function (event) { focused = section.contains(event.relatedTarget); schedule(); });
+      window.addEventListener('pointerup', function () { if (interacting) { interacting = false; schedule(); } });
+      viewport.addEventListener('pointercancel', function () { interacting = false; schedule(); });
+      section.addEventListener('pointerdown', function () { focused = false; schedule(); });
+      section.addEventListener('keydown', function () { focused = true; schedule(); });
+      section.addEventListener('focusin', function (event) {
+        focused = event.target.matches(':focus-visible');
+        schedule();
+      });
+      section.addEventListener('focusout', function (event) {
+        focused = Boolean(event.relatedTarget && section.contains(event.relatedTarget) && event.relatedTarget.matches(':focus-visible'));
+        schedule();
+      });
       document.addEventListener('visibilitychange', schedule);
       motion.addEventListener('change', function (event) {
         if (event.matches) viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
