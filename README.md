@@ -32,7 +32,7 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 - `assets/img/`: lokal gespeicherte Fotos und VOD-Poster.
 - `assets/fonts/`: lokale variable WOFF2-Schriften und vollständige Font-Lizenzen.
 - `assets/flags/`: lokale Länderflaggen als SVG-Grafiken.
-- `assets/brand/iptvkanal-logo.svg`: flaches weiß-goldenes Vektorlogo mit Play-Symbol.
+- `assets/brand/iptvkanal-logo.svg`: reine Wortmarke mit weißer und goldener Sora-Schrift.
 
 Die Schriften Inter und Sora werden lokal aus den Paketen
 `@fontsource-variable/inter@5.3.0` und `@fontsource-variable/sora@5.2.8`
@@ -53,15 +53,16 @@ und die Geräteauswahl bleiben erreichbar. Preiskarten lassen sich per
 Wischgeste vergleichen. Eine lokale Bildschirm-Illustration zeigt TV und Handy.
 Animationen respektieren die Einstellung für reduzierte Bewegung.
 
-Alle Aktionsbuttons verwenden einen warmen Goldverlauf. Das Jahrespaket setzt
+Die Aktionsbuttons verwenden dunkle Bronze-Gold-Flächen mit hellgoldener
+Beschriftung, dezenten Konturen und weich gerundeten Ecken. Das Jahrespaket setzt
 sich mit einem dunklen, goldschimmernden Hintergrund ab. Die Preiskarten
 wechseln beim Hover weich zwischen Position und Schatten. Der Bewertungsbereich
 verwendet denselben dunklen Hintergrund wie die übrige Seitenfläche;
 Trustpilot-Sterne bleiben grün und Google-Sterne gelb. Logo und Favicon sind
 lokal als SVG gespeichert und verwenden Inhalts-Hashes als Cache-Versionen.
-Die Wortmarke besteht aus Inter-Buchstaben als Vektorpfaden und benötigt keine
-zusätzlichen Schriftanfragen. Sie verwendet flache Farben ohne Glanz- oder
-3D-Effekte; das Play-Symbol wird auch als Favicon verwendet.
+Die reine Wortmarke verwendet kompakte, leicht geneigte Sora-Buchstaben als
+Vektorpfade in Weiß und Gold. Sie benötigt keine zusätzlichen Schriftanfragen
+und enthält kein Bildsymbol. Das Favicon zeigt ein typografisches K.
 
 ## Bewertungsbereiche
 
