@@ -32,7 +32,7 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 - `assets/img/`: lokal gespeicherte Fotos und VOD-Poster.
 - `assets/fonts/`: lokale variable WOFF2-Schriften und vollständige Font-Lizenzen.
 - `assets/flags/`: lokale Länderflaggen als SVG-Grafiken.
-- `assets/brand/iptvkanal-supplied-logo.webp`: lokal gespeicherte, aufbereitete Fassung des vom Nutzer gelieferten weiß-goldenen Logos.
+- `assets/brand/iptvkanal-supplied-logo.webp`: lokal gespeicherte, angepasste Fassung des gelieferten Logos in Elfenbein und gedecktem Champagnergold (#E4BD70) mit einem neuen TV-/Play-Symbol.
 
 Die Schriften Inter und Sora werden lokal aus den Paketen
 `@fontsource-variable/inter@5.3.0` und `@fontsource-variable/sora@5.2.8`
@@ -62,19 +62,23 @@ wechseln beim Hover weich zwischen Position und Schatten. Der Bewertungsbereich
 verwendet denselben dunklen Hintergrund wie die übrige Seitenfläche;
 Trustpilot-Sterne bleiben grün und Google-Sterne gelb. Das gelieferte Logo wird in Kopf- und Fußzeile aller Seiten als lokale WebP-Grafik
 verwendet und trägt einen Inhalts-Hash als Cache-Version. Die Grafik wurde aus
-dem Bildanhang mit dem Bildwerkzeug aufbereitet und zugeschnitten; sie ist keine
-byte-identische Kopie der ursprünglichen Windows-Datei.
+dem Bildanhang mit dem Bildwerkzeug aufbereitet, auf die Goldtöne der Website
+abgestimmt und mit einem neuen TV-/Play-Symbol versehen. Das Favicon übernimmt
+dasselbe Symbol als lokale SVG-Grafik.
 
 ## Bewertungsbereiche
 
 Trustpilot zeigt eine große Karte, WhatsApp zwei Nachrichtenkarten und Google
 drei Karten. Alle drei Bereiche verwenden denselben kompakten Seitenzähler
 mit zwei dezenten Pfeilen. Auf schmalen Bildschirmen wird eine Karte angezeigt;
-Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells wechseln
-alle sechs Sekunden. Ein ruhender Mauszeiger sowie Klicks und Taps verhindern
-den automatischen Wechsel nicht. Während einer Wischgeste, bei Tastaturfokus
-und in ausgeblendeten Tabs wird pausiert. Ein sichtbarer Pause-Button wird nicht
-angezeigt. Bei reduzierter Bewegung erfolgt der Seitenwechsel ohne Animation.
+Touch-Scrolling und Tastatursteuerung sind möglich. Sichtbare Karussells bewegen
+sich kontinuierlich mit 24 Pixeln pro Sekunde. Visuelle, für Screenreader
+verborgene Kopien der ersten Karten schließen den Übergang am Ende nahtlos.
+Hover und bleibender Fokus stoppen die Bewegung nicht. Nach manueller Bedienung
+setzt die Bewegung nach drei Sekunden wieder ein; während einer Wischgeste und
+in ausgeblendeten Tabs wird pausiert. Bei reduzierter Bewegung wechseln die
+Karten stattdessen alle sechs Sekunden ohne Animation. Ein sichtbarer
+Pause-Button wird nicht angezeigt.
 
 Die gelieferten 60 Rezensionen stehen in `assets/review-platforms.json`:
 20 Einträge pro Plattform. Texte, Namen, Länderangaben und Sterne entsprechen

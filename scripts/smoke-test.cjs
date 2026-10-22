@@ -85,40 +85,72 @@ const { chromium } = require('playwright');
     }
     console.log('PASS all 60 supplied reviews with original text, names and ratings; separate layouts, compact counters, arrows and keyboard navigation; no pause buttons');
 
-    // Visible rails must advance with an idle pointer, after clicks, and after taps.
+    // Check actual movement, not just a counter changing before scrolling starts.
     for (const mobile of [false, true]) {
       const autoPage = await browser.newPage({ viewport: { width: mobile ? 390 : 1200, height: 700 }, isMobile: mobile, hasTouch: mobile });
       await autoPage.clock.install();
       await autoPage.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
       await autoPage.goto(base);
+      await autoPage.evaluate(() => document.fonts.ready);
       for (const platform of ['trustpilot', 'whatsapp', 'google']) {
         const section = autoPage.locator(`[data-review-platform="${platform}"]`);
         const rail = section.locator('[data-review-viewport]');
-        await rail.press('Home');
-        await rail.evaluate(element => element.blur());
-        if (mobile) await section.locator('blockquote').first().tap();
-        else await section.locator('blockquote').first().hover();
-        await autoPage.clock.runFor(6500);
-        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== '01', platform);
-        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 10, platform);
-        await section.locator('[data-review-next]').click();
-        const clickedPosition = await section.locator('[data-review-current]').textContent();
-        await autoPage.clock.runFor(6500);
-        await autoPage.waitForFunction(({ id, previous }) => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== previous, { id: platform, previous: clickedPosition });
+        await rail.scrollIntoViewIfNeeded();
+        if (!mobile) await rail.hover();
+        // Let the browser report intersection before advancing its virtual clock.
+        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft > 1, platform, { timeout: 3000 });
+        const start = await rail.evaluate(element => element.scrollLeft);
+        await autoPage.clock.runFor(1200);
+        assert.ok(await rail.evaluate((element, start) => element.scrollLeft > start + 15, start), `${platform} must visibly move within 1.2 seconds (${mobile ? 'mobile' : 'desktop'})`);
 
-        await rail.press('ArrowRight');
-        const focusedPosition = await section.locator('[data-review-current]').textContent();
-        await autoPage.clock.runFor(13000);
-        assert.equal(await section.locator('[data-review-current]').textContent(), focusedPosition);
+        if (!mobile) {
+          const beforePageScroll = await rail.evaluate(element => element.scrollLeft);
+          await autoPage.mouse.wheel(0, 30);
+          await autoPage.clock.runFor(1200);
+          assert.ok(await rail.evaluate((element, previous) => element.scrollLeft > previous + 15, beforePageScroll), 'Vertical page scrolling must not stop the reviews');
+        }
+        await section.locator('[data-review-next]').click();
+        await autoPage.waitForFunction(id => {
+          const rail = document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`);
+          const cards = rail.querySelectorAll('[data-review-card]');
+          const perView = Number(getComputedStyle(rail).getPropertyValue('--per-view'));
+          return Math.abs(rail.scrollLeft - (cards[perView].offsetLeft - cards[0].offsetLeft)) < 2;
+        }, platform);
+        const clickedPosition = await rail.evaluate(element => element.scrollLeft);
+        await autoPage.clock.runFor(4200);
+        assert.ok(await rail.evaluate((element, previous) => element.scrollLeft > previous + 15, clickedPosition), 'An arrow click must not leave autoplay stopped');
+
+        await rail.press('Home');
+        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-viewport]`).scrollLeft < 2, platform);
+        await autoPage.clock.runFor(2000);
+        assert.ok(await rail.evaluate(element => element.scrollLeft < 2), 'Allow a short break after keyboard input');
+        await autoPage.clock.runFor(2200);
+        assert.ok(await rail.evaluate(element => element.scrollLeft > 15), 'Autoplay must resume even if keyboard focus remains');
+        if (mobile) {
+          await rail.tap();
+          const tappedPosition = await rail.evaluate(element => element.scrollLeft);
+          await autoPage.clock.runFor(4200);
+          assert.ok(await rail.evaluate((element, previous) => element.scrollLeft > previous + 15, tappedPosition), 'A tap must not leave autoplay stopped');
+        }
+
+        // Put the rail just before the loop boundary and watch it join the first card.
+        await rail.evaluate(element => {
+          element.scrollLeft = element.querySelector('[data-review-clone]').offsetLeft - element.querySelector('[data-review-card]').offsetLeft - 8;
+          element.dispatchEvent(new WheelEvent('wheel', { deltaX: 10 }));
+        });
+        await autoPage.clock.runFor(4200);
+        assert.ok(await rail.evaluate(element => element.scrollLeft < 80), 'The last review must wrap seamlessly to the first');
+
+        await rail.press('Home');
         await rail.evaluate(element => element.blur());
         await autoPage.emulateMedia({ reducedMotion: 'reduce' });
         await autoPage.clock.runFor(6500);
-        await autoPage.waitForFunction(({ id, previous }) => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== previous, { id: platform, previous: focusedPosition });
+        await autoPage.waitForFunction(id => document.querySelector(`[data-review-platform="${id}"] [data-review-current]`).textContent !== '01', platform);
         await autoPage.emulateMedia({ reducedMotion: 'no-preference' });
       }
       await autoPage.close();
     }
-    console.log('PASS Trustpilot, WhatsApp and Google autoplay on desktop and touch screens; idle hover/click/tap recovery, keyboard hold, and reduced-motion fallback');
+    console.log('PASS continuous movement in all three rails on desktop/mobile, automatic recovery after controls/taps/keyboard input, seamless loops and reduced-motion page changes');
 
     assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-carnival.webp')), true);
     assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');
@@ -162,8 +194,8 @@ const { chromium } = require('playwright');
     for (const width of [1920, 1440, 1080, 900, 768, 640, 390, 320]) {
       await page.setViewportSize({ width, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `Overflow at ${width}px`);
-      assert.equal(await page.locator('.review-country-flag').count(), 60);
-      assert.equal(await page.locator('.review-country-flag').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0 && image.getBoundingClientRect().width === 20 && image.getBoundingClientRect().height === 12)), true, `Flag graphics must load and retain their size at ${width}px`);
+      assert.equal(await page.locator('[data-review-card] .review-country-flag').count(), 60);
+      assert.equal(await page.locator('[data-review-card] .review-country-flag').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0 && image.getBoundingClientRect().width === 20 && image.getBoundingClientRect().height === 12)), true, `Flag graphics must load and retain their size at ${width}px`);
       if (width <= 600) {
         assert.equal(await page.locator('.nav-cta .btn-primary').isVisible(), true, `Header action must stay visible at ${width}px`);
         assert.equal(await page.locator('[data-devices]').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height >= 44)), true, `Device controls must have usable touch targets at ${width}px`);

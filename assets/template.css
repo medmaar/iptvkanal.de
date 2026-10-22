@@ -67,8 +67,8 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
 .logo { font-size: 1.12rem; gap: 10px; white-space: nowrap; }
 .logo img, .footer .logo img { width: 34px; height: 34px; }
 .logo strong { color: var(--gold); }
-.logo img.brand-wordmark { width: 190px; height: auto; display: block; }
-.footer .logo img.brand-wordmark { width: 235px; height: auto; }
+.logo img.brand-wordmark { width: 210px; height: auto; display: block; }
+.footer .logo img.brand-wordmark { width: 250px; height: auto; }
 .nav-links { gap: 28px; }
 .nav-links a { position: relative; font-size: .8rem; color: #bdb8c9; }
 .nav-links a::after { content: ''; position: absolute; inset: auto 0 -9px; height: 1px; background: #d3c6fa; transform: scaleX(0); transform-origin: left; transition: transform .2s; }
@@ -329,6 +329,8 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
   padding: 8px 0 16px;
   -webkit-overflow-scrolling: touch;
 }
+/* Native snap points would pin the slow automatic movement to a single card. */
+.platform-review-viewport.review-autoplay { scroll-snap-type: none; scroll-behavior: auto; }
 .platform-review-viewport::-webkit-scrollbar { display: none; }
 .review-platform--trustpilot { max-width: 780px; }
 .review-platform--trustpilot .platform-review-viewport { --per-view: 1; }
@@ -438,7 +440,7 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
   .header .nav { height: 70px; padding-inline: 18px; gap: 10px; }
   .logo { font-size: .98rem; gap: 7px; }
   .logo img, .footer .logo img { width: 30px; height: 30px; }
-  .logo img.brand-wordmark { width: 142px; height: auto; }
+  .logo img.brand-wordmark { width: 150px; height: auto; }
   .footer .logo img.brand-wordmark { width: 210px; height: auto; }
   .nav-cta { gap: 8px; }
   .nav-cta .btn-primary { display: inline-flex; min-height: 42px; padding: 9px 12px; font-size: .7rem; }

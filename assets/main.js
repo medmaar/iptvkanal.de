@@ -160,57 +160,106 @@
       var controls = section.querySelector('[data-review-controls]');
       var currentPage = section.querySelector('[data-review-current]');
       var totalPages = section.querySelector('[data-review-total]');
-      var position = section.querySelector('[data-review-position]');
+      var status = section.querySelector('[data-review-position]');
       var starts = [];
       var current = 0;
-      var focused = false;
+      var position = 0;
+      var loopWidth = 0;
       var interacting = false;
       var visible = !('IntersectionObserver' in window);
-      var scrollTarget = null;
-      var timer;
+      var manualUntil = 0;
+      var manualTarget = null;
+      var reducedAt = performance.now() + 6000;
+      var lastTime = null;
+      var frame = null;
 
-      function canAutoSlide() {
-        return starts.length > 1 && !focused && !interacting && visible && !document.hidden;
-      }
-
-      function schedule() {
-        window.clearTimeout(timer);
-        if (!canAutoSlide()) return;
-        timer = window.setTimeout(function () {
-          if (canAutoSlide()) goTo((current + 1) % starts.length, false);
-        }, 6000);
-      }
+      // One extra screen makes the end join the beginning without a visible jump.
+      // Copies are visual only; the supplied reviews remain the accessible content.
+      var copies = cards.slice(0, 3).map(function (card) {
+        var copy = card.cloneNode(true);
+        copy.removeAttribute('data-review-card');
+        copy.setAttribute('data-review-clone', '');
+        copy.setAttribute('aria-hidden', 'true');
+        copy.setAttribute('inert', '');
+        viewport.appendChild(copy);
+        return copy;
+      });
+      viewport.classList.add('review-autoplay');
 
       function updateControls() {
         currentPage.textContent = String(current + 1).padStart(2, '0');
         totalPages.textContent = String(starts.length).padStart(2, '0');
         var text = 'Seite ' + (current + 1) + ' von ' + starts.length;
-        if (position.textContent !== text) position.textContent = text;
+        if (status.textContent !== text) status.textContent = text;
+      }
+
+      function updatePage() {
+        var offset = loopWidth ? viewport.scrollLeft % loopWidth : 0;
+        var closest = starts.reduce(function (best, start, index) {
+          return Math.abs(start - offset) < Math.abs(starts[best] - offset) ? index : best;
+        }, 0);
+        if (closest !== current) { current = closest; updateControls(); }
+      }
+
+      function hold() {
+        manualUntil = performance.now() + 3000;
+        reducedAt = manualUntil + 6000;
+        position = viewport.scrollLeft;
       }
 
       function goTo(page, announce) {
         current = (page + starts.length) % starts.length;
-        position.setAttribute('aria-live', announce ? 'polite' : 'off');
-        scrollTarget = starts[current];
-        viewport.scrollTo({ left: scrollTarget, behavior: motion.matches ? 'instant' : 'smooth' });
+        status.setAttribute('aria-live', announce ? 'polite' : 'off');
+        manualTarget = starts[current];
+        position = manualTarget;
+        viewport.scrollTo({ left: manualTarget, behavior: motion.matches ? 'instant' : 'smooth' });
         updateControls();
-        schedule();
+        if (announce) hold();
+      }
+
+      function animate(time) {
+        frame = null;
+        if (!visible || document.hidden || !loopWidth || starts.length < 2) { lastTime = null; return; }
+        var elapsed = lastTime === null ? 0 : Math.min(time - lastTime, 64);
+        lastTime = time;
+        if (!interacting && time >= manualUntil) {
+          status.setAttribute('aria-live', 'off');
+          if (motion.matches) {
+            if (time >= reducedAt) { goTo(current + 1, false); reducedAt = time + 6000; }
+          } else {
+            manualTarget = null;
+            position = (position + elapsed * .024) % loopWidth;
+            viewport.scrollTo({ left: position, behavior: 'instant' });
+            updatePage();
+          }
+        }
+        frame = window.requestAnimationFrame(animate);
+      }
+
+      function resume() {
+        if (frame !== null) window.cancelAnimationFrame(frame);
+        frame = null;
+        lastTime = null;
+        if (visible && !document.hidden) frame = window.requestAnimationFrame(animate);
       }
 
       function measure() {
+        var previousWidth = loopWidth;
+        var previousPages = starts.length;
         var perView = Math.max(1, Number(window.getComputedStyle(viewport).getPropertyValue('--per-view')) || 1);
-        var maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
         starts = [];
-        for (var index = 0; index < cards.length; index += perView) {
-          starts.push(Math.min(cards[index].offsetLeft - cards[0].offsetLeft, maxScroll));
-        }
-        starts = starts.filter(function (start, index) { return index === 0 || Math.abs(start - starts[index - 1]) > 1; });
+        for (var index = 0; index < cards.length; index += perView) starts.push(cards[index].offsetLeft - cards[0].offsetLeft);
+        loopWidth = copies.length ? copies[0].offsetLeft - cards[0].offsetLeft : 0;
         controls.hidden = starts.length < 2;
-        current = Math.min(current, starts.length - 1);
-        scrollTarget = starts[current] || 0;
-        viewport.scrollTo({ left: scrollTarget, behavior: 'instant' });
+        if (loopWidth === previousWidth && starts.length === previousPages) return;
+        // Font loading and mobile browser chrome can change height repeatedly.
+        // Preserve progress instead of rewinding the visible review on each resize.
+        position = previousWidth ? (viewport.scrollLeft / previousWidth) * loopWidth : 0;
+        manualTarget = null;
+        viewport.scrollTo({ left: position, behavior: 'instant' });
+        updatePage();
         updateControls();
-        schedule();
+        resume();
       }
 
       section.querySelector('[data-review-prev]').addEventListener('click', function () { goTo(current - 1, true); });
@@ -226,53 +275,49 @@
         goTo(page, true);
       });
       viewport.addEventListener('scroll', function () {
-        // An animated transition passes other pages on its way to the target.
-        // Keep its destination stable so focus or reduced motion cannot rewind it.
-        if (scrollTarget !== null) {
-          if (Math.abs(viewport.scrollLeft - scrollTarget) > 2) return;
-          scrollTarget = null;
+        if (manualTarget !== null) {
+          if (Math.abs(viewport.scrollLeft - manualTarget) > 2) return;
+          manualTarget = null;
         }
-        var closest = starts.reduce(function (best, start, index) {
-          return Math.abs(start - viewport.scrollLeft) < Math.abs(starts[best] - viewport.scrollLeft) ? index : best;
-        }, 0);
-        if (closest !== current) { current = closest; updateControls(); }
+        if (interacting || performance.now() < manualUntil || motion.matches) position = viewport.scrollLeft;
+        updatePage();
       }, { passive: true });
       viewport.addEventListener('pointerdown', function () {
-        scrollTarget = null;
+        manualTarget = null;
         interacting = true;
-        focused = false;
-        schedule();
+        hold();
       });
-      viewport.addEventListener('wheel', function () { scrollTarget = null; schedule(); }, { passive: true });
-      window.addEventListener('pointerup', function () { if (interacting) { interacting = false; schedule(); } });
-      viewport.addEventListener('pointercancel', function () { interacting = false; schedule(); });
-      section.addEventListener('pointerdown', function () { focused = false; schedule(); });
-      section.addEventListener('keydown', function () { focused = true; schedule(); });
-      section.addEventListener('focusin', function (event) {
-        focused = event.target.matches(':focus-visible');
-        schedule();
+      window.addEventListener('pointerup', function () { if (interacting) { interacting = false; hold(); } });
+      viewport.addEventListener('pointercancel', function () { interacting = false; hold(); });
+      viewport.addEventListener('wheel', function (event) {
+        // Scrolling down the page should not pause a horizontal review row.
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey) {
+          manualTarget = null;
+          hold();
+        }
+      }, { passive: true });
+      section.addEventListener('keydown', hold);
+      window.addEventListener('blur', function () { interacting = false; hold(); });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) interacting = false;
+        resume();
       });
-      section.addEventListener('focusout', function (event) {
-        focused = Boolean(event.relatedTarget && section.contains(event.relatedTarget) && event.relatedTarget.matches(':focus-visible'));
-        schedule();
-      });
-      document.addEventListener('visibilitychange', schedule);
-      motion.addEventListener('change', function (event) {
-        if (event.matches) viewport.scrollTo({ left: starts[current] || 0, behavior: 'instant' });
-        schedule();
+      motion.addEventListener('change', function () {
+        position = viewport.scrollLeft;
+        reducedAt = performance.now() + 6000;
+        resume();
       });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
           visible = entries[0].isIntersecting;
-          schedule();
-        }, { threshold: .2 }).observe(section);
+          resume();
+        }, { threshold: 0 }).observe(viewport);
       }
       if ('ResizeObserver' in window) new ResizeObserver(measure).observe(viewport);
       else window.addEventListener('resize', measure);
       measure();
     });
   }
-
   // Each platform has an independent, progressively enhanced carousel.
   initReviewCarousels();
 
