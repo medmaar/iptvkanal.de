@@ -9,6 +9,7 @@
     4: [36, 99, 140, 180],
     5: [45, 120, 175, 225]
   };
+  var CONTACT_EMAIL = 'kontakt@iptvkanal.de';
   var TERMS = ['1 Monat', '3 Monate', '6 Monate', '1 Jahr'];
   var tabs = Array.from(document.querySelectorAll('.device-switch [data-devices]'));
   var plans = Array.from(document.querySelectorAll('#plans .plan'));
@@ -34,7 +35,7 @@
       plan.querySelector('.plan-save').textContent = saving > 0 ? 'Sie sparen ' + saving + ' %' : '';
       var subject = 'IPTV Bestellung: ' + TERMS[index] + ', ' + deviceLabel(devices) + ' (' + price + ' €)';
       var body = 'Hallo,\n\nich möchte folgendes Paket bestellen:\n- Laufzeit: ' + TERMS[index] + '\n- Geräte: ' + devices + '\n- Preis: ' + price + ' €\n\nMein Gerät: ';
-      plan.querySelector('.plan-btn').href = 'mailto:info@iptvkanal.de?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      plan.querySelector('.plan-btn').href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     });
     document.getElementById('devices-hint').textContent = 'Gleichzeitig auf ' + deviceLabel(devices) + ' schauen. Wählen Sie Ihre passende Laufzeit.';
   }
@@ -344,6 +345,66 @@
   }
   // Each platform has an independent, progressively enhanced carousel.
   initReviewCarousels();
+
+  // Free-trial form: posts to /api/trial; without a working backend it opens a prefilled email instead.
+  function initTrialForm() {
+    var form = document.querySelector('[data-signup-form]');
+    if (!form) return;
+    var success = document.querySelector('[data-signup-success]');
+    var error = form.querySelector('[data-trial-error]');
+    var button = form.querySelector('button[type="submit"]');
+    var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function fail(html) { error.innerHTML = html; error.hidden = false; }
+    function mark(control, bad) {
+      var wrap = control.closest('.field, .check');
+      if (wrap) wrap.classList.toggle('invalid', bad);
+      control.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      return bad;
+    }
+    function done(email) {
+      form.hidden = true;
+      success.querySelector('[data-trial-email]').textContent = email;
+      success.hidden = false;
+      success.focus();
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      error.hidden = true;
+      var data = {};
+      new FormData(form).forEach(function (value, key) { data[key] = String(value).trim(); });
+      var invalid = [
+        mark(form.elements.first_name, !data.first_name),
+        mark(form.elements.last_name, !data.last_name),
+        mark(form.elements.email, !pattern.test(data.email || '')),
+        mark(form.elements.device, !data.device),
+        mark(form.elements.consent, !form.elements.consent.checked)
+      ];
+      if (invalid.some(Boolean)) {
+        fail('Bitte füllen Sie alle Pflichtfelder korrekt aus.');
+        var first = form.querySelector('[aria-invalid="true"]');
+        if (first) first.focus();
+        return;
+      }
+      button.disabled = true;
+      var fallback = function () {
+        var body = 'Hallo,\n\nich möchte IPTV Kanal kostenlos testen.\n\nName: ' + data.first_name + ' ' + data.last_name +
+          '\nE-Mail: ' + data.email + '\nWhatsApp: ' + (data.phone || '-') + '\nGerät: ' + data.device;
+        window.location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('Kostenlose Testanfrage') + '&body=' + encodeURIComponent(body);
+        fail('Ihr E-Mail-Programm öffnet sich mit Ihrer Anfrage. Bitte senden Sie die Nachricht ab oder schreiben Sie uns direkt an <a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a>.');
+        button.disabled = false;
+      };
+      fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+        .then(function (response) {
+          if (response.ok) { done(data.email); return; }
+          if (response.status === 400) { fail('Bitte prüfen Sie Ihre Angaben und versuchen Sie es erneut.'); button.disabled = false; return; }
+          fallback();
+        })
+        .catch(fallback);
+    });
+  }
+  initTrialForm();
 
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();

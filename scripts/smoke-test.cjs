@@ -20,7 +20,7 @@ const { chromium } = require('playwright');
     });
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => {
-      if (response.url().startsWith(base) && response.status() >= 400) failures.push(response.url());
+      if (response.url().startsWith(base) && response.status() >= 400 && !response.url().endsWith('/api/trial')) failures.push(response.url());
     });
     // All application assets, including fonts, must load from the site itself.
     await page.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
@@ -195,7 +195,7 @@ const { chromium } = require('playwright');
       assert.deepEqual(await page.locator('.plan-price b').allTextContents(), expected[devices - 1].map(String));
       const hrefs = await page.locator('.plan-btn').evaluateAll(links => links.map(link => link.getAttribute('href')));
       hrefs.forEach((href, index) => {
-        assert.ok(href.startsWith('mailto:info@iptvkanal.de?subject='));
+        assert.ok(href.startsWith('mailto:kontakt@iptvkanal.de?subject='));
         assert.ok(decodeURIComponent(href).includes(`Geräte: ${devices}`));
         assert.ok(decodeURIComponent(href).includes(`Preis: ${expected[devices - 1][index]} €`));
       });
@@ -221,18 +221,20 @@ const { chromium } = require('playwright');
       if (width <= 600) {
         assert.equal(await page.locator('.nav-cta .btn-primary').isVisible(), true, `Header action must stay visible at ${width}px`);
         assert.equal(await page.locator('[data-devices]').evaluateAll(buttons => buttons.every(button => button.getBoundingClientRect().height >= 44)), true, `Device controls must have usable touch targets at ${width}px`);
-        const photoLayout = await page.evaluate(() => {
+        // The photograph fills the entire first screen on phones.
+        const heroLayout = await page.evaluate(() => {
+          const stage = document.querySelector('.hero-stage').getBoundingClientRect();
           const photo = document.querySelector('.hero-backdrop').getBoundingClientRect();
-          const offer = document.querySelector('.hero-offer').getBoundingClientRect();
-          return { height: photo.height, ratio: photo.width / photo.height, unobstructed: offer.top >= photo.bottom - 2 };
+          return { top: stage.top + scrollY, width: stage.width, height: stage.height, photoWidth: photo.width, photoHeight: photo.height, viewport: innerHeight };
         });
-        assert.ok(photoLayout.height > 150 && Math.abs(photoLayout.ratio - 16 / 9) < .03, `Hero photo must retain its full landscape composition at ${width}px`);
-        assert.equal(photoLayout.unobstructed, true, `Price offer must not cover the mobile hero photo at ${width}px`);
+        assert.equal(heroLayout.width, width, `Hero must be full width at ${width}px`);
+        assert.ok(heroLayout.height >= heroLayout.viewport - 1, `Hero must fill the first screen at ${width}px`);
+        assert.ok(heroLayout.photoWidth >= heroLayout.width && heroLayout.photoHeight >= heroLayout.height - 1, `Hero photo must cover the whole hero at ${width}px`);
         for (const [platform, count] of [['trustpilot', 20], ['whatsapp', 20], ['google', 20]]) {
           await page.waitForFunction(({ platform, count }) => {
             const section = document.querySelector(`[data-review-platform="${platform}"]`);
             return Number(getComputedStyle(section.querySelector('[data-review-viewport]')).getPropertyValue('--per-view')) === 1
-              && Number(section.querySelector('[data-review-total]').textContent) === count;
+              && section.querySelectorAll('[data-review-card]').length === count;
           }, { platform, count });
         }
       }
@@ -251,16 +253,74 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-supplied-logo.webp', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/preise/', '/kostenlos-testen/', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-supplied-logo.webp', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/preise/', '/kostenlos-testen/']) {
       await page.goto(base + target);
       await page.evaluate(() => document.fonts.ready);
       for (const wordmark of await page.locator('.brand-wordmark').all()) await wordmark.evaluate(image => image.decode());
     }
     assert.deepEqual(externalRequests, [], 'Pages must not request externally hosted assets');
     console.log('PASS all pages and fonts load locally with no external asset requests');
+    // Contact points and the two main actions.
+    await page.goto(base);
+    const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+    for (const file of ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html', 'assets/main.js']) {
+      const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+      assert.ok(!/info@iptvkanal|wa\.me|api\.whatsapp/.test(source), `${file} must use kontakt@iptvkanal.de and /go/wa only`);
+    }
+    assert.ok(html.includes('href="/go/wa"') && html.includes('href="mailto:kontakt@iptvkanal.de"'));
+    assert.equal(await page.locator('a[href="/go/wa"]').count() > 0, true);
+    for (const header of ['/', '/preise/', '/kostenlos-testen/']) {
+      await page.goto(base + header);
+      const actions = await page.locator('.nav-cta a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+      assert.deepEqual(actions, ['/preise/', '/kostenlos-testen/'], `Header on ${header} must offer exactly pricing and free trial`);
+    }
+    console.log('PASS kontakt@iptvkanal.de and /go/wa everywhere; header offers pricing and free trial only');
+
+    // The pricing page embeds the homepage's cards verbatim and stays interactive.
+    await page.goto(base);
+    const homeCards = await page.locator('#plans').evaluate(element => element.innerHTML);
+    await page.goto(base + '/preise/');
+    assert.equal(await page.locator('#plans').evaluate(element => element.innerHTML), homeCards, 'Pricing cards must match the homepage');
+    assert.equal(await page.locator('h1').count(), 1);
+    await page.locator('[data-devices="3"]').click();
+    assert.deepEqual(await page.locator('.plan-price b').allTextContents(), ['27', '75', '105', '135']);
+    assert.equal(await page.locator('svg use[href^="/#"]').count(), 0);
+    assert.equal(await page.locator('.plan-features li svg').first().evaluate(icon => icon.getBoundingClientRect().width > 0), true);
+    console.log('PASS pricing page reuses the homepage cards and updates prices');
+
+    // Free-trial form: validation, success, and the email fallback without a backend.
+    await page.goto(base + '/kostenlos-testen/');
+    assert.equal(await page.locator('h1').textContent(), 'Kostenlos testen');
+    assert.equal(await page.locator('.trial-price b').textContent(), '0');
+    await page.locator('[data-signup-form] button[type="submit"]').click();
+    assert.equal(await page.locator('[data-trial-error]').isVisible(), true);
+    const fill = async () => {
+      await page.fill('[name="first_name"]', 'Max');
+      await page.fill('[name="last_name"]', 'Mustermann');
+      await page.fill('[name="email"]', 'max@example.com');
+      await page.selectOption('[name="device"]', 'Smart-TV');
+      await page.check('[name="consent"]');
+    };
+    await fill();
+    let posted;
+    await page.route('**/api/trial', route => { posted = JSON.parse(route.request().postData()); route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }); });
+    await page.locator('[data-signup-form] button[type="submit"]').click();
+    await page.locator('[data-signup-success]').waitFor();
+    assert.equal(posted.email, 'max@example.com');
+    assert.equal(posted.device, 'Smart-TV');
+    assert.equal(await page.locator('[data-trial-email]').textContent(), 'max@example.com');
+    await page.unroute('**/api/trial');
+    await page.goto(base + '/kostenlos-testen/');
+    await fill();
+    await page.route('**/api/trial', route => route.fulfill({ status: 503, body: '{}' }));
+    await page.route('mailto:*', route => route.abort());
+    await page.locator('[data-signup-form] button[type="submit"]').click();
+    await page.waitForFunction(() => /E-Mail-Programm/.test(document.querySelector('[data-trial-error]').textContent));
+    console.log('PASS free-trial form validates, submits and falls back to email');
+
     const noJS = await browser.newContext({ javaScriptEnabled: false });
     const plain = await noJS.newPage();
     await plain.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());

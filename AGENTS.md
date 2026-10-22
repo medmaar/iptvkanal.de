@@ -8,6 +8,12 @@ and automatically deploys from `main`. A normal push is the deployment trigger;
 no separate manual deployment or Cloudflare API token is needed for that trigger.
 
 - Preserve unrelated changes. Run relevant checks before committing.
+- The `preise/` and `kostenlos-testen/` pages are generated from `index.html`: run
+  `python3 scripts/build-pages.py` after changing the header, footer, icon sprite or pricing section,
+  and before `version-assets.py`.
+- Contact points: email is `kontakt@iptvkanal.de`; WhatsApp is always the site-relative link `/go/wa`.
+- The free-trial form posts to `functions/api/trial.js`; it needs the Pages secret `RESEND_API_KEY`
+  (optional `TRIAL_TO`, `TRIAL_FROM`) to send mail, otherwise the page falls back to a prefilled email.
 - Run `python3 scripts/version-assets.py` after editing JavaScript, stylesheets, or the favicon,
   before tests and commits, to update the browser cache keys in the HTML pages.
 - Start the static server and use `node scripts/smoke-test.cjs` for site changes
