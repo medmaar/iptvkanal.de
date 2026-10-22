@@ -32,7 +32,7 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 - `assets/img/`: lokal gespeicherte Fotos und VOD-Poster.
 - `assets/fonts/`: lokale variable WOFF2-Schriften und vollständige Font-Lizenzen.
 - `assets/flags/`: lokale Länderflaggen als SVG-Grafiken.
-- `assets/brand/iptvkanal-supplied-logo.webp`: lokal gespeicherte, angepasste Fassung des gelieferten Logos in Elfenbein und gedecktem Champagnergold (#E4BD70) mit einem neuen TV-/Play-Symbol.
+- Das Logo ist eine reine Textmarke (`.wordmark`): „IPTV“ in Sora Bold, „KANAL“ in Sora Light in Champagnergold (#E4BD70), ohne Symbol.
 
 Die Schriften Inter und Sora werden lokal aus den Paketen
 `@fontsource-variable/inter@5.3.0` und `@fontsource-variable/sora@5.2.8`

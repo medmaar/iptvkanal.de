@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Keep browser cache keys in sync with scripts, styles, favicon, and wordmark."""
+"""Keep browser cache keys in sync with scripts, styles, and favicon."""
 import hashlib
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-for asset in ('assets/main.js', 'assets/base.css', 'assets/template.css', 'assets/favicon.svg', 'assets/brand/iptvkanal-supplied-logo.webp'):
+for asset in ('assets/main.js', 'assets/base.css', 'assets/template.css', 'assets/favicon.svg'):
     version = hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()[:12]
     pattern = re.compile(r'(?P<prefix>(?:src|href)="/?)' + re.escape(asset)
                          + r'(?:\?[^"\s]*)?(?P<suffix>")')

@@ -33,10 +33,13 @@ const { chromium } = require('playwright');
       assert.equal(await page.locator(`[${attribute}="${asset}?v=${version}"]`).count(), 1, `${asset} must use its current content hash to bypass older cached bundles`);
     }
     console.log('PASS current JavaScript and CSS cache keys match their contents');
-    assert.equal(await page.locator('.brand-wordmark').count(), 2);
-    for (const wordmark of await page.locator('.brand-wordmark').all()) {
-      await wordmark.evaluate(image => image.decode());
-      assert.equal(await wordmark.getAttribute('alt'), 'IPTV Kanal');
+    // The logo is a text-only wordmark: one bold word with a lighter word attached.
+    assert.equal(await page.locator('.wordmark').count(), 2);
+    assert.equal(await page.locator('.logo img').count(), 0);
+    for (const wordmark of await page.locator('.wordmark').all()) {
+      assert.equal(await wordmark.locator('b').textContent(), 'IPTV');
+      assert.equal(await wordmark.locator('b').evaluate(element => getComputedStyle(element).fontWeight), '700');
+      assert.equal(await wordmark.locator('span').evaluate(element => getComputedStyle(element).fontWeight), '300');
     }
     for (const section of ['#bewertungen', '#vod']) {
       assert.equal(await page.locator(section).evaluate(element => getComputedStyle(element).backgroundColor), await page.locator('body').evaluate(element => getComputedStyle(element).backgroundColor));
@@ -253,13 +256,13 @@ const { chromium } = require('playwright');
 
     const badAnchors = await page.locator('a[href^="#"]').evaluateAll(links => links.filter(link => !document.getElementById(link.hash.slice(1))).map(link => link.hash));
     assert.deepEqual(badAnchors, []);
-    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/preise/', '/kostenlos-testen/', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/brand/iptvkanal-supplied-logo.webp', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
+    for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/preise/', '/kostenlos-testen/', '/assets/main.js', '/assets/template.css', '/assets/base.css', '/assets/fonts/inter-latin-variable.woff2', '/assets/fonts/sora-latin-variable.woff2', '/assets/img/hero-carnival.webp', '/assets/review-platforms.json', '/sitemap.xml', '/robots.txt']) {
       assert.equal((await page.request.get(base + target)).status(), 200, target);
     }
     for (const target of ['/impressum.html', '/datenschutz.html', '/404.html', '/preise/', '/kostenlos-testen/']) {
       await page.goto(base + target);
       await page.evaluate(() => document.fonts.ready);
-      for (const wordmark of await page.locator('.brand-wordmark').all()) await wordmark.evaluate(image => image.decode());
+      assert.equal(await page.locator('.wordmark').count(), 2, `${target} must show the wordmark`);
     }
     assert.deepEqual(externalRequests, [], 'Pages must not request externally hosted assets');
     console.log('PASS all pages and fonts load locally with no external asset requests');
