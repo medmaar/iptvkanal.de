@@ -54,7 +54,8 @@ Wischgeste vergleichen. Eine lokale Bildschirm-Illustration zeigt TV und Handy.
 Animationen respektieren die Einstellung für reduzierte Bewegung.
 
 Die Aktionsbuttons verwenden dunkle Bronze-Gold-Flächen mit hellgoldener
-Beschriftung, dezenten Konturen und weich gerundeten Ecken. Das Jahrespaket setzt
+Beschriftung und weich auslaufenden Kanten. Die Hintergrundflächen der Buttons
+werden separat maskiert; Beschriftung und Tastatur-Fokusringe bleiben scharf. Das Jahrespaket setzt
 sich mit einem dunklen, goldschimmernden Hintergrund ab. Die Preiskarten
 wechseln beim Hover weich zwischen Position und Schatten. Der Bewertungsbereich
 verwendet denselben dunklen Hintergrund wie die übrige Seitenfläche;
