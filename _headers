@@ -15,3 +15,6 @@
   Cache-Control: public, max-age=0, must-revalidate
 /kostenlos-testen/index.html
   Cache-Control: public, max-age=0, must-revalidate
+
+/bestellen/*
+  Cache-Control: public, max-age=0, must-revalidate

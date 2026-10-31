@@ -662,12 +662,12 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
 }
 @media (prefers-reduced-motion: reduce) { .success-check path { stroke-dashoffset: 0; } }
 
-/* Two direct calls to action; plan choices remain ordinary form controls. */
+/* Main calls to action and direct links to individual plan pages. */
 .pricing-actions { justify-content: center; margin-top: 32px; }
 .plan-choice { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 12px; margin-top: auto; border-radius: 12px; background: #e4bd700d; color: #eed29b; font-size: .8rem; cursor: pointer; }
-.plan-choice input { width: 18px; height: 18px; accent-color: var(--gold); flex: none; }
-.plan-choice:focus-within { outline: 2px solid var(--gold); outline-offset: 3px; }
-.plan.plan-selected { border-color: #e4bd7090; }
+.plan-choice::after { content: ""; position: absolute; inset: 0; border-radius: 18px; }
+.plan-choice:focus-visible { outline: none; }
+.plan-choice:focus-visible::after { outline: 2px solid var(--gold); outline-offset: 4px; }
 .subpage .pricing .pricing-actions { display: none; }
 .subpage .pricing { padding-top: 30px; padding-bottom: 48px; }
 .subpage .pricing .section-head { display: none; }
@@ -675,11 +675,6 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
 .page-intro .trial-wrap { max-width: 760px; }
 .trial-price small { font-size: 1rem; font-weight: 400; color: var(--text-2); }
 .order-instructions { color: var(--text-2); font-size: .9rem; line-height: 1.8; margin: 14px auto 0; max-width: 540px; }
-.order-request { padding-top: 0; }
-.order-request h2 { font-size: clamp(1.65rem, 4vw, 2.3rem); line-height: 1.2; font-weight: 500; }
-.selected-package { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 20px 22px; margin-top: 20px; border-radius: 16px; background: #e4bd700b; border: 1px solid #e4bd7026; text-align: left; color: var(--text-2); }
-.selected-package b { color: var(--text); }
-.selected-package strong { font: 500 1.9rem/1.3 Sora, sans-serif; color: var(--gold); }
 .form-help { color: var(--text-2); font-size: .83rem; line-height: 1.7; margin: 0; }
 .field textarea { width: 100%; min-height: 115px; resize: vertical; padding: 12px 14px; border: 1px solid #ffffff1f; border-radius: 12px; background: #0f1016; color: #f1ecf6; font: inherit; font-size: 1rem; }
 .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px #e4bd7026; }

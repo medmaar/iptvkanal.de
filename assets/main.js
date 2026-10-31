@@ -15,29 +15,30 @@
   var MONTHS = [1, 3, 6, 12];
   var tabs = Array.from(document.querySelectorAll('.device-switch [data-devices]'));
   var plans = Array.from(document.querySelectorAll('#plans .plan'));
+  var PLAN_PATHS = { 1: '/bestellen/1-monat/', 3: '/bestellen/3-monate/', 6: '/bestellen/6-monate/', 12: '/bestellen/1-jahr/' };
   var query = new URLSearchParams(window.location.search);
+  var orderPage = document.querySelector('[data-order-page]');
   var selectedDevices = PRICES[Number(query.get('devices'))] ? Number(query.get('devices')) : 1;
-  var selectedMonths = MONTHS.indexOf(Number(query.get('months'))) >= 0 ? Number(query.get('months')) : 1;
+  var selectedMonths = orderPage ? Number(orderPage.dataset.months) : 1;
 
   function deviceLabel(n) { return n + (n === 1 ? ' Gerät' : ' Geräte'); }
   function euro(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
   function updateSelection() {
-    plans.forEach(function (plan) {
-      var active = Number(plan.dataset.months) === selectedMonths;
-      plan.classList.toggle('plan-selected', active);
-      plan.querySelector('[name="months"]').checked = active;
+    plans.forEach(function (plan, index) {
+      var months = Number(plan.dataset.months);
+      var link = plan.querySelector('[data-plan-link]');
+      link.href = PLAN_PATHS[months] + '?devices=' + selectedDevices;
+      link.setAttribute('aria-label', TERMS[index] + ' für ' + deviceLabel(selectedDevices) + ' bestellen (' + PRICES[selectedDevices][index] + ' €)');
     });
-    document.querySelectorAll('[data-pricing-link]').forEach(function (link) {
-      link.href = '/preise/?months=' + selectedMonths + '&devices=' + selectedDevices;
-    });
+    document.querySelectorAll('[data-starting-price]').forEach(function (element) { element.textContent = PRICES[selectedDevices][0]; });
     var orderForm = document.querySelector('[data-order-form]');
     if (orderForm) {
       orderForm.elements.devices.value = selectedDevices;
+      orderForm.elements.months.value = selectedMonths;
       document.querySelector('[data-selected-term]').textContent = TERMS[MONTHS.indexOf(selectedMonths)];
       document.querySelector('[data-selected-devices]').textContent = deviceLabel(selectedDevices);
       document.querySelector('[data-selected-price]').textContent = PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)];
-      document.querySelector('[data-starting-price]').textContent = PRICES[selectedDevices][0];
     }
   }
 
@@ -62,12 +63,6 @@
     updateSelection();
   }
 
-  plans.forEach(function (plan) {
-    plan.querySelector('[name="months"]').addEventListener('change', function () {
-      selectedMonths = Number(this.value);
-      updateSelection();
-    });
-  });
   tabs.forEach(function (button, index) {
     button.addEventListener('click', function () { selectDevices(button); });
     button.addEventListener('keydown', function (event) {
@@ -83,6 +78,7 @@
     });
   });
   if (tabs.length) selectDevices(tabs[selectedDevices - 1]);
+  else if (orderPage) updateSelection();
   var menu = document.querySelector('.menu-btn');
   var links = document.getElementById('nav-links');
   if (menu && links) {

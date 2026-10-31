@@ -179,6 +179,7 @@ const { chromium } = require('playwright');
 
     assert.equal(await page.locator('.hero-backdrop').evaluate(element => getComputedStyle(element).backgroundImage.includes('hero-carnival.webp')), true);
     assert.equal(await page.locator('body').evaluate(element => getComputedStyle(element).colorScheme), 'dark');
+    assert.equal(await page.locator('.hero-offer').getAttribute('href'), '/bestellen/1-jahr/?devices=1');
     assert.equal(await page.locator('[data-review-platform="trustpilot"] .platform-review-stars').first().evaluate(element => getComputedStyle(element).color), 'rgb(0, 182, 122)');
     assert.equal(await page.locator('[data-review-platform="google"] .platform-review-stars').first().evaluate(element => getComputedStyle(element).color), 'rgb(251, 188, 4)');
     assert.equal(await page.locator('.highlights .slide').count(), 6);
@@ -197,11 +198,10 @@ const { chromium } = require('playwright');
       await page.locator(`[data-devices="${devices}"]`).click();
       assert.deepEqual(await page.locator('.plan-price b').allTextContents(), expected[devices - 1].map(String));
       for (const months of [1, 3, 6, 12]) {
-        await page.locator(`[name="months"][value="${months}"]`).check();
-        const choice = new URL(await page.locator('[data-pricing-link]').getAttribute('href'), base);
-        assert.equal(choice.pathname, '/preise/');
+        const choice = new URL(await page.locator(`.plan[data-months="${months}"] [data-plan-link]`).getAttribute('href'), base);
+        const slug = { 1: '1-monat', 3: '3-monate', 6: '6-monate', 12: '1-jahr' }[months];
+        assert.equal(choice.pathname, '/bestellen/' + slug + '/');
         assert.equal(choice.searchParams.get('devices'), String(devices));
-        assert.equal(choice.searchParams.get('months'), String(months));
       }
     }
     await page.locator('[data-devices="5"]').press('ArrowRight');
@@ -267,7 +267,7 @@ const { chromium } = require('playwright');
     assert.deepEqual(externalRequests, [], 'Pages must not request externally hosted assets');
     console.log('PASS all pages and fonts load locally with no external asset requests');
     // Only Free Trial and Pricing are marketing CTAs on every page.
-    const files = ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html'];
+    const files = ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html', 'bestellen/1-monat/index.html', 'bestellen/3-monate/index.html', 'bestellen/6-monate/index.html', 'bestellen/1-jahr/index.html'];
     const sourceHome = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
     const sharedHeader = sourceHome.match(/<header class="header"[^>]*>[\s\S]*?<\/header>/)[0];
     const sharedFooter = sourceHome.match(/<footer class="footer">[\s\S]*?<\/footer>/)[0];
@@ -284,29 +284,50 @@ const { chromium } = require('playwright');
       }
       assert.deepEqual(await page.locator('.nav-cta a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['/preise/', '/kostenlos-testen/']);
     }
-    console.log('PASS only two marketing CTA destinations and identical headers/footers on all six pages');
+    console.log('PASS only two marketing CTA destinations and identical headers/footers on all ten pages');
 
     await page.goto(base);
+    assert.equal(await page.locator('[data-request-form]').count(), 0);
     const homeCards = await page.locator('#plans').evaluate(element => element.innerHTML);
     await page.goto(base + '/preise/');
     assert.equal(await page.locator('#plans').evaluate(element => element.innerHTML), homeCards, 'Pricing cards must match the homepage exactly');
     assert.equal(await page.locator('h1').textContent(), 'Preise & Pakete');
+    assert.equal(await page.locator('[data-request-form], #bestellung').count(), 0, 'The catalogue must not contain the order form');
     assert.equal(await page.locator('[data-starting-price]').textContent(), '9');
-    await page.locator('[data-devices="3"]').click();
-    assert.deepEqual(await page.locator('.plan-price b').allTextContents(), ['27', '75', '105', '135']);
-    await page.locator('[name="months"][value="12"]').check();
-    assert.equal(await page.locator('[data-selected-price]').textContent(), '135');
-    assert.equal(await page.locator('[data-selected-devices]').textContent(), '3 Geräte');
-    assert.equal(await page.locator('svg use[href^="/#"]').count(), 0);
-    await page.goto(base + '/preise/?months=6&devices=4');
-    assert.equal(await page.locator('[name="months"][value="6"]').isChecked(), true);
+
+    const orderRoutes = ['/bestellen/1-monat/', '/bestellen/3-monate/', '/bestellen/6-monate/', '/bestellen/1-jahr/'];
+    // Click the body of each card on both catalogues, not only its action link.
+    for (const catalogue of ['/', '/preise/']) {
+      for (const [index, months] of [1, 3, 6, 12].entries()) {
+        const devices = index + 1;
+        await page.goto(base + catalogue);
+        await page.locator(`[data-devices="${devices}"]`).click();
+        await page.locator(`.plan[data-months="${months}"]`).click({ position: { x: 35, y: 45 } });
+        await page.waitForURL(base + orderRoutes[index] + '?devices=' + devices);
+        assert.equal(await page.locator('[data-order-page]').getAttribute('data-months'), String(months));
+        assert.equal(await page.locator('[data-selected-devices]').textContent(), devices + (devices === 1 ? ' Gerät' : ' Geräte'));
+        assert.equal(await page.locator('[data-selected-price]').textContent(), String(expected[devices - 1][index]));
+        assert.equal(await page.locator('[data-order-form]').count(), 1);
+        assert.equal(await page.locator('#plans').count(), 0);
+      }
+    }
+    // All 20 deep links retain the selected quantity and price. The URL path owns the duration.
+    for (const [index, route] of orderRoutes.entries()) {
+      for (let devices = 1; devices <= 5; devices++) {
+        await page.goto(base + route + '?devices=' + devices);
+        assert.equal(await page.locator('[data-selected-price]').textContent(), String(expected[devices - 1][index]));
+        assert.equal(await page.locator('[data-order-form] [name="devices"]').inputValue(), String(devices));
+        assert.equal(await page.locator('[data-order-form] [name="months"]').inputValue(), String([1,3,6,12][index]));
+      }
+    }
+    await page.goto(base + '/bestellen/6-monate/?months=12&devices=4');
+    assert.equal(await page.locator('[data-selected-term]').textContent(), '6 Monate');
     assert.equal(await page.locator('[data-selected-price]').textContent(), '140');
-    assert.equal(await page.locator('[data-order-form] [name="devices"]').inputValue(), '4');
-    console.log('PASS identical homepage/pricing plans, all 20 price choices, and preselected plan/device details');
+    console.log('PASS no catalogue order form, whole-card navigation, four dedicated plan pages and all 20 correct device/price combinations');
 
     // Both optional forms accept blanks, any single field, and free-form values.
     for (const kind of ['trial', 'order']) {
-      const target = kind === 'trial' ? '/kostenlos-testen/' : '/preise/';
+      const target = kind === 'trial' ? '/kostenlos-testen/' : '/bestellen/1-monat/';
       let posted;
       await page.route('https://api.emailjs.com/api/v1.0/email/send', route => {
         posted = JSON.parse(route.request().postData());
@@ -316,6 +337,7 @@ const { chromium } = require('playwright');
         await page.goto(base + target);
         const form = page.locator('[data-request-form]');
         assert.equal(await form.locator('[required], [aria-required="true"]').count(), 0);
+        assert.equal(/\(optional\)/i.test(await form.locator('.field > span').allTextContents().then(text => text.join(' '))), false, 'Field labels must not display optional tags');
         assert.deepEqual(await form.locator('.field input, .field textarea').evaluateAll(fields => fields.map(field => field.name)), ['name', 'email', 'phone', 'note']);
         if (kind === 'trial') assert.equal(await page.locator('.trial-price b').textContent(), '0');
         for (const [field, value] of Object.entries(details)) await form.locator(`[name="${field}"]`).fill(value);
@@ -335,7 +357,7 @@ const { chromium } = require('playwright');
       }
       await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
     }
-    await page.goto(base + '/preise/?months=12&devices=3');
+    await page.goto(base + '/bestellen/1-jahr/?devices=3');
     let orderDetails;
     await page.route('https://api.emailjs.com/api/v1.0/email/send', route => {
       orderDetails = JSON.parse(route.request().postData());
@@ -368,7 +390,7 @@ const { chromium } = require('playwright');
 
     for (const width of [1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 844 });
-      for (const target of ['/kostenlos-testen/', '/preise/']) {
+      for (const target of ['/kostenlos-testen/', ...orderRoutes]) {
         await page.goto(base + target);
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${target} overflow at ${width}px`);
         assert.equal(await page.locator('.nav-cta .btn-primary').isVisible(), true);
@@ -387,8 +409,11 @@ const { chromium } = require('playwright');
     const plainRail = plain.locator('[data-review-viewport]').first();
     await plainRail.evaluate(element => { element.scrollLeft = element.scrollWidth; });
     assert.ok(await plainRail.evaluate(element => element.scrollLeft > 0));
-    assert.equal(await plain.locator('.plan-choice input[type="radio"]').count(), 4);
-    assert.equal(await plain.locator('[data-pricing-link]').getAttribute('href'), '/preise/');
+    assert.equal(await plain.locator('[data-plan-link]').count(), 4);
+    assert.equal(await plain.locator('[data-plan-link]').nth(2).getAttribute('href'), '/bestellen/6-monate/?devices=1');
+    await plain.goto(base + '/bestellen/6-monate/');
+    assert.equal(await plain.locator('[data-selected-price]').textContent(), '39');
+    assert.equal(await plain.locator('[data-order-form] [name="months"]').inputValue(), '6');
     await noJS.close();
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build both request pages from the homepage's shared header, footer and plans."""
+"""Build pricing, trial and individual order pages with shared navigation."""
 import re
 from pathlib import Path
 
@@ -51,17 +51,17 @@ PAGE = '''<!doctype html>
 '''
 
 
-def request_form(kind):
+def request_form(kind, months=1):
     order = kind == 'order'
     fields = '''
-      <label class="field"><span>Name <small>(optional)</small></span><input type="text" name="name" autocomplete="name" maxlength="160"></label>
-      <label class="field"><span>E-Mail-Adresse <small>(optional)</small></span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="254"></label>
-      <label class="field"><span>WhatsApp-Nummer <small>(optional)</small></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+49 …" maxlength="80"></label>
-      <label class="field"><span>Notiz <small>(optional)</small></span><textarea name="note" rows="4" maxlength="4000" placeholder="Ihre Wünsche oder Fragen"></textarea></label>'''
+      <label class="field"><span>Name</span><input type="text" name="name" autocomplete="name" maxlength="160"></label>
+      <label class="field"><span>E-Mail-Adresse</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="254"></label>
+      <label class="field"><span>WhatsApp-Nummer</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+49 …" maxlength="80"></label>
+      <label class="field"><span>Notiz</span><textarea name="note" rows="4" maxlength="4000" placeholder="Ihre Wünsche oder Fragen"></textarea></label>'''
     return f'''
     <form id="request-form" class="signup-form" data-request-form {'data-order-form' if order else ''} novalidate action="https://api.emailjs.com/api/v1.0/email/send-form" method="post" enctype="multipart/form-data" aria-describedby="request-help">
       <p class="form-help" id="request-help">Alle Angaben sind freiwillig. Für die Zusendung Ihres Zugangs können Sie E-Mail oder WhatsApp angeben.</p>
-      {'<input type="hidden" name="devices" value="1">' if order else ''}
+      {f'<input type="hidden" name="devices" value="1"><input type="hidden" name="months" value="{months}">' if order else ''}
       <input type="hidden" name="service_id" value="service_ehcnxxv">
       <input type="hidden" name="template_id" value="template_bfl916q">
       <input type="hidden" name="user_id" value="uTqKLVjvvwWeSZxdN">
@@ -94,35 +94,51 @@ trial = '''<section class="signup-page" aria-labelledby="trial-title">
   </div>
 </section>'''
 
-order = '''<section class="page-intro" aria-labelledby="order-page-title">
+pricing_page = '''<section class="page-intro" aria-labelledby="pricing-page-title">
   <div class="container trial-wrap trial-summary">
     <span class="eyebrow">IHR PAKET. IHRE WAHL.</span>
-    <h1 class="display" id="order-page-title">Preise &amp; Pakete</h1>
+    <h1 class="display" id="pricing-page-title">Preise &amp; Pakete</h1>
     <div class="trial-price"><small>ab</small><b data-starting-price>9</b><span>€</span></div>
     <p class="trial-meta">Einmal zahlen. Keine automatische Verlängerung.</p>
-    <p class="order-instructions">Paket wählen und das Formular absenden. Wir melden uns per E-Mail oder WhatsApp mit den Angaben zu Ihrem Zugang und zur Bestellung.</p>
+    <p class="order-instructions">Wählen Sie die Anzahl Ihrer Geräte und klicken Sie auf Ihr Wunschpaket. Auf der eigenen Paketseite können Sie Ihre Bestellung absenden.</p>
   </div>
 </section>
-''' + pricing + '''
-<section id="bestellung" class="order-request" aria-labelledby="order-form-title">
+''' + pricing
+
+
+def plan_page(months, term, price):
+    return f'''<section class="signup-page" data-order-page data-months="{months}" aria-labelledby="order-page-title">
   <div class="container trial-wrap">
     <div class="trial-summary">
-      <h2 class="display" id="order-form-title">Ihr Paket anfragen</h2>
-      <div class="selected-package" aria-live="polite"><span><b data-selected-term>1 Monat</b> · <span data-selected-devices>1 Gerät</span></span><strong><span data-selected-price>9</span> €</strong></div>
-      <p class="order-instructions">Sie können alle Felder leer lassen oder nur die Angaben eintragen, die Sie teilen möchten.</p>
-    </div>''' + request_form('order') + '''
+      <span class="eyebrow">IHR AUSGEWÄHLTES PAKET</span>
+      <h1 class="display" id="order-page-title"><span data-selected-term>{term}</span> IPTV</h1>
+      <div class="trial-price"><b data-selected-price>{price}</b><span>€</span></div>
+      <p class="trial-meta"><span data-selected-devices>1 Gerät</span> gleichzeitig · Einmaliger Paketpreis.<br>Keine automatische Verlängerung.</p>
+      <p class="order-instructions">Senden Sie das Formular für dieses Paket ab. Wir melden uns per E-Mail oder WhatsApp mit den Angaben zu Ihrem Zugang und zur Bezahlung.</p>
+      <a class="text-link" href="/preise/">Zur Paketübersicht</a>
+    </div>''' + request_form('order', months) + '''
   </div>
 </section>'''
 
+
 pages = {
     'preise/index.html': dict(path='/preise/', title='Preise &amp; Pakete – IPTV Kanal ab 9 €',
-        description='Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Laufzeit und Geräte auswählen und eine Anfrage mit freiwilligen Angaben senden.', body=order),
+        description='Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Geräteanzahl und Paket wählen und direkt auf der eigenen Paketseite bestellen.', body=pricing_page),
     'kostenlos-testen/index.html': dict(path='/kostenlos-testen/', title='Kostenlos testen – IPTV Kanal Testzugang',
         description='IPTV Kanal kostenlos anfragen. Name, E-Mail, WhatsApp und Notiz sind freiwillig – auch ein leeres Formular lässt sich absenden.', body=trial),
 }
+# Initial prices come directly from the homepage's plan cards.
+for months, slug, term in [(1, '1-monat', '1 Monat'), (3, '3-monate', '3 Monate'), (6, '6-monate', '6 Monate'), (12, '1-jahr', '1 Jahr')]:
+    card = re.search(r'<article class="plan[^>]*data-months="' + str(months) + r'".*?</article>', pricing, re.S).group(0)
+    price = re.search(r'class="plan-price[^>]*><b>(\d+)</b>', card).group(1)
+    pages[f'bestellen/{slug}/index.html'] = dict(
+        path=f'/bestellen/{slug}/', title=f'{term} IPTV bestellen – IPTV Kanal',
+        description=f'{term} IPTV für die gewählte Geräteanzahl bestellen. Name, E-Mail, WhatsApp und Notiz sind freiwillig.',
+        body=plan_page(months, term, price))
+
 for target, page in pages.items():
     out = ROOT / target
-    out.parent.mkdir(exist_ok=True)
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(line.rstrip() for line in PAGE.format(favicon=favicon, styles=styles, sprite=sprite, header=header, footer=footer, script=script, **page).splitlines()) + "\n")
     print('Built', target)
 

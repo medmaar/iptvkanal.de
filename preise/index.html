@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Preise &amp; Pakete – IPTV Kanal ab 9 €</title>
-  <meta name="description" content="Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Laufzeit und Geräte auswählen und eine Anfrage mit freiwilligen Angaben senden.">
+  <meta name="description" content="Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Geräteanzahl und Paket wählen und direkt auf der eigenen Paketseite bestellen.">
   <link rel="canonical" href="https://iptvkanal.de/preise/">
   <meta name="theme-color" content="#0d0e14">
   <link rel="icon" href="/assets/favicon.svg?v=950d3015b9a1" type="image/svg+xml">
@@ -12,10 +12,10 @@
   <meta property="og:locale" content="de_DE">
   <meta property="og:site_name" content="IPTV Kanal">
   <meta property="og:title" content="Preise &amp; Pakete – IPTV Kanal ab 9 €">
-  <meta property="og:description" content="Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Laufzeit und Geräte auswählen und eine Anfrage mit freiwilligen Angaben senden.">
+  <meta property="og:description" content="Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Geräteanzahl und Paket wählen und direkt auf der eigenen Paketseite bestellen.">
   <meta property="og:url" content="https://iptvkanal.de/preise/">
   <link rel="stylesheet" href="/assets/base.css?v=a1940dfae1ff">
-  <link rel="stylesheet" href="/assets/template.css?v=cfff06859993">
+  <link rel="stylesheet" href="/assets/template.css?v=e78c01ffe800">
 </head>
 <body class="subpage">
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -53,13 +53,13 @@
 <div class="nav-cta"><a href="/preise/" class="btn btn-ghost btn-sm desktop-contact">Preise</a><a href="/kostenlos-testen/" class="btn btn-primary btn-sm">Kostenlos testen <svg><use href="#i-arrow"/></svg></a><button class="menu-btn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-links"><span></span></button></div>
 </nav></header>
 <main id="main">
-<section class="page-intro" aria-labelledby="order-page-title">
+<section class="page-intro" aria-labelledby="pricing-page-title">
   <div class="container trial-wrap trial-summary">
     <span class="eyebrow">IHR PAKET. IHRE WAHL.</span>
-    <h1 class="display" id="order-page-title">Preise &amp; Pakete</h1>
+    <h1 class="display" id="pricing-page-title">Preise &amp; Pakete</h1>
     <div class="trial-price"><small>ab</small><b data-starting-price>9</b><span>€</span></div>
     <p class="trial-meta">Einmal zahlen. Keine automatische Verlängerung.</p>
-    <p class="order-instructions">Paket wählen und das Formular absenden. Wir melden uns per E-Mail oder WhatsApp mit den Angaben zu Ihrem Zugang und zur Bestellung.</p>
+    <p class="order-instructions">Wählen Sie die Anzahl Ihrer Geräte und klicken Sie auf Ihr Wunschpaket. Auf der eigenen Paketseite können Sie Ihre Bestellung absenden.</p>
   </div>
 </section>
 <section id="preise" class="pricing" aria-labelledby="pricing-title">
@@ -97,7 +97,7 @@
 
             <li><svg><use href="#i-check"/></svg>24/7 Deutscher Support</li>
           </ul>
-          <label class="plan-choice"><input type="radio" name="months" value="1" form="request-form" checked><span>1 Monat auswählen</span></label>
+          <a class="plan-choice" data-plan-link href="/bestellen/1-monat/?devices=1" aria-label="1 Monat bestellen">Paket wählen <svg aria-hidden="true" width="18" height="18"><use href="#i-arrow"/></svg></a>
         </article>
 
         <article class="plan reveal d1" data-months="3">
@@ -116,7 +116,7 @@
 
             <li><svg><use href="#i-check"/></svg>24/7 Deutscher Support</li>
           </ul>
-          <label class="plan-choice"><input type="radio" name="months" value="3" form="request-form"><span>3 Monate auswählen</span></label>
+          <a class="plan-choice" data-plan-link href="/bestellen/3-monate/?devices=1" aria-label="3 Monate bestellen">Paket wählen <svg aria-hidden="true" width="18" height="18"><use href="#i-arrow"/></svg></a>
         </article>
 
         <article class="plan reveal d2" data-months="6">
@@ -135,7 +135,7 @@
 
             <li><svg><use href="#i-check"/></svg>24/7 Deutscher Support</li>
           </ul>
-          <label class="plan-choice"><input type="radio" name="months" value="6" form="request-form"><span>6 Monate auswählen</span></label>
+          <a class="plan-choice" data-plan-link href="/bestellen/6-monate/?devices=1" aria-label="6 Monate bestellen">Paket wählen <svg aria-hidden="true" width="18" height="18"><use href="#i-arrow"/></svg></a>
         </article>
 
         <article class="plan featured reveal d3" data-months="12">
@@ -156,14 +156,14 @@
 
             <li><svg><use href="#i-check"/></svg>24/7 Deutscher Support</li>
           </ul>
-          <label class="plan-choice"><input type="radio" name="months" value="12" form="request-form"><span>1 Jahr auswählen</span></label>
+          <a class="plan-choice" data-plan-link href="/bestellen/1-jahr/?devices=1" aria-label="1 Jahr bestellen">Paket wählen <svg aria-hidden="true" width="18" height="18"><use href="#i-arrow"/></svg></a>
         </article>
       </div>
       <div class="plans-dots" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i></div>
       <p class="plan-swipe-hint">Wischen, um alle Laufzeiten zu vergleichen</p>
       <!-- plans:end -->
 
-      <div class="cta-pair pricing-actions"><a class="btn btn-primary" href="/preise/" data-pricing-link>Preise <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-ghost" href="/kostenlos-testen/">Kostenlos testen</a></div>
+      <div class="cta-pair pricing-actions"><a class="btn btn-primary" href="/preise/">Preise <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-ghost" href="/kostenlos-testen/">Kostenlos testen</a></div>
       <div class="pay-note reveal">
         <span><svg><use href="#i-bolt"/></svg>Hilfe bei der Einrichtung</span>
         <span><svg><use href="#i-shield"/></svg>Keine automatische Verlängerung</span>
@@ -171,42 +171,8 @@
       </div>
     </div>
   </section>
-<section id="bestellung" class="order-request" aria-labelledby="order-form-title">
-  <div class="container trial-wrap">
-    <div class="trial-summary">
-      <h2 class="display" id="order-form-title">Ihr Paket anfragen</h2>
-      <div class="selected-package" aria-live="polite"><span><b data-selected-term>1 Monat</b> · <span data-selected-devices>1 Gerät</span></span><strong><span data-selected-price>9</span> €</strong></div>
-      <p class="order-instructions">Sie können alle Felder leer lassen oder nur die Angaben eintragen, die Sie teilen möchten.</p>
-    </div>
-    <form id="request-form" class="signup-form" data-request-form data-order-form novalidate action="https://api.emailjs.com/api/v1.0/email/send-form" method="post" enctype="multipart/form-data" aria-describedby="request-help">
-      <p class="form-help" id="request-help">Alle Angaben sind freiwillig. Für die Zusendung Ihres Zugangs können Sie E-Mail oder WhatsApp angeben.</p>
-      <input type="hidden" name="devices" value="1">
-      <input type="hidden" name="service_id" value="service_ehcnxxv">
-      <input type="hidden" name="template_id" value="template_bfl916q">
-      <input type="hidden" name="user_id" value="uTqKLVjvvwWeSZxdN">
-      <input type="hidden" name="to_email" value="kontakt@iptvkanal.de">
-      <input type="hidden" name="reply_to" value="kontakt@iptvkanal.de">
-
-      <label class="field"><span>Name <small>(optional)</small></span><input type="text" name="name" autocomplete="name" maxlength="160"></label>
-      <label class="field"><span>E-Mail-Adresse <small>(optional)</small></span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="254"></label>
-      <label class="field"><span>WhatsApp-Nummer <small>(optional)</small></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+49 …" maxlength="80"></label>
-      <label class="field"><span>Notiz <small>(optional)</small></span><textarea name="note" rows="4" maxlength="4000" placeholder="Ihre Wünsche oder Fragen"></textarea></label>
-      <label class="hp" aria-hidden="true">Bitte leer lassen<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-      <p class="form-error" data-form-error role="alert" hidden></p>
-      <div class="request-fallback" data-request-fallback hidden><p>Alternativ können Sie Ihre Anfrage per E-Mail übermitteln:</p><a data-mail-fallback href="mailto:kontakt@iptvkanal.de">Anfrage per E-Mail senden</a></div>
-      <button class="btn btn-primary btn-block" type="submit"><span>Paket anfragen</span> <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-      <p class="form-legal">Ihre Angaben verwenden wir zur Bearbeitung Ihrer Anfrage. Mehr dazu in der <a href="/datenschutz.html">Datenschutzerklärung</a>.</p>
-    </form>
-    <div class="signup-success" data-request-success tabindex="-1" hidden>
-      <div class="success-check" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/><path d="M28 52l16 16 30-34"/></svg></div>
-      <h2>Anfrage erhalten</h2>
-      <p>Vielen Dank! Ihre Anfrage wurde übermittelt.</p>
-      <p class="muted">Wenn Sie E-Mail oder WhatsApp angegeben haben, melden wir uns darüber bei Ihnen.</p>
-    </div>
-  </div>
-</section>
 </main>
 <footer class="footer"><div class="container"><div class="footer-grid"><div><a class="logo" href="/" aria-label="IPTV Kanal Startseite"><span class="wordmark" translate="no"><b>IPTV</b><span>KANAL</span></span></a><p>Live-TV, Filme und Serien.<br>Auf Ihrem Bildschirm zu Hause.</p></div><div><p class="footer-title">Entdecken</p><a href="/#inhalte">Unterhaltung</a><a href="/#geraete">Geräte &amp; Apps</a><a href="/preise/">Pakete &amp; Preise</a><a href="/kostenlos-testen/">Kostenlos testen</a></div><div><p class="footer-title">Service</p><a href="mailto:kontakt@iptvkanal.de">kontakt@iptvkanal.de</a><a href="/go/wa" rel="noopener">WhatsApp</a><a href="/#faq">Häufige Fragen</a><a href="/#bewertungen">Bewertungen</a></div><div><p class="footer-title">Rechtliches</p><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> IPTV Kanal</span><a class="back-to-top" href="#top">Nach oben <svg aria-hidden="true" width="14" height="14" style="display:inline-block;vertical-align:middle;transform:rotate(-90deg)"><use href="#i-arrow"/></svg></a></div></div></footer>
-<script src="/assets/main.js?v=57f66e03bcfc" defer></script>
+<script src="/assets/main.js?v=350a284965fc" defer></script>
 </body>
 </html>

@@ -110,16 +110,16 @@ JavaScript ergänzt die getrennte Seitensteuerung und automatische Bewegung.
 ## Test- und Paketanfragen
 
 Alle Marketing-Buttons führen entweder zu `/kostenlos-testen/` (Kostenlos testen)
-oder `/preise/` (Preise). Die Geräte- und Laufzeitauswahl sind Formularelemente.
-Beide Anfrageseiten zeigen Titel, Einstiegspreis und Bestellablauf am Seitenanfang.
+oder `/preise/` (Preise). Die Geräteauswahl bleibt ein Formularelement; jede Paketkarte führt direkt auf ihre eigene Bestellseite.
+Die Test- und Bestellseiten zeigen Titel, Paketpreis und Bestellablauf am Seitenanfang. Die Preisübersicht enthält kein Bestellformular.
 `scripts/build-pages.py` übernimmt die Preiskarten unverändert aus der Startseite
-und synchronisiert Kopf- und Fußzeile auch auf den Rechts- und Fehlerseiten.
+und erzeugt vier Bestellseiten unter `/bestellen/1-monat/`, `/bestellen/3-monate/`, `/bestellen/6-monate/` und `/bestellen/1-jahr/`. Kopf- und Fußzeile werden auch auf den Rechts- und Fehlerseiten synchronisiert.
 
-Beide Formulare enthalten ausschließlich die freiwilligen Kundenfelder Name,
-E-Mail, WhatsApp und Notiz. Leere Formulare und frei eingegebene E-Mail-Texte werden
+Die Formulare enthalten ausschließlich die freiwilligen Kundenfelder Name,
+E-Mail, WhatsApp und Notiz; die Feldbeschriftungen zeigen keinen „optional“-Zusatz. Leere Formulare und frei eingegebene E-Mail-Texte werden
 nicht durch eine Pflichtfeld- oder Formatprüfung blockiert. Die Paketanfrage enthält
 die gewählte Laufzeit, Geräteanzahl und den zugehörigen Preis; Links von der
-Startseite können die Auswahl über `months` und `devices` übergeben.
+Startseite übergeben die Geräteanzahl über `devices`; die Laufzeit ist durch den Pfad der Bestellseite festgelegt.
 
 Die Formulare senden per Browser-REST-Aufruf an EmailJS, ohne externes JavaScript
 oder einen zusätzlichen serverseitigen API-Schlüssel:
