@@ -202,13 +202,16 @@ section { padding: clamp(70px, 7.5vw, 110px) 0; }
 .pay-note { font-size: .74rem; gap: 12px 24px; margin-top: 28px; }
 .plan-swipe-hint { display: none; }
 
-/* Benefits and setup use open layouts rather than another wall of panels. */
+/* Content categories and setup share the dark site theme. */
 #vorteile .section-head { max-width: 760px; }
+.content-offer .accent-text { color: var(--gold); }
+.content-offer .icon { background: #e4bd700a; border-color: #e4bd7024; }
+.content-offer .card:hover { background: #1e1c1a; border-color: #e4bd7050; }
 .bento { gap: 16px; }
 .card { border-radius: 16px; padding: 30px; background: #15161e; box-shadow: none; }
 .card:hover { border-color: #b9a1d34d; background: #1c1924; }
 .card::before { background: radial-gradient(400px circle at var(--mx,50%) var(--my,0%), #d8bfd812, transparent 65%); }
-.bento .card.wide:nth-child(2) { background: #251e2f; }
+.content-offer .card.wide:nth-child(2) { background: linear-gradient(135deg, #241f17, #17181f); }
 .icon { background: #b7a3e10c; border-color: #b7a3e11a; border-radius: 12px; width: 46px; height: 46px; }
 .icon svg { width: 22px; height: 22px; }
 .card h3 { font-size: 1.03rem; font-weight: 500; }
