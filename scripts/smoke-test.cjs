@@ -16,7 +16,7 @@ const { chromium } = require('playwright');
     const failures = [];
     const externalRequests = [];
     page.on('request', request => {
-      if (new URL(request.url()).origin !== new URL(base).origin) externalRequests.push(request.url());
+      if (new URL(request.url()).origin !== new URL(base).origin && request.url() !== 'https://api.emailjs.com/api/v1.0/email/send') externalRequests.push(request.url());
     });
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => {
@@ -196,12 +196,13 @@ const { chromium } = require('playwright');
     for (let devices = 1; devices <= 5; devices++) {
       await page.locator(`[data-devices="${devices}"]`).click();
       assert.deepEqual(await page.locator('.plan-price b').allTextContents(), expected[devices - 1].map(String));
-      const hrefs = await page.locator('.plan-btn').evaluateAll(links => links.map(link => link.getAttribute('href')));
-      hrefs.forEach((href, index) => {
-        assert.ok(href.startsWith('mailto:kontakt@iptvkanal.de?subject='));
-        assert.ok(decodeURIComponent(href).includes(`Geräte: ${devices}`));
-        assert.ok(decodeURIComponent(href).includes(`Preis: ${expected[devices - 1][index]} €`));
-      });
+      for (const months of [1, 3, 6, 12]) {
+        await page.locator(`[name="months"][value="${months}"]`).check();
+        const choice = new URL(await page.locator('[data-pricing-link]').getAttribute('href'), base);
+        assert.equal(choice.pathname, '/preise/');
+        assert.equal(choice.searchParams.get('devices'), String(devices));
+        assert.equal(choice.searchParams.get('months'), String(months));
+      }
     }
     await page.locator('[data-devices="5"]').press('ArrowRight');
     assert.equal(await page.locator('[data-devices="1"]').getAttribute('aria-pressed'), 'true');
@@ -209,10 +210,9 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('[data-devices="5"]').getAttribute('aria-pressed'), 'true');
     console.log('PASS all 20 prices, order details, and keyboard device selection');
 
-    await page.locator('#preise').evaluate(section => scrollTo(0, section.getBoundingClientRect().top + scrollY));
-    await page.waitForFunction(() => document.querySelector('#nav-links a[href="#preise"]').getAttribute('aria-current') === 'location');
+    assert.equal(await page.locator('#nav-links a').filter({ hasText: /^Preise$/ }).first().getAttribute('href'), '/preise/');
     await page.locator('#bewertungen').evaluate(section => scrollTo(0, section.getBoundingClientRect().top + scrollY));
-    await page.waitForFunction(() => document.querySelector('#nav-links a[href="#bewertungen"]').getAttribute('aria-current') === 'location');
+    await page.waitForFunction(() => document.querySelector('#nav-links a[href="/#bewertungen"]').getAttribute('aria-current') === 'location');
     assert.equal(await page.locator('#nav-links [aria-current="location"]').count(), 1);
     console.log('PASS navigation follows the visible section');
 
@@ -266,63 +266,117 @@ const { chromium } = require('playwright');
     }
     assert.deepEqual(externalRequests, [], 'Pages must not request externally hosted assets');
     console.log('PASS all pages and fonts load locally with no external asset requests');
-    // Contact points and the two main actions.
-    await page.goto(base);
-    const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
-    for (const file of ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html', 'assets/main.js']) {
+    // Only Free Trial and Pricing are marketing CTAs on every page.
+    const files = ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html'];
+    const sourceHome = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+    const sharedHeader = sourceHome.match(/<header class="header"[^>]*>[\s\S]*?<\/header>/)[0];
+    const sharedFooter = sourceHome.match(/<footer class="footer">[\s\S]*?<\/footer>/)[0];
+    for (const file of files) {
       const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
-      assert.ok(!/info@iptvkanal|wa\.me|api\.whatsapp/.test(source), `${file} must use kontakt@iptvkanal.de and /go/wa only`);
+      assert.equal(source.match(/<header class="header"[^>]*>[\s\S]*?<\/header>/)[0], sharedHeader, `${file}: identical header`);
+      assert.equal(source.match(/<footer class="footer">[\s\S]*?<\/footer>/)[0], sharedFooter, `${file}: identical footer`);
+      const target = file === 'index.html' ? '/' : file.replace('index.html', '');
+      await page.goto(new URL(target, base).href);
+      for (const button of await page.locator('a.btn').all()) {
+        const destination = new URL(await button.getAttribute('href'), base);
+        assert.ok(['/preise/', '/kostenlos-testen/'].includes(destination.pathname));
+        assert.ok(['Preise', 'Kostenlos testen'].includes((await button.textContent()).trim()));
+      }
+      assert.deepEqual(await page.locator('.nav-cta a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['/preise/', '/kostenlos-testen/']);
     }
-    assert.ok(html.includes('href="/go/wa"') && html.includes('href="mailto:kontakt@iptvkanal.de"'));
-    assert.equal(await page.locator('a[href="/go/wa"]').count() > 0, true);
-    for (const header of ['/', '/preise/', '/kostenlos-testen/']) {
-      await page.goto(base + header);
-      const actions = await page.locator('.nav-cta a').evaluateAll(links => links.map(link => link.getAttribute('href')));
-      assert.deepEqual(actions, ['/preise/', '/kostenlos-testen/'], `Header on ${header} must offer exactly pricing and free trial`);
-    }
-    console.log('PASS kontakt@iptvkanal.de and /go/wa everywhere; header offers pricing and free trial only');
+    console.log('PASS only two marketing CTA destinations and identical headers/footers on all six pages');
 
-    // The pricing page embeds the homepage's cards verbatim and stays interactive.
     await page.goto(base);
     const homeCards = await page.locator('#plans').evaluate(element => element.innerHTML);
     await page.goto(base + '/preise/');
-    assert.equal(await page.locator('#plans').evaluate(element => element.innerHTML), homeCards, 'Pricing cards must match the homepage');
-    assert.equal(await page.locator('h1').count(), 1);
+    assert.equal(await page.locator('#plans').evaluate(element => element.innerHTML), homeCards, 'Pricing cards must match the homepage exactly');
+    assert.equal(await page.locator('h1').textContent(), 'Preise & Pakete');
+    assert.equal(await page.locator('[data-starting-price]').textContent(), '9');
     await page.locator('[data-devices="3"]').click();
     assert.deepEqual(await page.locator('.plan-price b').allTextContents(), ['27', '75', '105', '135']);
+    await page.locator('[name="months"][value="12"]').check();
+    assert.equal(await page.locator('[data-selected-price]').textContent(), '135');
+    assert.equal(await page.locator('[data-selected-devices]').textContent(), '3 Geräte');
     assert.equal(await page.locator('svg use[href^="/#"]').count(), 0);
-    assert.equal(await page.locator('.plan-features li svg').first().evaluate(icon => icon.getBoundingClientRect().width > 0), true);
-    console.log('PASS pricing page reuses the homepage cards and updates prices');
+    await page.goto(base + '/preise/?months=6&devices=4');
+    assert.equal(await page.locator('[name="months"][value="6"]').isChecked(), true);
+    assert.equal(await page.locator('[data-selected-price]').textContent(), '140');
+    assert.equal(await page.locator('[data-order-form] [name="devices"]').inputValue(), '4');
+    console.log('PASS identical homepage/pricing plans, all 20 price choices, and preselected plan/device details');
 
-    // Free-trial form: validation, success, and the email fallback without a backend.
+    // Both optional forms accept blanks, any single field, and free-form values.
+    for (const kind of ['trial', 'order']) {
+      const target = kind === 'trial' ? '/kostenlos-testen/' : '/preise/';
+      let posted;
+      await page.route('https://api.emailjs.com/api/v1.0/email/send', route => {
+        posted = JSON.parse(route.request().postData());
+        return route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
+      });
+      for (const details of [{}, { name: 'Max' }, { email: 'anything at all' }, { phone: '+49 123' }, { note: 'Nur eine Notiz\nVielen Dank!' }, { name: 'Max Mustermann', email: 'max@example.com', phone: '+49 123', note: 'Bitte per WhatsApp antworten.' }]) {
+        await page.goto(base + target);
+        const form = page.locator('[data-request-form]');
+        assert.equal(await form.locator('[required], [aria-required="true"]').count(), 0);
+        assert.deepEqual(await form.locator('.field input, .field textarea').evaluateAll(fields => fields.map(field => field.name)), ['name', 'email', 'phone', 'note']);
+        if (kind === 'trial') assert.equal(await page.locator('.trial-price b').textContent(), '0');
+        for (const [field, value] of Object.entries(details)) await form.locator(`[name="${field}"]`).fill(value);
+        await form.locator('button[type="submit"]').click();
+        await page.locator('[data-request-success]').waitFor();
+        assert.equal(posted.service_id, 'service_ehcnxxv');
+        assert.equal(posted.template_id, 'template_bfl916q');
+        assert.equal(posted.user_id, 'uTqKLVjvvwWeSZxdN');
+        const params = posted.template_params;
+        assert.equal(params.to_email, 'kontakt@iptvkanal.de');
+        for (const field of ['phone', 'note']) assert.equal(params[field], details[field] || '');
+        assert.equal(params.customer_email, details.email || '');
+        if (details.name) assert.equal(params.from_name, details.name);
+        if (details.email) assert.ok(params.message.includes(details.email));
+        assert.equal(params.reply_to, details.email === 'max@example.com' ? details.email : 'kontakt@iptvkanal.de');
+        if (kind === 'order') { assert.equal(params.months, 1); assert.equal(params.devices, 1); assert.equal(params.price, 9); }
+      }
+      await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
+    }
+    await page.goto(base + '/preise/?months=12&devices=3');
+    let orderDetails;
+    await page.route('https://api.emailjs.com/api/v1.0/email/send', route => {
+      orderDetails = JSON.parse(route.request().postData());
+      return route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
+    });
+    await page.locator('[data-request-form] button[type="submit"]').click();
+    await page.locator('[data-request-success]').waitFor();
+    assert.equal(orderDetails.template_params.months, 12);
+    assert.equal(orderDetails.template_params.devices, 3);
+    assert.equal(orderDetails.template_params.price, 135);
+    await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
+
+    // A failed submission stays on the page, preserves input, and can be retried.
     await page.goto(base + '/kostenlos-testen/');
-    assert.equal(await page.locator('h1').textContent(), 'Kostenlos testen');
-    assert.equal(await page.locator('.trial-price b').textContent(), '0');
-    await page.locator('[data-signup-form] button[type="submit"]').click();
-    assert.equal(await page.locator('[data-trial-error]').isVisible(), true);
-    const fill = async () => {
-      await page.fill('[name="first_name"]', 'Max');
-      await page.fill('[name="last_name"]', 'Mustermann');
-      await page.fill('[name="email"]', 'max@example.com');
-      await page.selectOption('[name="device"]', 'Smart-TV');
-      await page.check('[name="consent"]');
-    };
-    await fill();
-    let posted;
-    await page.route('**/api/trial', route => { posted = JSON.parse(route.request().postData()); route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' }); });
-    await page.locator('[data-signup-form] button[type="submit"]').click();
-    await page.locator('[data-signup-success]').waitFor();
-    assert.equal(posted.email, 'max@example.com');
-    assert.equal(posted.device, 'Smart-TV');
-    assert.equal(await page.locator('[data-trial-email]').textContent(), 'max@example.com');
-    await page.unroute('**/api/trial');
-    await page.goto(base + '/kostenlos-testen/');
-    await fill();
-    await page.route('**/api/trial', route => route.fulfill({ status: 503, body: '{}' }));
-    await page.route('mailto:*', route => route.abort());
-    await page.locator('[data-signup-form] button[type="submit"]').click();
-    await page.waitForFunction(() => /E-Mail-Programm/.test(document.querySelector('[data-trial-error]').textContent));
-    console.log('PASS free-trial form validates, submits and falls back to email');
+    await page.fill('[name="note"]', 'Meine Anfrage bleibt erhalten.');
+    await page.route('https://api.emailjs.com/api/v1.0/email/send', route => route.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
+    await page.locator('[data-request-form] button[type="submit"]').click();
+    await page.locator('[data-form-error]').waitFor();
+    assert.equal(page.url(), base + '/kostenlos-testen/');
+    assert.equal(await page.locator('[name="note"]').inputValue(), 'Meine Anfrage bleibt erhalten.');
+    assert.equal(await page.locator('[data-request-success]').isVisible(), false);
+    assert.equal(await page.locator('[data-request-form] button[type="submit"]').isEnabled(), true);
+    assert.ok(decodeURIComponent(await page.locator('[data-mail-fallback]').getAttribute('href')).includes('Meine Anfrage bleibt erhalten.'));
+    await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
+    await page.route('https://api.emailjs.com/api/v1.0/email/send', route => route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' }));
+    await page.locator('[data-request-form] button[type="submit"]').click();
+    await page.locator('[data-request-success]').waitFor();
+    await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
+    console.log('PASS empty/partial/free-form trial and order submissions, plan context, clear failure state and retry');
+
+    for (const width of [1440, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 844 });
+      for (const target of ['/kostenlos-testen/', '/preise/']) {
+        await page.goto(base + target);
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${target} overflow at ${width}px`);
+        assert.equal(await page.locator('.nav-cta .btn-primary').isVisible(), true);
+        await page.locator('[data-request-form] button[type="submit"]').scrollIntoViewIfNeeded();
+        assert.equal(await page.locator('[data-request-form] button[type="submit"]').isVisible(), true);
+      }
+    }
+    console.log('PASS responsive request pages and usable forms at 320px–1440px');
 
     const noJS = await browser.newContext({ javaScriptEnabled: false });
     const plain = await noJS.newPage();
@@ -333,7 +387,8 @@ const { chromium } = require('playwright');
     const plainRail = plain.locator('[data-review-viewport]').first();
     await plainRail.evaluate(element => { element.scrollLeft = element.scrollWidth; });
     assert.ok(await plainRail.evaluate(element => element.scrollLeft > 0));
-    assert.equal(await plain.locator('.plan-btn[href^="mailto:"]').count(), 4);
+    assert.equal(await plain.locator('.plan-choice input[type="radio"]').count(), 4);
+    assert.equal(await plain.locator('[data-pricing-link]').getAttribute('href'), '/preise/');
     await noJS.close();
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  // Existing IPTV Kanal prices, in euros: 1, 3, 6 and 12 months.
+  // The same cards and prices are used on the homepage and the pricing page.
   var PRICES = {
     1: [9, 29, 39, 49],
     2: [18, 50, 69, 89],
@@ -10,15 +10,39 @@
     5: [45, 120, 175, 225]
   };
   var CONTACT_EMAIL = 'kontakt@iptvkanal.de';
+  var EMAILJS = { service_id: 'service_ehcnxxv', template_id: 'template_bfl916q', user_id: 'uTqKLVjvvwWeSZxdN' };
   var TERMS = ['1 Monat', '3 Monate', '6 Monate', '1 Jahr'];
+  var MONTHS = [1, 3, 6, 12];
   var tabs = Array.from(document.querySelectorAll('.device-switch [data-devices]'));
   var plans = Array.from(document.querySelectorAll('#plans .plan'));
+  var query = new URLSearchParams(window.location.search);
+  var selectedDevices = PRICES[Number(query.get('devices'))] ? Number(query.get('devices')) : 1;
+  var selectedMonths = MONTHS.indexOf(Number(query.get('months'))) >= 0 ? Number(query.get('months')) : 1;
 
   function deviceLabel(n) { return n + (n === 1 ? ' Gerät' : ' Geräte'); }
   function euro(n) { return n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
+  function updateSelection() {
+    plans.forEach(function (plan) {
+      var active = Number(plan.dataset.months) === selectedMonths;
+      plan.classList.toggle('plan-selected', active);
+      plan.querySelector('[name="months"]').checked = active;
+    });
+    document.querySelectorAll('[data-pricing-link]').forEach(function (link) {
+      link.href = '/preise/?months=' + selectedMonths + '&devices=' + selectedDevices;
+    });
+    var orderForm = document.querySelector('[data-order-form]');
+    if (orderForm) {
+      orderForm.elements.devices.value = selectedDevices;
+      document.querySelector('[data-selected-term]').textContent = TERMS[MONTHS.indexOf(selectedMonths)];
+      document.querySelector('[data-selected-devices]').textContent = deviceLabel(selectedDevices);
+      document.querySelector('[data-selected-price]').textContent = PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)];
+      document.querySelector('[data-starting-price]').textContent = PRICES[selectedDevices][0];
+    }
+  }
+
   function selectDevices(button) {
-    var devices = Number(button.dataset.devices);
+    selectedDevices = Number(button.dataset.devices);
     tabs.forEach(function (tab) {
       var active = tab === button;
       tab.classList.toggle('active', active);
@@ -26,20 +50,24 @@
       tab.tabIndex = active ? 0 : -1;
     });
     plans.forEach(function (plan, index) {
-      var price = PRICES[devices][index];
+      var price = PRICES[selectedDevices][index];
       var months = Number(plan.dataset.months);
-      var saving = Math.round((1 - price / (PRICES[devices][0] * months)) * 100);
+      var saving = Math.round((1 - price / (PRICES[selectedDevices][0] * months)) * 100);
       plan.querySelector('.plan-price b').textContent = price;
-      plan.querySelector('.plan-devices').textContent = deviceLabel(devices) + ' gleichzeitig';
+      plan.querySelector('.plan-devices').textContent = deviceLabel(selectedDevices) + ' gleichzeitig';
       plan.querySelector('.plan-monthly').textContent = months === 1 ? 'einmalig, ohne Verlängerung' : 'nur ' + euro(price / months) + ' pro Monat';
       plan.querySelector('.plan-save').textContent = saving > 0 ? 'Sie sparen ' + saving + ' %' : '';
-      var subject = 'IPTV Bestellung: ' + TERMS[index] + ', ' + deviceLabel(devices) + ' (' + price + ' €)';
-      var body = 'Hallo,\n\nich möchte folgendes Paket bestellen:\n- Laufzeit: ' + TERMS[index] + '\n- Geräte: ' + devices + '\n- Preis: ' + price + ' €\n\nMein Gerät: ';
-      plan.querySelector('.plan-btn').href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     });
-    document.getElementById('devices-hint').textContent = 'Gleichzeitig auf ' + deviceLabel(devices) + ' schauen. Wählen Sie Ihre passende Laufzeit.';
+    document.getElementById('devices-hint').textContent = 'Gleichzeitig auf ' + deviceLabel(selectedDevices) + ' schauen. Wählen Sie Ihre passende Laufzeit.';
+    updateSelection();
   }
 
+  plans.forEach(function (plan) {
+    plan.querySelector('[name="months"]').addEventListener('change', function () {
+      selectedMonths = Number(this.value);
+      updateSelection();
+    });
+  });
   tabs.forEach(function (button, index) {
     button.addEventListener('click', function () { selectDevices(button); });
     button.addEventListener('keydown', function (event) {
@@ -54,8 +82,7 @@
       tabs[next].focus();
     });
   });
-  if (tabs.length) selectDevices(tabs[0]);
-
+  if (tabs.length) selectDevices(tabs[selectedDevices - 1]);
   var menu = document.querySelector('.menu-btn');
   var links = document.getElementById('nav-links');
   if (menu && links) {
@@ -82,8 +109,9 @@
 
   var header = document.querySelector('.header');
   if (header) {
-    var destinations = links ? Array.from(links.querySelectorAll('a[href^="#"]')).map(function (link) {
-      return { link: link, section: document.getElementById(link.hash.slice(1)) };
+    var destinations = links ? Array.from(links.querySelectorAll('a[href]')).map(function (link) {
+      var destination = new URL(link.href, window.location.href);
+      return { link: link, section: destination.pathname === window.location.pathname && destination.hash ? document.getElementById(destination.hash.slice(1)) : null };
     }).filter(function (item) { return item.section; }) : [];
     var headerFrame = false;
     var currentDestination;
@@ -346,66 +374,70 @@
   // Each platform has an independent, progressively enhanced carousel.
   initReviewCarousels();
 
-  // Free-trial form: posts to /api/trial; without a working backend it opens a prefilled email instead.
-  function initTrialForm() {
-    var form = document.querySelector('[data-signup-form]');
+  // Both forms accept optional details; success means the request was received.
+  function initRequestForm() {
+    var form = document.querySelector('[data-request-form]');
     if (!form) return;
-    var success = document.querySelector('[data-signup-success]');
-    var error = form.querySelector('[data-trial-error]');
+    var success = document.querySelector('[data-request-success]');
+    var error = form.querySelector('[data-form-error]');
+    var fallback = form.querySelector('[data-request-fallback]');
+    var emailLink = form.querySelector('[data-mail-fallback]');
     var button = form.querySelector('button[type="submit"]');
-    var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    var label = button.querySelector('span');
+    var originalLabel = label.textContent;
 
-    function fail(html) { error.innerHTML = html; error.hidden = false; }
-    function mark(control, bad) {
-      var wrap = control.closest('.field, .check');
-      if (wrap) wrap.classList.toggle('invalid', bad);
-      control.setAttribute('aria-invalid', bad ? 'true' : 'false');
-      return bad;
-    }
-    function done(email) {
-      form.hidden = true;
-      success.querySelector('[data-trial-email]').textContent = email;
-      success.hidden = false;
-      success.focus();
-    }
-
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', async function (event) {
       event.preventDefault();
+      if (button.disabled) return;
       error.hidden = true;
+      fallback.hidden = true;
       var data = {};
       new FormData(form).forEach(function (value, key) { data[key] = String(value).trim(); });
-      var invalid = [
-        mark(form.elements.first_name, !data.first_name),
-        mark(form.elements.last_name, !data.last_name),
-        mark(form.elements.email, !pattern.test(data.email || '')),
-        mark(form.elements.device, !data.device),
-        mark(form.elements.consent, !form.elements.consent.checked)
-      ];
-      if (invalid.some(Boolean)) {
-        fail('Bitte füllen Sie alle Pflichtfelder korrekt aus.');
-        var first = form.querySelector('[aria-invalid="true"]');
-        if (first) first.focus();
-        return;
-      }
+      var isOrder = form.hasAttribute('data-order-form');
+      var subject = isOrder ? 'IPTV Paket-Anfrage' : 'Kostenlose Testanfrage';
+      var lines = [subject];
+      if (isOrder) lines.push('Laufzeit: ' + selectedMonths + ' Monate', 'Geräte: ' + selectedDevices, 'Preis: ' + PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)] + ' €');
+      lines.push('Name: ' + (data.name || '-'), 'E-Mail: ' + (data.email || '-'), 'WhatsApp: ' + (data.phone || '-'), 'Notiz: ' + (data.note || '-'));
+      emailLink.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
       button.disabled = true;
-      var fallback = function () {
-        var body = 'Hallo,\n\nich möchte IPTV Kanal kostenlos testen.\n\nName: ' + data.first_name + ' ' + data.last_name +
-          '\nE-Mail: ' + data.email + '\nWhatsApp: ' + (data.phone || '-') + '\nGerät: ' + data.device;
-        window.location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('Kostenlose Testanfrage') + '&body=' + encodeURIComponent(body);
-        fail('Ihr E-Mail-Programm öffnet sich mit Ihrer Anfrage. Bitte senden Sie die Nachricht ab oder schreiben Sie uns direkt an <a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a>.');
+      form.setAttribute('aria-busy', 'true');
+      label.textContent = 'Wird gesendet …';
+      try {
+        // EmailJS uses the public browser key. Keep raw optional text in the
+        // message, while using a valid address for template email headers.
+        var replyTo = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email) ? data.email : CONTACT_EMAIL;
+        var params = {
+          to_email: CONTACT_EMAIL, to_name: 'IPTV Kanal',
+          from_name: data.name || 'Website-Anfrage', name: data.name || 'Website-Anfrage', user_name: data.name || 'Website-Anfrage',
+          from_email: replyTo, reply_to: replyTo, email: replyTo, user_email: replyTo,
+          customer_email: data.email || '', phone: data.phone || '', whatsapp: data.phone || '', whatsapp_number: data.phone || '',
+          note: data.note || '', notes: data.note || '', message: lines.join('\n'),
+          subject: subject, title: subject, request_type: isOrder ? 'Paket-Anfrage' : 'Kostenloser Test',
+          plan: isOrder ? TERMS[MONTHS.indexOf(selectedMonths)] : 'Kostenloser Test',
+          months: isOrder ? selectedMonths : '', devices: isOrder ? selectedDevices : '',
+          price: isOrder ? PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)] : 0
+        };
+        var response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ service_id: EMAILJS.service_id, template_id: EMAILJS.template_id, user_id: EMAILJS.user_id, template_params: params }),
+          signal: AbortSignal.timeout(15000)
+        });
+        if (!response.ok) throw new Error('request_failed');
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+      } catch (failure) {
+        error.textContent = 'Ihre Anfrage konnte noch nicht übermittelt werden. Ihre Angaben bleiben erhalten. Bitte versuchen Sie es erneut.';
+        error.hidden = false;
+        fallback.hidden = false;
+      } finally {
         button.disabled = false;
-      };
-      fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
-        .then(function (response) {
-          if (response.ok) { done(data.email); return; }
-          if (response.status === 400) { fail('Bitte prüfen Sie Ihre Angaben und versuchen Sie es erneut.'); button.disabled = false; return; }
-          fallback();
-        })
-        .catch(fallback);
+        form.removeAttribute('aria-busy');
+        label.textContent = originalLabel;
+      }
     });
   }
-  initTrialForm();
-
+  initRequestForm();
   var year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
 })();

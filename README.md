@@ -105,3 +105,40 @@ python3 scripts/version-assets.py
 
 Alle Karten sind statisches HTML und ohne JavaScript horizontal scrollbar.
 JavaScript ergänzt die getrennte Seitensteuerung und automatische Bewegung.
+
+
+## Test- und Paketanfragen
+
+Alle Marketing-Buttons führen entweder zu `/kostenlos-testen/` (Kostenlos testen)
+oder `/preise/` (Preise). Die Geräte- und Laufzeitauswahl sind Formularelemente.
+Beide Anfrageseiten zeigen Titel, Einstiegspreis und Bestellablauf am Seitenanfang.
+`scripts/build-pages.py` übernimmt die Preiskarten unverändert aus der Startseite
+und synchronisiert Kopf- und Fußzeile auch auf den Rechts- und Fehlerseiten.
+
+Beide Formulare enthalten ausschließlich die freiwilligen Kundenfelder Name,
+E-Mail, WhatsApp und Notiz. Leere Formulare und frei eingegebene E-Mail-Texte werden
+nicht durch eine Pflichtfeld- oder Formatprüfung blockiert. Die Paketanfrage enthält
+die gewählte Laufzeit, Geräteanzahl und den zugehörigen Preis; Links von der
+Startseite können die Auswahl über `months` und `devices` übergeben.
+
+Die Formulare senden per Browser-REST-Aufruf an EmailJS, ohne externes JavaScript
+oder einen zusätzlichen serverseitigen API-Schlüssel:
+
+- Service: `service_ehcnxxv`
+- Vorlage: `template_bfl916q`
+- Öffentlicher Browser-Schlüssel: `uTqKLVjvvwWeSZxdN`
+- Empfänger: `kontakt@iptvkanal.de` (`to_email`)
+
+Die Vorlage sollte als Empfänger diese Adresse oder `{{to_email}}` verwenden.
+`{{message}}` enthält die vollständige Anfrage inklusive aller optionalen Angaben
+und der Paketauswahl. Weitere Parameter sind `from_name`, `reply_to`, `phone`,
+`whatsapp`, `note`, `request_type`, `plan`, `months`, `devices` und `price`.
+Eine leere oder frei formulierte E-Mail-Adresse bleibt im Nachrichtentext erhalten;
+für Header-Parameter wird in diesem Fall die Kontaktadresse verwendet.
+
+Erst eine erfolgreiche EmailJS-Antwort zeigt die Empfangsbestätigung. Bei Fehlern
+bleiben alle Eingaben bestehen und die Anfrage kann erneut gesendet oder über
+einen vorbereiteten E-Mail-Link übermittelt werden. Die Anfragen erstellen noch
+keine IPTV-Konten und lösen keine Zahlung aus; die Bereitstellung des Zugangs
+erfolgt über den Betreiber. Browserprüfungen simulieren EmailJS und senden keine
+Testnachrichten an echte Empfänger.
