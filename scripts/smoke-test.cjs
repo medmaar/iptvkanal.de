@@ -311,6 +311,12 @@ const { chromium } = require('playwright');
         assert.equal(await page.locator('#plans').count(), 0);
       }
     }
+    // Check the actual EmailJS subject/title for every duration and device count.
+    let submittedOrder;
+    await page.route('https://api.emailjs.com/api/v1.0/email/send', route => {
+      submittedOrder = JSON.parse(route.request().postData()).template_params;
+      return route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
+    });
     // All 20 deep links retain the selected quantity and price. The URL path owns the duration.
     for (const [index, route] of orderRoutes.entries()) {
       for (let devices = 1; devices <= 5; devices++) {
@@ -318,8 +324,17 @@ const { chromium } = require('playwright');
         assert.equal(await page.locator('[data-selected-price]').textContent(), String(expected[devices - 1][index]));
         assert.equal(await page.locator('[data-order-form] [name="devices"]').inputValue(), String(devices));
         assert.equal(await page.locator('[data-order-form] [name="months"]').inputValue(), String([1,3,6,12][index]));
+        await page.locator('[data-request-form] button[type="submit"]').click();
+        await page.locator('[data-request-success]').waitFor();
+        const expectedSubject = `iptvkanal.de - ${['1 Monat', '3 Monate', '6 Monate', '1 Jahr'][index]} - ${devices} ${devices === 1 ? 'Gerät' : 'Geräte'} — ${expected[devices - 1][index]} €`;
+        assert.equal(submittedOrder.subject, expectedSubject);
+        assert.equal(submittedOrder.title, expectedSubject, 'The current EmailJS template reads title');
+        assert.equal(submittedOrder.website, 'iptvkanal.de');
+        assert.ok(submittedOrder.message.startsWith(expectedSubject));
       }
     }
+    await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
+    console.log('PASS EmailJS subjects identify the website, duration, device count and exact price for all 20 plans');
     await page.goto(base + '/bestellen/6-monate/?months=12&devices=4');
     assert.equal(await page.locator('[data-selected-term]').textContent(), '6 Monate');
     assert.equal(await page.locator('[data-selected-price]').textContent(), '140');
@@ -348,6 +363,8 @@ const { chromium } = require('playwright');
         assert.equal(posted.user_id, 'uTqKLVjvvwWeSZxdN');
         const params = posted.template_params;
         assert.equal(params.to_email, 'kontakt@iptvkanal.de');
+        assert.equal(params.subject, kind === 'trial' ? 'iptvkanal.de - Kostenloser Test — 0 €' : 'iptvkanal.de - 1 Monat - 1 Gerät — 9 €');
+        assert.equal(params.title, params.subject);
         for (const field of ['phone', 'note']) assert.equal(params[field], details[field] || '');
         assert.equal(params.customer_email, details.email || '');
         if (details.name) assert.equal(params.from_name, details.name);
@@ -381,6 +398,7 @@ const { chromium } = require('playwright');
     assert.equal(await page.locator('[data-request-success]').isVisible(), false);
     assert.equal(await page.locator('[data-request-form] button[type="submit"]').isEnabled(), true);
     assert.ok(decodeURIComponent(await page.locator('[data-mail-fallback]').getAttribute('href')).includes('Meine Anfrage bleibt erhalten.'));
+    assert.equal(new URL(await page.locator('[data-mail-fallback]').getAttribute('href')).searchParams.get('subject'), 'iptvkanal.de - Kostenloser Test — 0 €');
     await page.unroute('https://api.emailjs.com/api/v1.0/email/send');
     await page.route('https://api.emailjs.com/api/v1.0/email/send', route => route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' }));
     await page.locator('[data-request-form] button[type="submit"]').click();
@@ -414,6 +432,8 @@ const { chromium } = require('playwright');
     await plain.goto(base + '/bestellen/6-monate/');
     assert.equal(await plain.locator('[data-selected-price]').textContent(), '39');
     assert.equal(await plain.locator('[data-order-form] [name="months"]').inputValue(), '6');
+    assert.equal(await plain.locator('[name="subject"]').inputValue(), 'iptvkanal.de - 6 Monate - 1 Gerät — 39 €');
+    assert.equal(await plain.locator('[name="title"]').inputValue(), 'iptvkanal.de - 6 Monate - 1 Gerät — 39 €');
     await noJS.close();
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);

@@ -390,7 +390,10 @@
       var data = {};
       new FormData(form).forEach(function (value, key) { data[key] = String(value).trim(); });
       var isOrder = form.hasAttribute('data-order-form');
-      var subject = isOrder ? 'IPTV Paket-Anfrage' : 'Kostenlose Testanfrage';
+      var website = 'iptvkanal.de';
+      var subject = isOrder
+        ? website + ' - ' + TERMS[MONTHS.indexOf(selectedMonths)] + ' - ' + deviceLabel(selectedDevices) + ' — ' + PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)] + ' €'
+        : website + ' - Kostenloser Test — 0 €';
       var lines = [subject];
       if (isOrder) lines.push('Laufzeit: ' + selectedMonths + ' Monate', 'Geräte: ' + selectedDevices, 'Preis: ' + PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)] + ' €');
       lines.push('Name: ' + (data.name || '-'), 'E-Mail: ' + (data.email || '-'), 'WhatsApp: ' + (data.phone || '-'), 'Notiz: ' + (data.note || '-'));
@@ -408,7 +411,7 @@
           from_email: replyTo, reply_to: replyTo, email: replyTo, user_email: replyTo,
           customer_email: data.email || '', phone: data.phone || '', whatsapp: data.phone || '', whatsapp_number: data.phone || '',
           note: data.note || '', notes: data.note || '', message: lines.join('\n'),
-          subject: subject, title: subject, request_type: isOrder ? 'Paket-Anfrage' : 'Kostenloser Test',
+          subject: subject, title: subject, website: website, request_type: isOrder ? 'Paket-Anfrage' : 'Kostenloser Test',
           plan: isOrder ? TERMS[MONTHS.indexOf(selectedMonths)] : 'Kostenloser Test',
           months: isOrder ? selectedMonths : '', devices: isOrder ? selectedDevices : '',
           price: isOrder ? PRICES[selectedDevices][MONTHS.indexOf(selectedMonths)] : 0

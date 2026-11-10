@@ -51,8 +51,9 @@ PAGE = '''<!doctype html>
 '''
 
 
-def request_form(kind, months=1):
+def request_form(kind, months=1, term='', price=0):
     order = kind == 'order'
+    subject = f'iptvkanal.de - {term} - 1 Gerät — {price} €' if order else 'iptvkanal.de - Kostenloser Test — 0 €'
     fields = '''
       <label class="field"><span>Name</span><input type="text" name="name" autocomplete="name" maxlength="160"></label>
       <label class="field"><span>E-Mail-Adresse</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="254"></label>
@@ -67,6 +68,8 @@ def request_form(kind, months=1):
       <input type="hidden" name="user_id" value="uTqKLVjvvwWeSZxdN">
       <input type="hidden" name="to_email" value="kontakt@iptvkanal.de">
       <input type="hidden" name="reply_to" value="kontakt@iptvkanal.de">
+      <input type="hidden" name="subject" value="{subject}">
+      <input type="hidden" name="title" value="{subject}">
       {fields}
       <label class="hp" aria-hidden="true">Bitte leer lassen<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
       <p class="form-error" data-form-error role="alert" hidden></p>
@@ -116,7 +119,7 @@ def plan_page(months, term, price):
       <p class="trial-meta"><span data-selected-devices>1 Gerät</span> gleichzeitig · Einmaliger Paketpreis.<br>Keine automatische Verlängerung.</p>
       <p class="order-instructions">Senden Sie das Formular für dieses Paket ab. Wir melden uns per E-Mail oder WhatsApp mit den Angaben zu Ihrem Zugang und zur Bezahlung.</p>
       <a class="text-link" href="/preise/">Zur Paketübersicht</a>
-    </div>''' + request_form('order', months) + '''
+    </div>''' + request_form('order', months, term, price) + '''
   </div>
 </section>'''
 

@@ -130,6 +130,11 @@ oder einen zusätzlichen serverseitigen API-Schlüssel:
 - Empfänger: `kontakt@iptvkanal.de` (`to_email`)
 
 Die Vorlage sollte als Empfänger diese Adresse oder `{{to_email}}` verwenden.
+`subject` und `title` enthalten dieselbe vollständige Betreffzeile, zum Beispiel
+`iptvkanal.de - 3 Monate - 1 Gerät — 29 €`. Testanfragen heißen
+`iptvkanal.de - Kostenloser Test — 0 €`. Der optionale Vorlagenparameter `website`
+ist ebenfalls auf `iptvkanal.de` gesetzt. Für die Betreffzeile in EmailJS `{{subject}}`
+oder `{{title}}` verwenden; ein fester Vorlagentext wie `Contact Us:` bleibt davor stehen.
 `{{message}}` enthält die vollständige Anfrage inklusive aller optionalen Angaben
 und der Paketauswahl. Weitere Parameter sind `from_name`, `reply_to`, `phone`,
 `whatsapp`, `note`, `request_type`, `plan`, `months`, `devices` und `price`.
