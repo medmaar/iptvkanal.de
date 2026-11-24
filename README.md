@@ -26,8 +26,11 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 
 ## Ratgeber- und SEO-Seiten
 
-29 Ratgeberseiten (Grundlagen, Geräte, Apps, Kaufberatung) entstehen aus
-`scripts/seo/content_core.py`, `content_apps.py` und `content_devices.py`.
+Die Ratgeberseiten (Grundlagen, Geräte, Apps, Kaufberatung, Städte und Regionen) entstehen aus
+`scripts/seo/content_core.py`, `content_apps.py`, `content_devices.py` und weiteren Modulen.
+Lokale Seiten (50 Städte, 47 Regionen, Hubs `/iptv-staedte/` und `/iptv-regionen/`) erzeugt
+`content_local.py` aus den Daten in `data_local.py`; weitere Geräte- und App-Seiten stehen in
+`content_devices2.py` und `content_apps2.py`.
 `python3 scripts/build-pages.py` erzeugt sie mit Kopf- und Fußzeile der Startseite,
 Brotkrümelnavigation, sichtbaren FAQ samt FAQPage-/BreadcrumbList-JSON-LD und
 aktualisiert `sitemap.xml`. `python3 scripts/check-seo.py` prüft interne Links,

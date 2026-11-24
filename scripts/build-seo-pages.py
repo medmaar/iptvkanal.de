@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from seo import content_core, content_apps, content_devices, content_extra, content_more, content_depth  # noqa: E402
+from seo import content_local, content_devices2, content_apps2  # noqa: E402
 
 DOMAIN = 'https://iptvkanal.de'
 UPDATED_ISO = '2026-11-24'
@@ -45,7 +46,8 @@ script = extract(r'<script src="assets/main\.js[^"]*" defer></script>').replace(
 FONT_PRELOAD = ('<link rel="preload" href="/assets/fonts/sora-latin-variable.woff2" as="font" type="font/woff2" crossorigin>\n'
                 '  <link rel="preload" href="/assets/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>')
 
-PAGES = content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES + content_more.PAGES
+PAGES = (content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES + content_more.PAGES
+         + content_devices2.PAGES + content_apps2.PAGES + content_local.PAGES)
 BY_SLUG = {p['slug']: p for p in PAGES}
 
 HUBS = {
@@ -53,6 +55,8 @@ HUBS = {
     'geraete': ('/iptv-geraete/', 'Geräte'),
     'apps': ('/iptv-apps/', 'Apps'),
     'international': ('/iptv-international/', 'International'),
+    'staedte': ('/iptv-staedte/', 'Städte'),
+    'regionen': ('/iptv-regionen/', 'Regionen'),
 }
 
 # The Ratgeber hub lists every guide.
@@ -125,9 +129,12 @@ def hub_children(page):
             ('Geräte', ['iptv-geraete'] + [p['slug'] for p in PAGES if p.get('parent') == 'geraete']),
             ('Apps &amp; Player', ['iptv-apps'] + [p['slug'] for p in PAGES if p.get('parent') == 'apps']),
             ('International', ['iptv-international'] + [p['slug'] for p in PAGES if p.get('parent') == 'international']),
+            ('Städte &amp; Regionen', ['iptv-staedte', 'iptv-regionen']),
         ]
     else:
-        groups = [(None, [p['slug'] for p in PAGES if p.get('parent') == hub])]
+        children = [p for p in PAGES if p.get('parent') == hub]
+        names = list(dict.fromkeys(p.get('group') for p in children))
+        groups = [(name, [p['slug'] for p in children if p.get('group') == name]) for name in names]
     out = ['<section class="related hub-list" aria-label="Alle Anleitungen"><div class="container">']
     for title, slugs in groups:
         if title:
