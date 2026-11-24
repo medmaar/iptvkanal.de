@@ -32,7 +32,12 @@ Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 Brotkrümelnavigation, sichtbaren FAQ samt FAQPage-/BreadcrumbList-JSON-LD und
 aktualisiert `sitemap.xml`. `python3 scripts/check-seo.py` prüft interne Links,
 strukturierte Daten, Titel, Sitemap und eingehende Links. Weiterleitungen für
-alternative Schreibweisen stehen in `_redirects`. Der Smoke-Test nutzt
+alternative Schreibweisen stehen in `_redirects`.
+Vertiefungen aus dem SEO-Audit (zusätzliche Abschnitte und FAQ, Lead-Texte mit Hauptkeyword,
+Quellenlinks zu Herstellern und Behörden) stehen in `scripts/seo/content_depth.py`. Jede Seite
+erhält Vertrauensleiste, Zwischen-CTA, hreflang, vollständige Open-Graph-/Twitter-Tags sowie
+WebPage-/Organization-Schema; Preis- und Bestellseiten zusätzlich Product-/Offer-Schema und FAQ.
+Impressum und Datenschutz werden als saubere URLs (`/impressum`, `/datenschutz`) verlinkt. Der Smoke-Test nutzt
 `CHROMIUM_PATH`, falls Chromium nicht unter `/usr/bin/chromium` liegt.
 
 ## Lokale Assets und Darstellung

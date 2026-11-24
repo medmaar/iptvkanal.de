@@ -217,7 +217,7 @@ PAGES.append(dict(
 PAGES.append(dict(
     slug='iptv-erfahrungen', parent='ratgeber', kind='guide',
     title='IPTV Erfahrungen: Forum, Reddit & Trustpilot richtig lesen',
-    description='IPTV Erfahrungen richtig einordnen: Was IPTV-Foren, Reddit und Trustpilot über Anbieter verraten, woran Sie gekaufte Bewertungen erkennen und wie Sie selbst testen.',
+    description='IPTV Erfahrungen richtig einordnen: Was Forum, Reddit und Trustpilot über IPTV Anbieter verraten, wie Sie gekaufte Bewertungen erkennen und selbst testen.',
     eyebrow='ERFAHRUNGEN &amp; BEWERTUNGEN', h1='IPTV Erfahrungen: Foren, Reddit und Trustpilot richtig lesen',
     lead='Bevor Sie ein IPTV-Abo kaufen, lesen Sie Erfahrungsberichte – zu Recht. Doch in kaum einer Branche sind Bewertungen so gemischt und so oft gekauft. So filtern Sie die brauchbaren heraus.',
     answer='IPTV-Erfahrungen aus Foren, Reddit und Trustpilot sind nützlich, um Warnsignale zu erkennen: Ausfälle am Abend, Support, der nach der Zahlung schweigt, oder Abos, die sich automatisch verlängern. Für Empfehlungen taugen sie weniger, weil Bewertungen in dieser Branche oft gekauft sind. Am verlässlichsten ist Ihr eigener kostenloser Test zur Hauptsendezeit.',

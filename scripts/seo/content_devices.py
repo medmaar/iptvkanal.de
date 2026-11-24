@@ -104,7 +104,7 @@ PAGES.append(dict(
 PAGES.append(dict(
     slug='iptv-smart-tv', parent='geraete', kind='guide',
     title='IPTV auf dem Smart TV: Samsung, LG, Hisense, Sony & Co.',
-    description='IPTV auf dem Smart TV schauen: welche App für Samsung, LG, Hisense VIDAA, Sony, Philips, Panasonic, Toshiba und Roku – und wann ein Stick die bessere Lösung ist.',
+    description='IPTV auf dem Smart TV: die passende App für Samsung, LG, Hisense VIDAA, Sony, Philips, Panasonic, Toshiba und Roku – und wann ein Stick besser ist.',
     eyebrow='GERÄTE-ANLEITUNG', h1='IPTV auf dem Smart TV',
     lead='Ob Samsung, LG, Hisense, Sony oder Philips: Fast jeder Smart TV kann IPTV. Welche App funktioniert, hängt vom Betriebssystem Ihres Fernsehers ab.',
     answer='Für IPTV auf dem Smart TV entscheidet das Betriebssystem: Samsung (Tizen) und LG (webOS) nutzen Player wie SET IPTV, Flix IPTV oder Smart IPTV. Sony, Philips, TCL und viele andere mit Google TV oder Android TV können TiviMate und IPTV Smarters installieren. Hisense (VIDAA), Roku und ältere Modelle haben wenig Auswahl – dort ist ein Fire TV Stick die einfachste Lösung.',
@@ -150,7 +150,7 @@ PAGES.append(dict(
 PAGES.append(dict(
     slug='iptv-samsung-tv', parent='geraete', kind='guide',
     title='IPTV auf Samsung Smart TV (Tizen): beste Apps & Anleitung',
-    description='IPTV auf dem Samsung Smart TV einrichten: die besten IPTV Apps für Tizen (SET IPTV, Flix IPTV, Smart IPTV), Schritt-für-Schritt-Anleitung und Lösungen bei Problemen.',
+    description='IPTV auf dem Samsung Smart TV (Tizen): die besten Apps wie SET IPTV, Flix IPTV und Smart IPTV, Anleitung Schritt für Schritt und Lösungen bei Problemen.',
     eyebrow='GERÄTE-ANLEITUNG', h1='IPTV auf dem Samsung Smart TV',
     lead='Samsung-Fernseher laufen mit Tizen. TiviMate gibt es dort nicht – dafür eine Reihe guter IPTV Player, die Sie in wenigen Minuten einrichten.',
     answer='Für IPTV auf dem Samsung Smart TV installieren Sie einen Tizen-kompatiblen Player wie SET IPTV, Flix IPTV oder IBO Player aus dem Samsung App-Store, notieren die angezeigte MAC-Adresse und laden Ihre M3U-Playlist auf der Website des Entwicklers hoch. Alternativ schließen Sie einen Fire TV Stick an und nutzen TiviMate oder IPTV Smarters.',
@@ -364,7 +364,7 @@ PAGES.append(dict(
 PAGES.append(dict(
     slug='mag-box-iptv', parent='geraete', kind='guide',
     title='MAG Box IPTV: Portal einrichten (MAG 322, 424, 524) & STBEmu',
-    description='MAG Box für IPTV einrichten: Portal-URL eintragen, MAC-Adresse freischalten, Modelle MAG 254, 322, 424, 524 im Überblick – plus STBEmu als MAG-Emulator für Android.',
+    description='MAG Box IPTV einrichten: Portal-URL eintragen, MAC-Adresse freischalten, Modelle MAG 254 bis 524 im Überblick – plus STBEmu als MAG-Emulator für Android.',
     eyebrow='GERÄTE-ANLEITUNG', h1='MAG Box IPTV: Einrichtung und Modelle',
     lead='MAG-Boxen von Infomir sind IPTV-Receiver mit Portal-Oberfläche: einschalten, Portal eintragen, fertig. Wir zeigen Einrichtung, Modelle und die App-Alternative STBEmu.',
     answer='Für IPTV auf einer MAG Box geben Sie dem Anbieter die MAC-Adresse vom Aufkleber der Box, damit er sie freischaltet. Dann tragen Sie unter Einstellungen → Server → Portale die Portal-URL ein und starten neu. Auf Android-Geräten emuliert die App STBEmu eine MAG Box mit demselben Portal.',

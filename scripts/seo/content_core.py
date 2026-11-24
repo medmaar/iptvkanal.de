@@ -17,7 +17,7 @@ PAGES = []
 PAGES.append(dict(
     slug='was-ist-iptv', parent='ratgeber', kind='guide',
     title='Was ist IPTV? Internet Protocol Television einfach erklärt',
-    description='Was ist IPTV und wie funktioniert Internet Protocol Television? Technik, Vorteile, Voraussetzungen und Unterschiede zu Kabel, Satellit und Streaming – verständlich erklärt.',
+    description='Was ist IPTV? Internet Protocol Television einfach erklärt: wie Fernsehen über das Internet funktioniert, was Sie brauchen und was IPTV von Kabel unterscheidet.',
     eyebrow='IPTV-GRUNDLAGEN', h1='Was ist IPTV?',
     lead='IPTV steht für Internet Protocol Television: Fernsehen, das über Ihre Internetleitung statt über Kabel, Satellit oder Antenne kommt. Hier erfahren Sie, wie das funktioniert und was Sie dafür brauchen.',
     answer='IPTV (Internet Protocol Television) überträgt Fernsehsender, Filme und Serien als Datenstrom über das Internet. Sie brauchen nur einen Internetanschluss ab etwa 10 Mbit/s, ein Abspielgerät wie Smart-TV, Fire TV Stick oder Smartphone und eine IPTV-App. Live-TV, Mediathek und Programmführer laufen dann in einer Oberfläche.',
@@ -271,7 +271,7 @@ PAGES.append(dict(
 PAGES.append(dict(
     slug='iptv-telekom-vodafone', parent='ratgeber', kind='guide',
     title='Fernsehen über Telekom, Vodafone, 1&1 & o2: IPTV erklärt',
-    description='Fernsehen über Telekom (MagentaTV), Vodafone, 1&1 und o2: Wie das IPTV der Internetanbieter funktioniert, was Sie brauchen und welche Alternative ohne Vertrag es gibt.',
+    description='Fernsehen über Telekom (MagentaTV), Vodafone, 1&1 und o2: So funktioniert IPTV der Internetanbieter – und welche Alternative ohne Vertrag es gibt.',
     eyebrow='IPTV DER INTERNETANBIETER', h1='Fernsehen über Telekom, Vodafone, 1&amp;1 und o2',
     lead='Die großen Internetanbieter verkaufen Fernsehen per IPTV als Zusatz zum Anschluss. Wir erklären, wie das funktioniert – und wann eine unabhängige Lösung besser passt.',
     answer='Telekom (MagentaTV), Vodafone, 1&1 und o2 bieten Fernsehen über die Internetleitung als Zusatzpaket an. Es läuft über eigene Receiver oder Apps und ist meist an einen Vertrag mit Mindestlaufzeit gekoppelt. Unabhängiges IPTV funktioniert dagegen mit jedem Anschluss und jeder Laufzeit.',

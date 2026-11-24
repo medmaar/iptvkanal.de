@@ -405,3 +405,59 @@ PAGES.append(dict(
     related=['iptv-anbieter', 'iptv-anbieter-vergleich', 'iptv-bezahlen', 'iptv-erfahrungen', 'iptv-kaufen', 'was-ist-iptv'],
     card=('IPTV Reseller', 'Reseller-Panels, Credits und Risiken verständlich erklärt.'),
 ))
+
+# ================================================================ depth additions (audit: >= 450 words per guide)
+_BY = {p['slug']: p for p in PAGES}
+_DESC = {
+    'iptv-international': 'IPTV International: Sender auf Albanisch, Bosnisch, Kroatisch, Serbisch, Rumänisch, Russisch, Türkisch und Englisch in Deutschland – Apps und Einrichtung.',
+    'sky-iptv': 'Sky über IPTV: Was aus der Sky Q IPTV Box wurde, wie Sky Stream funktioniert, was es von Sky Q per Satellit unterscheidet und wie Sky Sport auf IPTV läuft.',
+    'iptv-sport': 'IPTV Sport: Wo Formel 1, NBA, UFC, Eurosport, beIN Sports, ESPN und Fox Sports laufen – und wie Sie Sport per IPTV ohne Ruckler in bester Qualität schauen.',
+    'iptv-russisch': 'Russischsprachiges Fernsehen per IPTV in Deutschland: was erlaubt ist, Sendergruppen, kyrillischer Programmführer, Zeitzonen und Einrichtung in der App.',
+    'iptv-fussball': 'Fußball per IPTV: Wer Bundesliga, Champions League, Premier League und DFB-Pokal 2026/27 zeigt – und wie Sie Fußball auf jedem Gerät ruckelfrei schauen.',
+    'iptv-bezahlen': 'IPTV bezahlen: Paysafecard, PayPal, Überweisung oder Krypto – welche Zahlungsart wie sicher ist, was Käuferschutz bedeutet und worauf Sie achten sollten.',
+    'iptv-albanisch': 'IPTV auf Albanisch in Deutschland: albanische Kanäle aus Albanien und Kosovo per IPTV – beliebte Sender, Apps, Programmführer und Einrichtung.',
+}
+for _s, _d in _DESC.items():
+    _BY[_s]['description'] = _d
+
+_MORE = {
+    'iptv-sport': ('mehrfach', 'Mehrere Spiele gleichzeitig: Multiview und zweite Bildschirme', '''
+<p>An großen Sporttagen laufen Wettbewerbe parallel. TiviMate Premium bietet eine Mehrfachansicht, in der Sie bis zu vier Streams auf einem Fernseher anordnen. Jeder dieser Streams zählt als eigene Verbindung – planen Sie Bandbreite und Geräteanzahl entsprechend: Vier Full-HD-Streams brauchen rund 64 Mbit/s. Alternativ läuft ein zweites Spiel auf Tablet oder Handy; die Zahl gleichzeitiger Geräte wählen Sie bei IPTV Kanal im Paket (1 bis 5 Geräte).</p>'''),
+    'iptv-russisch': ('zeit', 'Zeitzonen und Programmführer auf Russisch', '''
+<p>Russischsprachige Programme senden aus verschiedenen Zeitzonen – von Mitteleuropa bis weit nach Osten. Der Programmführer rechnet alle Zeiten korrekt um, wenn in der App die Zeitzone Europa/Berlin eingestellt ist. Weicht eine Sendung trotzdem um Stunden ab, hilft in TiviMate die Option „EPG-Zeitverschiebung“ pro Playlist, in IPTV Smarters Pro die Einstellung „Zeitformat und Zeitzone“. Bei Catch-Up-Sendungen gilt dieselbe Zeitzone; Sendungen der letzten Tage lassen sich so zuverlässig finden.</p>'''),
+    'iptv-rumaenisch': ('catchup', 'Serien und Shows nachholen: Catch-Up für rumänische Sender', '''
+<p>Viele rumänische Zuschauer in Deutschland arbeiten im Schichtdienst und verpassen die Hauptsendezeit in Bukarest, die wegen der Zeitverschiebung ohnehin eine Stunde früher liegt. Unterstützt ein Sender Catch-Up, erkennen Sie das in TiviMate und IPTV Smarters Pro an einem kleinen Uhr-Symbol im Programmführer. Wählen Sie eine vergangene Sendung aus und starten Sie sie von Anfang an. Für Nachrichtensender lohnt sich außerdem eine eigene Favoritengruppe, damit Sie morgens schnell zwischen Digi24, TVR und deutschen Nachrichten wechseln.</p>
+<p>Auf Smart-TVs von Samsung und LG eignen sich Player wie <a href="/smart-iptv/">Smart IPTV</a> oder <a href="/set-iptv/">SET IPTV</a>; auf einem <a href="/iptv-stick/">IPTV Stick</a> mit Fire OS oder Google TV ist <a href="/tivimate/">TiviMate</a> die komfortabelste Wahl.</p>'''),
+    'iptv-tuerkisch': ('dizi', 'Türkische Serien (Dizi) komfortabel schauen', '''
+<p>Türkische Serien laufen oft wöchentlich mit Folgen von zwei Stunden und mehr. Drei Funktionen machen das Schauen per IPTV angenehmer: <strong>Catch-Up</strong> für verpasste Folgen (sofern der Sender es unterstützt), <strong>Timeshift</strong> zum Pausieren während der Sendung und <strong>Favoritenlisten</strong> mit Ihren Lieblingssendern ganz oben. In TiviMate Premium können Sie Folgen zusätzlich auf einen USB-Speicher aufnehmen. Viele Zuschauer nutzen außerdem die Mediathek-Apps der Sender, die neben der IPTV-App auf Fire TV und Google TV laufen.</p>
+<p>Für Haushalte mit mehreren Fernsehern: Wenn Eltern türkische und Kinder deutsche Sender schauen, brauchen Sie ein Paket mit zwei gleichzeitigen Geräten – Preise unter <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>'''),
+    'cloudstream': ('installation', 'Warum wir keine Installationsanleitung für CloudStream geben', '''
+<p>Für CloudStream kursieren zahlreiche Anleitungen mit Downloader-Codes und Listen von Repositories. Wir verzichten bewusst darauf: Welche Erweiterungen auf welche Quellen zugreifen, lässt sich von außen kaum prüfen, und Repositories ändern sich häufig. Wer die App trotzdem ausprobieren möchte, sollte sie nur aus dem offiziellen Projekt-Repository beziehen, keine Zugangsdaten anderer Dienste darin eingeben und die Berechtigungen der App prüfen.</p>
+<p>Für den Fernseher im Wohnzimmer empfehlen wir eine stabile Kombination aus Gerät und App: einen <a href="/iptv-stick/">IPTV Stick</a> mit Fire OS oder Google TV, darauf <a href="/tivimate/">TiviMate</a> oder <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>, und einen Zugang mit Programmführer und Support. Wie die Installation auf dem Fire TV sicher gelingt, zeigt der Ratgeber <a href="/iptv-smarters-pro-firestick/">Smarters auf dem Fire TV Stick</a>.</p>'''),
+    'iptv-reseller': ('begriffe', 'Die wichtigsten Begriffe im Reseller-Geschäft', table(['Begriff', 'Bedeutung'], [
+        ['Panel', 'Weboberfläche zum Anlegen und Verwalten von Kundenzugängen'],
+        ['Credit', 'Vorab gekauftes Guthaben, meist ein Monat für ein Gerät'],
+        ['Line', 'Ein einzelner Kundenzugang mit Benutzername und Passwort'],
+        ['Connections', 'Anzahl gleichzeitiger Streams pro Line'],
+        ['Sub-Reseller', 'Wiederverkäufer, der Credits von einem anderen Reseller bezieht'],
+        ['Trial', 'Kurzer Testzugang, der meist kein oder wenig Guthaben kostet'],
+    ], 'Reseller-Begriffe') + '''
+<p>Für Kunden heißt das: Ein Reseller kann Ihren Zugang verlängern, die Anzahl der Geräte ändern oder ihn bei Missbrauch sperren – nicht aber die Qualität der Server verbessern. Bei Problemen mit Sendern oder Stabilität hängt er vom Betreiber ab. Fragen Sie deshalb vor dem Kauf, wer Ihnen bei Störungen hilft und wie schnell. Mehr Kriterien im Ratgeber <a href="/iptv-erfahrungen/">IPTV Erfahrungen</a>.</p>'''),
+    'iptv-bezahlen': ('betrug', 'Typische Betrugsmaschen beim IPTV-Kauf', checks(
+        '<strong>Gutschein-Betrug:</strong> Der „Anbieter“ verlangt Paysafecard-, Amazon- oder iTunes-Codes per Chat und meldet sich danach nicht mehr.',
+        '<strong>Lifetime-Lockangebot:</strong> Ein sehr niedriger Einmalpreis für „lebenslang“ – der Dienst verschwindet nach wenigen Wochen.',
+        '<strong>Gefälschte Bewertungen:</strong> Viele Fünf-Sterne-Bewertungen an wenigen Tagen, ohne Details zu Gerät oder App.',
+        '<strong>Druck:</strong> „Nur heute“-Rabatte, die zur sofortigen Zahlung ohne Test drängen.',
+        '<strong>Weitergeleitete Zahlungen:</strong> Zahlungsempfänger, dessen Name nicht zum Anbieter passt.') + '''
+<p>Wer betroffen ist, sollte die Zahlung dokumentieren und – bei Paysafecard – sofort den Kundenservice von Paysafecard sowie die Polizei informieren. Bei PayPal oder Kreditkarte lohnt sich ein schneller Antrag auf Käuferschutz bzw. Rückbuchung. Wie Sie seriöse Anbieter erkennen, zeigt unser <a href="/iptv-anbieter-vergleich/">IPTV-Anbieter-Vergleich</a>.</p>'''),
+    'iptv-albanisch': ('geraete', 'Albanische Sender auf Fernseher, Handy und unterwegs', '''
+<p>Am Fernseher laufen albanische Kanäle am komfortabelsten über einen <a href="/iptv-stick/">IPTV Stick</a> mit <a href="/tivimate/">TiviMate</a> oder <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>. Auf Samsung- und LG-Fernsehern ohne Stick nutzen Sie Player wie <a href="/smart-iptv/">Smart IPTV</a> oder <a href="/set-iptv/">SET IPTV</a>. Unterwegs oder im Urlaub in der Heimat schauen Sie auf dem Handy mit derselben App – innerhalb der gebuchten Anzahl gleichzeitiger Geräte. Für Hochzeiten und Familienfeiern, die von Musiksendern live übertragen werden, lohnt sich ein Paket mit zwei Geräten.</p>'''),
+}
+for _s, (_id, _h2, _html) in _MORE.items():
+    _BY[_s]['sections'].append((_id, _h2, _html))
+_BY['iptv-reseller']['sections'].append(('vertrag', 'Was Kunden bei einem Reseller klären sollten', checks(
+    'Wer ist mein Ansprechpartner bei Störungen – und über welchen Kanal?',
+    'Wie lange läuft mein Zugang genau, und verlängert er sich automatisch?',
+    'Kann ich die Anzahl der Geräte später ändern, und was kostet das?',
+    'Bekomme ich eine Rechnung oder Bestellbestätigung mit vollständigem Impressum?',
+    'Gibt es vor dem Kauf einen kostenlosen Test auf meinem eigenen Gerät?')))

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Static SEO checks: internal links resolve, JSON-LD parses, FAQ schema mirrors visible FAQ,
-unique titles/descriptions, one H1, sitemap URLs exist, and every guide has inbound links."""
+unique titles/descriptions, one H1 and no skipped heading levels, sitemap URLs exist, every guide has
+inbound links, indexable pages carry canonical/hreflang/Open Graph/Twitter tags, guides have depth."""
+import html
 import json
 import re
 import sys
@@ -21,7 +23,8 @@ def exists(path):
     if path in ('', '/go/wa'):
         return True
     p = ROOT / path.lstrip('/')
-    return p.is_file() or (p / 'index.html').is_file()
+    # Cloudflare Pages serves /impressum for impressum.html (clean URLs).
+    return p.is_file() or (p / 'index.html').is_file() or p.with_name(p.name + '.html').is_file()
 
 inbound = defaultdict(set)
 titles, descs = Counter(), Counter()
@@ -43,8 +46,31 @@ for url, text in pages.items():
     descs[d.group(1) if d else ''] += 1
     if t and len(t.group(1)) > 70:
         warnings.append(f'{url}: title {len(t.group(1))} chars')
-    if d and not 110 <= len(d.group(1)) <= 175:
+    if d and not 120 <= len(html.unescape(d.group(1))) <= 160:
         warnings.append(f'{url}: description {len(d.group(1))} chars')
+    head = text.split('</head>')[0]
+    indexable = 'noindex' not in head
+    if indexable:
+        canonical = re.search(r'<link rel="canonical" href="([^"]+)">', head)
+        if not canonical or canonical.group(1) != 'https://iptvkanal.de' + url:
+            errors.append(f'{url}: canonical missing or not self-referencing')
+        for tag in ('hreflang="de"', 'hreflang="x-default"', 'property="og:image"', 'property="og:title"',
+                    'property="og:description"', 'name="twitter:card"', 'name="twitter:title"', 'name="robots"'):
+            if tag not in head:
+                errors.append(f'{url}: missing {tag}')
+        if t and len(html.unescape(t.group(1))) > 65:
+            warnings.append(f'{url}: title {len(html.unescape(t.group(1)))} chars')
+    main = re.search(r'<main.*?</main>', text, re.S)
+    levels = [int(h) for h in re.findall(r'<h([1-6])[\s>]', main.group(0) if main else '')]
+    for a, b in zip(levels, levels[1:]):
+        if b > a + 1:
+            errors.append(f'{url}: heading jumps from h{a} to h{b}')
+            break
+    if 'guide-page' in text and '"CollectionPage"' not in text:  # hubs carry card lists instead
+        prose = re.search(r'<section class="article".*?</section>', text, re.S).group(0)
+        words = len(html.unescape(re.sub(r'<[^>]+>', ' ', prose)).split())
+        if words < 450:
+            errors.append(f'{url}: only {words} words in the article body')
     visible = len(re.findall(r'<details>', text))
     schema_q = 0
     for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, re.S):
