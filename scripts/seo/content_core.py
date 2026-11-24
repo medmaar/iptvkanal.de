@@ -105,7 +105,7 @@ PAGES.append(dict(
             '<strong>Erreichbarer Support</strong> auf Deutsch – per E-Mail und WhatsApp.',
             '<strong>Ehrliche Angebote:</strong> „Lifetime IPTV“ für einmalig 30 € gibt es nicht dauerhaft; solche Dienste verschwinden oft nach wenigen Wochen.',
             '<strong>Transparente Geräteregeln:</strong> wie viele Streams gleichzeitig laufen dürfen.') + '''
-<p>Eine ausführliche Checkliste finden Sie im <a href="/iptv-anbieter-vergleich/">IPTV-Anbieter-Vergleich</a>.</p>'''),
+<p>Eine ausführliche Checkliste finden Sie im <a href="/iptv-anbieter-vergleich/">IPTV-Anbieter-Vergleich</a>. Welche Zahlungsart wie sicher ist – von Paysafecard bis PayPal –, erklärt der Ratgeber <a href="/iptv-bezahlen/">IPTV bezahlen</a>.</p>'''),
     ],
     faq=[
         ('Was kostet ein IPTV-Abo bei IPTV Kanal?', 'Ab 9 € für einen Monat und ein Gerät. 3 Monate kosten 29 €, 6 Monate 39 € und 12 Monate 49 €. Für bis zu 5 Geräte gleichzeitig gibt es eigene Pakete, zum Beispiel 89 € für ein Jahr mit 2 Geräten.'),
@@ -153,7 +153,7 @@ PAGES.append(dict(
             'Wie erreiche ich den Support, wenn am Samstagabend etwas nicht läuft?') + '''
 <p>Bei IPTV Kanal lauten die Antworten: ja, <a href="/kostenlos-testen/">kostenloser Test</a>; 1 bis 5 Geräte mit festen <a href="/iptv-kaufen/">Paketpreisen</a>; keine Verlängerung; alle gängigen Geräte; Support per E-Mail und WhatsApp.</p>'''),
         ('reseller', 'IPTV Reseller und Wiederverkäufer', '''
-<p>Viele Angebote im Netz stammen von Wiederverkäufern (Resellern), die Zugänge eines größeren Dienstes weiterverkaufen. Das ist nicht automatisch schlecht – problematisch wird es, wenn der Reseller keinen eigenen Support leistet oder plötzlich verschwindet. Fragen Sie deshalb immer nach Kontaktwegen und testen Sie zuerst.</p>'''),
+<p>Viele Angebote im Netz stammen von Wiederverkäufern (Resellern), die Zugänge eines größeren Dienstes weiterverkaufen. Das ist nicht automatisch schlecht – problematisch wird es, wenn der Reseller keinen eigenen Support leistet oder plötzlich verschwindet. Fragen Sie deshalb immer nach Kontaktwegen und testen Sie zuerst. Wie Reseller-Panels und Credits funktionieren, erklärt der Ratgeber <a href="/iptv-reseller/">IPTV Reseller</a>.</p>'''),
     ],
     faq=[
         ('Welcher IPTV Anbieter ist der beste in Deutschland?', 'Den einen besten Anbieter für alle gibt es nicht. Wichtig sind ein Testzugang, stabile Streams zu Spitzenzeiten, deutscher Support, klare Preise und eine Laufzeit ohne automatische Verlängerung. Unser IPTV-Anbieter-Vergleich zeigt die Kriterien im Detail.'),
@@ -208,7 +208,7 @@ PAGES.append(dict(
             '<strong>Laufzeit:</strong> Festpreis ohne automatische Verlängerung?',
             '<strong>Support:</strong> Antwort auf Deutsch innerhalb weniger Stunden?',
             '<strong>Bewertungsmatrix:</strong> Erreicht der Dienst im Test mindestens 12 von 16 Punkten?') + '''
-<p>Hintergrundwissen zu Wiederverkäufern und Anbieterarten finden Sie im Ratgeber <a href="/iptv-anbieter/">IPTV Anbieter finden</a>.</p>'''),
+<p>Hintergrundwissen zu Wiederverkäufern finden Sie unter <a href="/iptv-reseller/">IPTV Reseller</a> und <a href="/iptv-anbieter/">IPTV Anbieter finden</a>.</p>'''),
         ('player', 'Bester IPTV Player: die App zählt mit', '''
 <p>Ein guter Anbieter wirkt nur so gut wie die App, mit der Sie schauen. Für Android-TV und Fire TV ist <a href="/tivimate/">TiviMate</a> beliebt, für den Einstieg auf fast allen Geräten <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>, für Samsung und LG Fernseher Player wie <a href="/smart-iptv/">Smart IPTV</a>, <a href="/set-iptv/">SET IPTV</a> oder <a href="/flix-iptv/">Flix IPTV</a>. Die komplette Übersicht steht unter <a href="/iptv-apps/">beste IPTV Apps</a>.</p>'''),
         ('unser-angebot', 'Wie schneidet IPTV Kanal ab?', '''

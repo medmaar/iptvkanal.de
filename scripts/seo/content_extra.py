@@ -185,7 +185,7 @@ PAGES.append(dict(
             'Nach dem Download „Installieren“ wählen, danach „Fertig“.',
             'Die heruntergeladene APK-Datei in Downloader löschen, um Speicher zu sparen.',
             'Optional: In den Fire-TV-Einstellungen unter Anwendungen die App auf die Startseite legen.')
-         + tip('Geben Sie keine Kurzcodes aus Foren, Videos oder Kommentaren in Downloader ein. Sie können auf veränderte Versionen der App verweisen, die Zugangsdaten abgreifen oder Schadsoftware enthalten.', 'Sicherheit')),
+         + tip('Geben Sie keine Kurzcodes aus Foren, Videos oder Kommentaren in Downloader ein (mehr dazu im Ratgeber <a href="/cloudstream/">CloudStream</a>). Sie können auf veränderte Versionen der App verweisen, die Zugangsdaten abgreifen oder Schadsoftware enthalten.', 'Sicherheit')),
         ('anmelden', 'Schritt 3: Mit Xtream Codes anmelden', steps(
             'IPTV Smarters Pro öffnen, Nutzungsbedingungen akzeptieren und „TV“ als Gerätetyp wählen.',
             '<b>„Login mit Xtream Codes API“</b> auswählen.',
@@ -284,6 +284,7 @@ PAGES.append(dict(
             ['Sport', 'Sportnachrichten und Übertragungen'],
             ['Österreich &amp; Schweiz', 'Programme aus dem deutschsprachigen Ausland'],
         ], 'Typische deutsche Sendergruppen') + '''
+<p>Sender in anderen Sprachen finden Sie in eigenen Gruppen; Tipps dazu in unseren Ratgebern zu <a href="/iptv-tuerkisch/">türkischen</a>, <a href="/iptv-russisch/">russischsprachigen</a>, <a href="/iptv-rumaenisch/">rumänischen</a>, <a href="/iptv-albanisch/">albanischen</a> und <a href="/iptv-balkan/">Balkan-Sendern</a>.</p>
 <p>Die genaue Zusammensetzung hängt vom Zugang ab. Die beste Möglichkeit, Ihre Wunschsender zu prüfen, ist der <a href="/kostenlos-testen/">kostenlose IPTV-Test</a>: Sie sehen die vollständige Senderliste mit allen Gruppen auf Ihrem eigenen Gerät.</p>'''),
         ('sortieren', 'Senderliste sortieren: so geht es in Ihrer App', table(['App', 'Gruppen ausblenden', 'Favoriten anlegen'], [
             ['<a href="/tivimate/">TiviMate</a>', 'Einstellungen → Playlists → Gruppen verwalten', 'Sender lange gedrückt halten → Zu Favoriten (Premium)'],
