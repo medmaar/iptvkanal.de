@@ -42,6 +42,7 @@ PAGES.append(dict(
             ['IPTVX', 'iPhone, iPad, Apple TV, Mac', 'Elegante App für Apple – siehe <a href="/iptv-apple-tv-iphone/">Apple-Ratgeber</a>'],
             ['IPTV Pro / IPTV Stream Player', 'Android', 'Einfache M3U-Player für Handy und Tablet'],
             ['My IPTV Player', 'Windows', 'Desktop-Player für M3U – siehe <a href="/iptv-pc-mac/">IPTV am PC</a>'],
+            ['<a href="/cloudstream/">CloudStream</a>', 'Android, Fire TV', 'Keine eigenen Inhalte, Erweiterungen von Drittanbietern – Risiken beachten'],
         ], 'Weitere IPTV Apps') + '''
 <p>Sie funktionieren nach demselben Prinzip: App installieren, Gerät per MAC-Adresse oder Code verknüpfen, Playlist oder Xtream-Login eintragen. Für Fire-TV-Geräte wird zur Installation von Apps außerhalb des Amazon Appstores häufig die App <strong>Downloader</strong> verwendet – siehe <a href="/iptv-smarters-pro-firestick/">IPTV Smarters Pro auf dem Fire TV Stick</a>.</p>'''),
         ('kostenlos', 'Bester IPTV Player für Fire TV Stick – kostenlos und auf Deutsch?', '''

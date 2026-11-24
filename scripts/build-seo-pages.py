@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from seo import content_core, content_apps, content_devices, content_extra  # noqa: E402
+from seo import content_core, content_apps, content_devices, content_extra, content_more  # noqa: E402
 
 DOMAIN = 'https://iptvkanal.de'
 UPDATED_ISO = '2026-11-24'
@@ -34,13 +34,14 @@ header = extract(r'<header class="header"[^>]*>.*?</header>')
 footer = extract(r'<footer class="footer">.*?</footer>')
 script = extract(r'<script src="assets/main\.js[^"]*" defer></script>').replace('src="assets/', 'src="/assets/')
 
-PAGES = content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES
+PAGES = content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES + content_more.PAGES
 BY_SLUG = {p['slug']: p for p in PAGES}
 
 HUBS = {
     'ratgeber': ('/ratgeber/', 'Ratgeber'),
     'geraete': ('/iptv-geraete/', 'Geräte'),
     'apps': ('/iptv-apps/', 'Apps'),
+    'international': ('/iptv-international/', 'International'),
 }
 
 # The Ratgeber hub lists every guide.
@@ -62,6 +63,9 @@ RATGEBER = dict(
 )
 PAGES.append(RATGEBER)
 BY_SLUG['ratgeber'] = RATGEBER
+
+
+SPORT = ['iptv-fussball', 'iptv-sport', 'sky-iptv']
 
 
 def url(slug):
@@ -96,9 +100,11 @@ def hub_children(page):
     hub = page.get('hub')
     if hub == 'ratgeber':
         groups = [
-            ('Grundlagen &amp; Kauf', [p['slug'] for p in PAGES if p.get('parent') in ('ratgeber', None) and p['kind'] != 'hub' and p['slug'] != 'ratgeber']),
+            ('Grundlagen &amp; Kauf', [p['slug'] for p in PAGES if p.get('parent') in ('ratgeber', None) and p['kind'] != 'hub' and p['slug'] != 'ratgeber' and p['slug'] not in SPORT]),
+            ('Sport &amp; Pay-TV', SPORT),
             ('Geräte', ['iptv-geraete'] + [p['slug'] for p in PAGES if p.get('parent') == 'geraete']),
             ('Apps &amp; Player', ['iptv-apps'] + [p['slug'] for p in PAGES if p.get('parent') == 'apps']),
+            ('International', ['iptv-international'] + [p['slug'] for p in PAGES if p.get('parent') == 'international']),
         ]
     else:
         groups = [(None, [p['slug'] for p in PAGES if p.get('parent') == hub])]
