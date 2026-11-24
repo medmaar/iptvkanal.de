@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Build pricing, trial and individual order pages with shared navigation."""
+import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +39,7 @@ PAGE = '''<!doctype html>
   <meta property="og:description" content="{description}">
   <meta property="og:url" content="https://iptvkanal.de{path}">
   {styles}
+  {extra_head}
 </head>
 <body class="subpage">
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -85,15 +89,58 @@ def request_form(kind, months=1, term='', price=0):
     </div>'''
 
 
+TRIAL_FAQ = [
+    ('Ist der IPTV-Test wirklich kostenlos?', 'Ja. Der Testzugang kostet nichts, und Sie geben keine Zahlungsdaten an. Es entsteht kein Abo.'),
+    ('Wie lange dauert der IPTV-Test?', 'Der Testzugang ist zeitlich begrenzt und reicht, um Sender, Bildqualität und Stabilität auf Ihrem Gerät zu prüfen. Die genaue Dauer nennen wir Ihnen mit den Zugangsdaten.'),
+    ('Welche Apps kann ich für die Testline nutzen?', 'Alle gängigen IPTV-Apps wie IPTV Smarters Pro, TiviMate, Smart IPTV, SET IPTV, Flix IPTV, VLC sowie MAG-Boxen.'),
+    ('Verlängert sich der Test automatisch in ein Abo?', 'Nein. Nach dem Test entscheiden Sie selbst, ob Sie ein Paket bestellen. Auch die Pakete verlängern sich nicht automatisch.'),
+    ('Kann ich 4K im Test ausprobieren?', 'Ja. 4K-Sender sind auch im Test enthalten. Für flüssiges 4K empfehlen wir mindestens 25 Mbit/s.'),
+]
+TRIAL_JSONLD = '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': [
+    {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in TRIAL_FAQ]},
+    {'@type': 'BreadcrumbList', 'itemListElement': [
+        {'@type': 'ListItem', 'position': 1, 'name': 'Start', 'item': 'https://iptvkanal.de/'},
+        {'@type': 'ListItem', 'position': 2, 'name': 'IPTV kostenlos testen', 'item': 'https://iptvkanal.de/kostenlos-testen/'}]}]}, ensure_ascii=False) + '</script>'
+
+
 trial = '''<section class="signup-page" aria-labelledby="trial-title">
   <div class="container trial-wrap">
     <div class="trial-summary">
       <span class="eyebrow">IHR KOSTENLOSER TESTZUGANG</span>
-      <h1 class="display" id="trial-title">Kostenlos testen</h1>
+      <h1 class="display" id="trial-title">IPTV kostenlos testen</h1>
       <div class="trial-price"><b>0</b><span>€</span></div>
       <p class="trial-meta">Live-TV, Sport, Filme und Serien kennenlernen. Ohne Zahlungsdaten.</p>
       <p class="order-instructions">Formular ausfüllen und absenden. Ihren Testzugang erhalten Sie anschließend per E-Mail oder WhatsApp.</p>
     </div>''' + request_form('trial') + '''
+  </div>
+</section>
+<section class="article trial-info" aria-labelledby="trial-info-title">
+  <div class="container">
+    <div class="answer-box"><b>Kurz erklärt</b><p>Der IPTV-Test von IPTV Kanal ist kostenlos und ohne Zahlungsdaten. Sie erhalten eine Testline mit Zugangsdaten für Ihre App und prüfen Sender, Bildqualität bis 4K, Programmführer und Stabilität auf Ihrem eigenen Gerät, bevor Sie ein Paket wählen.</p></div>
+    <div class="prose">
+      <h2 id="trial-info-title">So läuft Ihr kostenloser IPTV-Test ab</h2>
+      <ol class="howto">
+        <li><b>Anfrage senden:</b> Formular oben ausfüllen. Name, E-Mail oder WhatsApp genügen.</li>
+        <li><b>Testline erhalten:</b> Sie bekommen Zugangsdaten als Xtream-Codes-Login oder <a href="/m3u-playlist/">M3U-Link</a>.</li>
+        <li><b>App einrichten:</b> zum Beispiel <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>, <a href="/tivimate/">TiviMate</a> oder <a href="/smart-iptv/">Smart IPTV</a>.</li>
+        <li><b>Testen:</b> Live-TV, Filme, Serien und <a href="/iptv-4k/">4K-Sender</a> auf Ihrem Gerät ausprobieren.</li>
+      </ol>
+      <h2 id="test-tipps">Worauf Sie beim IPTV-Test achten sollten</h2>
+      <ul>
+        <li>Testen Sie abends zur Hauptsendezeit – dann zeigt sich, wie stabil ein IPTV-Anbieter wirklich ist.</li>
+        <li>Prüfen Sie die Umschaltzeit zwischen Sendern und den Programmführer.</li>
+        <li>Verbinden Sie Ihr Gerät möglichst per LAN-Kabel, besonders für 4K.</li>
+        <li>Nutzen Sie die Bewertungsmatrix aus unserem <a href="/iptv-anbieter-vergleich/">IPTV-Anbieter-Vergleich</a>.</li>
+      </ul>
+      <h2 id="test-geraete">Anleitungen für Ihr Gerät</h2>
+      <p>Schritt-für-Schritt-Hilfe finden Sie für den <a href="/iptv-fire-tv-stick/">Fire TV Stick</a>, <a href="/iptv-samsung-tv/">Samsung TV</a>, <a href="/iptv-lg-tv/">LG TV</a>, <a href="/iptv-android/">Android</a>, <a href="/iptv-apple-tv-iphone/">Apple TV und iPhone</a>, <a href="/mag-box-iptv/">MAG-Boxen</a> und den <a href="/iptv-pc-mac/">PC</a>. Nach dem Test wählen Sie Ihr Paket unter <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>
+    </div>
+  </div>
+</section>
+<section class="faq-section" id="faq" aria-labelledby="faq-title">
+  <div class="container container--narrow">
+    <header class="section-head"><p class="eyebrow">FAQ</p><h2 class="display" id="faq-title">Häufige Fragen zum IPTV-Test</h2></header>
+    <div class="faq">''' + ''.join(f'<details><summary>{q}<i aria-hidden="true"></i></summary><p>{a}</p></details>' for q, a in TRIAL_FAQ) + '''</div>
   </div>
 </section>'''
 
@@ -125,10 +172,10 @@ def plan_page(months, term, price):
 
 
 pages = {
-    'preise/index.html': dict(path='/preise/', title='Preise &amp; Pakete – IPTV Kanal ab 9 €',
-        description='Die gleichen IPTV-Kanal-Pakete wie auf der Startseite. Geräteanzahl und Paket wählen und direkt auf der eigenen Paketseite bestellen.', body=pricing_page),
-    'kostenlos-testen/index.html': dict(path='/kostenlos-testen/', title='Kostenlos testen – IPTV Kanal Testzugang',
-        description='IPTV Kanal kostenlos anfragen. Name, E-Mail, WhatsApp und Notiz sind freiwillig – auch ein leeres Formular lässt sich absenden.', body=trial),
+    'preise/index.html': dict(path='/preise/', title='IPTV Preise &amp; Pakete ab 9 € – ohne Vertrag | IPTV Kanal',
+        description='IPTV Preise im Überblick: 1, 3, 6 oder 12 Monate für 1 bis 5 Geräte, ab 9 €. Einmal zahlen, keine automatische Verlängerung. Paket wählen und direkt bestellen.', body=pricing_page),
+    'kostenlos-testen/index.html': dict(path='/kostenlos-testen/', title='IPTV kostenlos testen – Testline ohne Zahlungsdaten | IPTV Kanal',
+        description='IPTV kostenlos testen: Testline für Smart TV, Fire TV, Handy und PC anfragen – ohne Zahlungsdaten und ohne Abo. Sender, 4K und EPG vor dem Kauf prüfen.', body=trial, extra_head=TRIAL_JSONLD),
 }
 # Initial prices come directly from the homepage's plan cards.
 for months, slug, term in [(1, '1-monat', '1 Monat'), (3, '3-monate', '3 Monate'), (6, '6-monate', '6 Monate'), (12, '1-jahr', '1 Jahr')]:
@@ -136,13 +183,13 @@ for months, slug, term in [(1, '1-monat', '1 Monat'), (3, '3-monate', '3 Monate'
     price = re.search(r'class="plan-price[^>]*><b>(\d+)</b>', card).group(1)
     pages[f'bestellen/{slug}/index.html'] = dict(
         path=f'/bestellen/{slug}/', title=f'{term} IPTV bestellen – IPTV Kanal',
-        description=f'{term} IPTV für die gewählte Geräteanzahl bestellen. Name, E-Mail, WhatsApp und Notiz sind freiwillig.',
+        description=f'{term} IPTV bestellen: 20.000+ Sender, Filme und Serien in bis zu 4K für 1 bis 5 Geräte. Einmalig bezahlt, keine automatische Verlängerung.',
         body=plan_page(months, term, price))
 
 for target, page in pages.items():
     out = ROOT / target
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(line.rstrip() for line in PAGE.format(favicon=favicon, styles=styles, sprite=sprite, header=header, footer=footer, script=script, **page).splitlines()) + "\n")
+    out.write_text("\n".join(line.rstrip() for line in PAGE.format(favicon=favicon, styles=styles, sprite=sprite, header=header, footer=footer, script=script, **{'extra_head': '', **page}).splitlines()) + "\n")
     print('Built', target)
 
 # The legal/error pages keep their content and share the same navigation and footer.
@@ -162,3 +209,6 @@ for target in ('impressum.html', 'datenschutz.html', '404.html'):
         text = re.sub(r'<script src="/?assets/main\.js[^"]*" defer></script>', lambda _: script, text)
     out.write_text(text)
     print('Synced navigation', target)
+
+# Guide pages and sitemap share the same header and footer.
+subprocess.run([sys.executable, str(ROOT / 'scripts' / 'build-seo-pages.py')], check=True)
