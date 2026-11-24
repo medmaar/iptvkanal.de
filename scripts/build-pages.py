@@ -94,6 +94,8 @@ TRIAL_FAQ = [
     ('Wie lange dauert der IPTV-Test?', 'Der Testzugang ist zeitlich begrenzt und reicht, um Sender, Bildqualität und Stabilität auf Ihrem Gerät zu prüfen. Die genaue Dauer nennen wir Ihnen mit den Zugangsdaten.'),
     ('Welche Apps kann ich für die Testline nutzen?', 'Alle gängigen IPTV-Apps wie IPTV Smarters Pro, TiviMate, Smart IPTV, SET IPTV, Flix IPTV, VLC sowie MAG-Boxen.'),
     ('Verlängert sich der Test automatisch in ein Abo?', 'Nein. Nach dem Test entscheiden Sie selbst, ob Sie ein Paket bestellen. Auch die Pakete verlängern sich nicht automatisch.'),
+    ('Was ist eine IPTV Testline?', 'Eine IPTV Testline ist ein zeitlich begrenzter Testzugang mit echten Zugangsdaten. Sie tragen ihn wie ein normales Abo in Ihre App ein und prüfen Sender, Bildqualität und Stabilität, bevor Sie kaufen.'),
+    ('Gibt es einen IPTV 24h Test?', 'Viele Anbieter nennen ihren Test „24h Test“ oder „Test 24“. Unser Testzugang ist ebenfalls zeitlich begrenzt und reicht für einen vollständigen Abend zur Hauptsendezeit. Die genaue Dauer nennen wir Ihnen mit den Zugangsdaten.'),
     ('Kann ich 4K im Test ausprobieren?', 'Ja. 4K-Sender sind auch im Test enthalten. Für flüssiges 4K empfehlen wir mindestens 25 Mbit/s.'),
 ]
 TRIAL_JSONLD = '<script type="application/ld+json">' + json.dumps({'@context': 'https://schema.org', '@graph': [
@@ -125,6 +127,9 @@ trial = '''<section class="signup-page" aria-labelledby="trial-title">
         <li><b>App einrichten:</b> zum Beispiel <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>, <a href="/tivimate/">TiviMate</a> oder <a href="/smart-iptv/">Smart IPTV</a>.</li>
         <li><b>Testen:</b> Live-TV, Filme, Serien und <a href="/iptv-4k/">4K-Sender</a> auf Ihrem Gerät ausprobieren.</li>
       </ol>
+      <h2 id="testline">IPTV Testline, 24h Test oder Free Trial: was ist der Unterschied?</h2>
+      <p>Ob „IPTV Testline“, „Test Line“, „IPTV 24h Test“, „Free Trial“ oder „IPTV gratis testen“: Gemeint ist fast immer dasselbe – ein kurzer, kostenloser Zugang mit echten Zugangsdaten. Bei IPTV Kanal ist die Testline technisch identisch mit einem bezahlten Paket. Sie sehen also genau die Senderliste, die Bildqualität bis 4K und den Programmführer, die Sie später bekommen. Welche Sendergruppen enthalten sind und wie Sie sie sortieren, erklärt der Ratgeber <a href="/iptv-senderliste/">IPTV Senderliste</a>.</p>
+      <p>Seien Sie bei Angeboten vorsichtig, die für einen „Premium-Test“ eine Gebühr oder Zahlungsdaten verlangen. Ein seriöser IPTV-Test ist kostenlos und verlängert sich nicht in ein Abo. Wie Sie Erfahrungsberichte anderer Nutzer einordnen, steht unter <a href="/iptv-erfahrungen/">IPTV Erfahrungen</a>.</p>
       <h2 id="test-tipps">Worauf Sie beim IPTV-Test achten sollten</h2>
       <ul>
         <li>Testen Sie abends zur Hauptsendezeit – dann zeigt sich, wie stabil ein IPTV-Anbieter wirklich ist.</li>
@@ -133,7 +138,7 @@ trial = '''<section class="signup-page" aria-labelledby="trial-title">
         <li>Nutzen Sie die Bewertungsmatrix aus unserem <a href="/iptv-anbieter-vergleich/">IPTV-Anbieter-Vergleich</a>.</li>
       </ul>
       <h2 id="test-geraete">Anleitungen für Ihr Gerät</h2>
-      <p>Schritt-für-Schritt-Hilfe finden Sie für den <a href="/iptv-fire-tv-stick/">Fire TV Stick</a>, <a href="/iptv-samsung-tv/">Samsung TV</a>, <a href="/iptv-lg-tv/">LG TV</a>, <a href="/iptv-android/">Android</a>, <a href="/iptv-apple-tv-iphone/">Apple TV und iPhone</a>, <a href="/mag-box-iptv/">MAG-Boxen</a> und den <a href="/iptv-pc-mac/">PC</a>. Nach dem Test wählen Sie Ihr Paket unter <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>
+      <p>Schritt-für-Schritt-Hilfe finden Sie für den <a href="/iptv-fire-tv-stick/">Fire TV Stick</a>, andere <a href="/iptv-stick/">IPTV Sticks</a>, <a href="/formuler-iptv/">Formuler-Boxen</a>, <a href="/iptv-samsung-tv/">Samsung TV</a>, <a href="/iptv-lg-tv/">LG TV</a>, <a href="/iptv-android/">Android</a>, <a href="/iptv-apple-tv-iphone/">Apple TV und iPhone</a>, <a href="/mag-box-iptv/">MAG-Boxen</a> und den <a href="/iptv-pc-mac/">PC</a>. Nach dem Test wählen Sie Ihr Paket unter <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>
     </div>
   </div>
 </section>

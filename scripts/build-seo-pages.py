@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from seo import content_core, content_apps, content_devices  # noqa: E402
+from seo import content_core, content_apps, content_devices, content_extra  # noqa: E402
 
 DOMAIN = 'https://iptvkanal.de'
 UPDATED_ISO = '2026-11-24'
@@ -34,7 +34,7 @@ header = extract(r'<header class="header"[^>]*>.*?</header>')
 footer = extract(r'<footer class="footer">.*?</footer>')
 script = extract(r'<script src="assets/main\.js[^"]*" defer></script>').replace('src="assets/', 'src="/assets/')
 
-PAGES = content_core.PAGES + content_apps.PAGES + content_devices.PAGES
+PAGES = content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES
 BY_SLUG = {p['slug']: p for p in PAGES}
 
 HUBS = {
