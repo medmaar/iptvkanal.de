@@ -11,6 +11,11 @@ no separate manual deployment or Cloudflare API token is needed for that trigger
 - The `preise/`, `kostenlos-testen/` and `bestellen/` pages and the shared navigation on legal/error pages are generated from `index.html`: run
   `python3 scripts/build-pages.py` after changing the header, footer, icon sprite or pricing section,
   and before `version-assets.py`.
+- Guide pages (Ratgeber) are generated from `scripts/seo/content_*.py` by `scripts/build-seo-pages.py`,
+  which `build-pages.py` runs automatically; it also rewrites `sitemap.xml`. Never edit a guide's
+  `index.html` by hand. Every guide needs a visible FAQ (mirrored as FAQPage JSON-LD), related links and
+  only the two CTA buttons. Run `python3 scripts/check-seo.py` before committing (links, schema, sitemap, inbound links).
+  Clean URL aliases live in `_redirects`.
 - Contact points: email is `kontakt@iptvkanal.de`; WhatsApp is always the site-relative link `/go/wa`.
 - Both request forms send directly to the user-configured EmailJS service/template via the REST API in `assets/main.js`.
   The public browser key is intentional; no Resend secret or Pages Function is required.

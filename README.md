@@ -24,6 +24,17 @@ und veränderliche Bundles revalidieren.
 Änderungen werden nach bestandenen Prüfungen auf `main` gepusht. Das verbundene
 Cloudflare-Pages-Projekt übernimmt automatisch das Deployment.
 
+## Ratgeber- und SEO-Seiten
+
+29 Ratgeberseiten (Grundlagen, Geräte, Apps, Kaufberatung) entstehen aus
+`scripts/seo/content_core.py`, `content_apps.py` und `content_devices.py`.
+`python3 scripts/build-pages.py` erzeugt sie mit Kopf- und Fußzeile der Startseite,
+Brotkrümelnavigation, sichtbaren FAQ samt FAQPage-/BreadcrumbList-JSON-LD und
+aktualisiert `sitemap.xml`. `python3 scripts/check-seo.py` prüft interne Links,
+strukturierte Daten, Titel, Sitemap und eingehende Links. Weiterleitungen für
+alternative Schreibweisen stehen in `_redirects`. Der Smoke-Test nutzt
+`CHROMIUM_PATH`, falls Chromium nicht unter `/usr/bin/chromium` liegt.
+
 ## Lokale Assets und Darstellung
 
 - `assets/base.css`: grundlegendes Layout und lokale Schriftdefinitionen.

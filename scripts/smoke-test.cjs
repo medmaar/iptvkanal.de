@@ -9,7 +9,7 @@ const { chromium } = require('playwright');
 (async () => {
   const base = process.env.SITE_URL || 'http://127.0.0.1:8000';
   const supplied = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/review-platforms.json'), 'utf8'));
-  const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--no-sandbox'] });
+  const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium', args: ['--no-sandbox'] });
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
     const errors = [];
@@ -267,7 +267,10 @@ const { chromium } = require('playwright');
     assert.deepEqual(externalRequests, [], 'Pages must not request externally hosted assets');
     console.log('PASS all pages and fonts load locally with no external asset requests');
     // Only Free Trial and Pricing are marketing CTAs on every page.
-    const files = ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html', 'bestellen/1-monat/index.html', 'bestellen/3-monate/index.html', 'bestellen/6-monate/index.html', 'bestellen/1-jahr/index.html'];
+    const files = ['index.html', 'preise/index.html', 'kostenlos-testen/index.html', 'impressum.html', 'datenschutz.html', '404.html', 'bestellen/1-monat/index.html', 'bestellen/3-monate/index.html', 'bestellen/6-monate/index.html', 'bestellen/1-jahr/index.html'].concat(fs.readdirSync(path.join(__dirname, '..'), { withFileTypes: true })
+      .filter(entry => entry.isDirectory() && fs.existsSync(path.join(__dirname, '..', entry.name, 'index.html')) && fs.readFileSync(path.join(__dirname, '..', entry.name, 'index.html'), 'utf8').includes('guide-page'))
+      .map(entry => entry.name + '/index.html'));
+    assert.ok(files.length >= 39, 'All guide pages must be checked');
     const sourceHome = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
     const sharedHeader = sourceHome.match(/<header class="header"[^>]*>[\s\S]*?<\/header>/)[0];
     const sharedFooter = sourceHome.match(/<footer class="footer">[\s\S]*?<\/footer>/)[0];
@@ -284,7 +287,7 @@ const { chromium } = require('playwright');
       }
       assert.deepEqual(await page.locator('.nav-cta a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['/preise/', '/kostenlos-testen/']);
     }
-    console.log('PASS only two marketing CTA destinations and identical headers/footers on all ten pages');
+    console.log(`PASS only two marketing CTA destinations and identical headers/footers on all ${files.length} pages`);
 
     await page.goto(base);
     assert.equal(await page.locator('[data-request-form]').count(), 0);
