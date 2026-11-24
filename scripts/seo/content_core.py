@@ -61,6 +61,7 @@ PAGES.append(dict(
         ('Brauche ich für IPTV einen speziellen Fernseher?', 'Nein. Jeder Smart-TV mit App-Store, ein Fire TV Stick, eine Android-Box, ein Smartphone, Tablet oder Computer reicht. Ältere Fernseher ohne Apps rüsten Sie mit einem günstigen Streaming-Stick nach.'),
         ('Wie schnell muss mein Internet für IPTV sein?', 'Für HD-Sender genügen etwa 10 Mbit/s, für Full HD rund 16 Mbit/s und für 4K mindestens 25 Mbit/s pro Gerät, das gleichzeitig schaut. Ein LAN-Kabel ist stabiler als WLAN.'),
         ('Was ist der Unterschied zwischen IPTV und Streaming?', 'Streaming-Dienste bieten meist nur Filme und Serien auf Abruf. IPTV liefert zusätzlich lineares Live-Fernsehen mit Programmführer, Catch-Up und Senderliste – also klassisches Fernsehen über das Internet.'),
+        ('Sind Netflix, Disney+ oder Pluto TV in IPTV enthalten?', 'Nein. Netflix, Disney+, HBO Max und Discovery+ sind eigenständige Streamingdienste mit eigenem Abo, Pluto TV ist ein kostenloser werbefinanzierter Dienst. Auf Fire TV, Google TV und Smart-TVs laufen diese Apps einfach neben Ihrer IPTV-App.'),
         ('Funktioniert IPTV ohne Kabelanschluss?', 'Ja. IPTV braucht nur einen Internetzugang, egal ob DSL, Glasfaser, Kabelinternet oder Mobilfunk. Ein TV-Kabelanschluss oder eine Satellitenschüssel ist nicht nötig.'),
     ],
     related=['iptv-anbieter', 'iptv-geraete', 'iptv-apps', 'm3u-playlist', 'iptv-4k', 'iptv-telekom-vodafone'],
@@ -94,6 +95,10 @@ PAGES.append(dict(
         ('laufzeit', 'Welche Laufzeit lohnt sich?', '''
 <p><strong>1 Monat</strong> eignet sich, wenn Sie nach dem <a href="/kostenlos-testen/">kostenlosen Test</a> noch etwas länger ausprobieren möchten oder nur für ein Turnier oder einen Urlaub schauen. <strong>3 und 6 Monate</strong> sind der Mittelweg. Das <strong>IPTV-Jahresabo (12 Monate)</strong> ist pro Monat am günstigsten: 49 € statt 108 € bei zwölf Einzelmonaten – Sie sparen 55 %.</p>
 <p>Weil sich kein Paket automatisch verlängert, gehen Sie mit keiner Laufzeit ein Risiko ein. Sie entscheiden am Ende neu.</p>'''),
+        ('iptv-line', 'IPTV Line, IPTV Account, Premium: was Sie eigentlich kaufen', '''
+<p>Im IPTV-Handel tauchen viele Begriffe für dasselbe auf. Eine <strong>IPTV Line</strong> (auch „IPTV-Linie“ oder „Line“) ist Ihr persönlicher Zugang zum Server eines Anbieters. Der <strong>IPTV Account</strong> sind die Zugangsdaten dazu – Benutzername, Passwort und Server-Adresse, als Xtream-Codes-Login oder <a href="/m3u-playlist/">M3U-Link</a>. Ein <strong>IPTV-Abo</strong> bzw. eine IPTV-Subscription ist diese Line für eine feste Laufzeit.</p>
+<p>„<strong>IPTV Premium</strong>“ oder „Premium IPTV“ ist dagegen kein geschützter Begriff, sondern ein Werbewort. Entscheidend ist, was dahintersteht: echte <a href="/iptv-4k/">4K-Sender</a>, stabile Server am Abend, Programmführer und erreichbarer Support. Bei IPTV Kanal ist jede Line gleich ausgestattet – Sie wählen nur Laufzeit und Anzahl der Geräte. Angebote, Deals und Rabatte erkennen Sie an der Preistabelle oben: Je länger die Laufzeit, desto günstiger der Monat.</p>
+''' + tip('Eine Line gilt für die gebuchte Anzahl gleichzeitiger Streams. Wer auf zwei Fernsehern gleichzeitig schauen möchte, wählt ein Paket mit 2 Geräten.')),
         ('worauf-achten', 'Worauf Sie beim IPTV-Kauf achten sollten', checks(
             '<strong>Testmöglichkeit:</strong> Seriöse Anbieter lassen Sie vorher testen.',
             '<strong>Keine Abofalle:</strong> klare Laufzeit ohne stillschweigende Verlängerung.',
@@ -107,6 +112,7 @@ PAGES.append(dict(
         ('Verlängert sich das IPTV-Abo automatisch?', 'Nein. Sie zahlen einmalig für die gewählte Laufzeit. Es gibt keine automatische Verlängerung und keine Kündigungsfrist.'),
         ('Kann ich IPTV vor dem Kauf testen?', 'Ja. Über die Seite Kostenlos testen fragen Sie einen kostenlosen Testzugang an – ohne Zahlungsdaten.'),
         ('Wie schnell bekomme ich nach dem Kauf meinen Zugang?', 'In der Regel erhalten Sie Ihre Zugangsdaten kurz nach der Bestellung per E-Mail oder WhatsApp und können sofort starten.'),
+        ('Was ist eine IPTV Line?', 'Eine IPTV Line ist Ihr persönlicher Zugang zum Server eines IPTV-Anbieters, bestehend aus Benutzername, Passwort und Server-Adresse. Sie tragen die Line als Xtream-Codes-Login oder M3U-Link in Ihre IPTV-App ein.'),
         ('Gibt es IPTV mit Lifetime-Zugang?', 'Wir bieten bewusst kein Lifetime-Paket an. Dauerhafter Betrieb von Servern kostet laufend Geld; einmalige Lifetime-Angebote sind deshalb meist nicht nachhaltig. Das Jahrespaket ist unsere günstigste Option.'),
         ('Auf welchen Geräten funktioniert das IPTV-Abo?', 'Auf Smart-TVs von Samsung und LG, Fire TV Stick, Android-TV-Boxen, MAG-Boxen, Apple TV, iPhone, iPad, Android-Smartphones sowie PC und Mac.'),
     ],
@@ -193,7 +199,16 @@ PAGES.append(dict(
             'Achten Sie auf Bewertungen über mehrere Monate statt auf Wellen am selben Tag.',
             'Negative Bewertungen sind wertvoll: Wie hat der Anbieter reagiert?',
             'Konkrete Gerätenamen und Situationen („Fire TV, Bundesliga-Samstag“) sind glaubwürdiger als allgemeines Lob.') + '''
-<p>Unsere eigenen Kundenstimmen von Trustpilot, Google und WhatsApp finden Sie auf der <a href="/#bewertungen">Startseite</a>.</p>'''),
+<p>Wie Sie Erfahrungsberichte aus IPTV-Foren, Reddit und Trustpilot im Detail einordnen und gekaufte Bewertungen erkennen, zeigt unser Ratgeber <a href="/iptv-erfahrungen/">IPTV Erfahrungen</a>.</p>'''),
+        ('anbieternamen', 'Nach Anbieternamen gesucht? Hot IPTV, Extreme IPTV, Mega IPTV &amp; Co.', '''
+<p>Viele Suchanfragen nennen direkt einen Dienst – etwa Hot IPTV, Extreme IPTV, Mega IPTV, Nova IPTV, Crystal IPTV, Golden IPTV, Mango IPTV, Fast IPTV, Lion IPTV, Eagle IPTV, Strong IPTV, ForeverTV oder Pandar TV. Wir bewerten keine einzelnen fremden Dienste: Über die meisten gibt es keine überprüfbaren Angaben, und Markennamen werden in der IPTV-Branche häufig von wechselnden Wiederverkäufern genutzt. Prüfen Sie jeden Anbieter deshalb mit denselben Fragen:</p>
+''' + checks(
+            '<strong>Impressum:</strong> Gibt es ein vollständiges Impressum mit Anschrift?',
+            '<strong>Test:</strong> Lässt der Dienst Sie vor dem Kauf kostenlos testen?',
+            '<strong>Laufzeit:</strong> Festpreis ohne automatische Verlängerung?',
+            '<strong>Support:</strong> Antwort auf Deutsch innerhalb weniger Stunden?',
+            '<strong>Bewertungsmatrix:</strong> Erreicht der Dienst im Test mindestens 12 von 16 Punkten?') + '''
+<p>Hintergrundwissen zu Wiederverkäufern und Anbieterarten finden Sie im Ratgeber <a href="/iptv-anbieter/">IPTV Anbieter finden</a>.</p>'''),
         ('player', 'Bester IPTV Player: die App zählt mit', '''
 <p>Ein guter Anbieter wirkt nur so gut wie die App, mit der Sie schauen. Für Android-TV und Fire TV ist <a href="/tivimate/">TiviMate</a> beliebt, für den Einstieg auf fast allen Geräten <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>, für Samsung und LG Fernseher Player wie <a href="/smart-iptv/">Smart IPTV</a>, <a href="/set-iptv/">SET IPTV</a> oder <a href="/flix-iptv/">Flix IPTV</a>. Die komplette Übersicht steht unter <a href="/iptv-apps/">beste IPTV Apps</a>.</p>'''),
         ('unser-angebot', 'Wie schneidet IPTV Kanal ab?', '''
@@ -205,7 +220,7 @@ PAGES.append(dict(
         ('Wie lange sollte ich einen IPTV Anbieter testen?', 'Mindestens einen Abend zur Hauptsendezeit, idealerweise 24 Stunden. Live-Sport am Wochenende ist der härteste und aussagekräftigste Test.'),
         ('Ist ein teurer IPTV Anbieter automatisch besser?', 'Nein. Entscheidend sind Stabilität, Support und Laufzeitbedingungen. Ein fairer Jahrespreis mit Testmöglichkeit ist oft die bessere Wahl als ein teures Monatsabo.'),
     ],
-    related=['iptv-anbieter', 'iptv-kaufen', 'iptv-apps', 'iptv-4k', 'tivimate', 'iptv-smarters-pro'],
+    related=['iptv-erfahrungen', 'iptv-anbieter', 'iptv-kaufen', 'iptv-apps', 'iptv-4k', 'iptv-smarters-pro'],
     card=('IPTV Anbieter Vergleich', 'Bewertungsmatrix mit 8 Kriterien für den besten IPTV Anbieter.'),
 ))
 
@@ -234,7 +249,7 @@ PAGES.append(dict(
         ('apps', 'Die richtige App für 4K', '''
 <p>Nicht jede App spielt HEVC-Streams gleich gut ab. Auf Android-TV und Fire TV liefern <a href="/tivimate/">TiviMate</a> und <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a> mit Hardware-Decoder die besten Ergebnisse. Auf Samsung und LG nutzen Sie Player wie <a href="/set-iptv/">SET IPTV</a> oder <a href="/flix-iptv/">Flix IPTV</a>. Am PC ist <a href="/iptv-pc-mac/">VLC</a> eine zuverlässige Wahl.</p>'''),
         ('8k', '8K- und 12K-IPTV: was dahintersteckt', '''
-<p>Angebote mit „IPTV 8K“ oder gar „12K“ sind fast immer Marketing. Es gibt praktisch keine regulären Fernsehsender in 8K, und 12K existiert als Sendeformat nicht. Achten Sie lieber darauf, ob echte 4K-Sender und stabile Full-HD-Streams dabei sind.</p>'''),
+<p>Angebote mit „IPTV 8K“, „IPTV8K“ oder gar „IPTV12K“ sind fast immer Marketing; dasselbe gilt für Namen wie „IPTV Premium 4K“, die oft nur ein Etikett sind. Es gibt praktisch keine regulären Fernsehsender in 8K, und 12K existiert als Sendeformat nicht. Achten Sie lieber darauf, ob echte 4K-Sender und stabile Full-HD-Streams dabei sind.</p>'''),
         ('ruckeln', 'Wenn 4K ruckelt: schnelle Lösungen', steps(
             'Gerät per LAN-Kabel anschließen oder ins 5-GHz-WLAN wechseln.',
             'Andere Downloads und Streams im Haushalt pausieren.',
@@ -327,6 +342,7 @@ PAGES.append(dict(
             'Viele Sender sind falsch beschriftet, ohne EPG und in schlechter Qualität.',
             'Öffentlich geteilte Listen stammen oft aus fremden, missbrauchten Zugängen.',
             'Downloads aus dubiosen Quellen können Schadsoftware enthalten.') + '''
+<p>Wie Sie eine große Liste auf die deutschen Sender reduzieren, Favoriten anlegen und den Programmführer verknüpfen, zeigt der Ratgeber <a href="/iptv-senderliste/">IPTV Senderliste</a>.</p>
 <p>Seriöse Alternative: Deutsche Sender der öffentlich-rechtlichen Mediatheken sind frei im Netz verfügbar, und für ein vollständiges Angebot mit EPG und Support gibt es eine persönliche M3U-Liste im <a href="/iptv-kaufen/">IPTV-Abo</a> – vorher <a href="/kostenlos-testen/">kostenlos testbar</a>.</p>'''),
         ('checker', 'M3U-Liste prüfen: IPTV Checker & M3U online', '''
 <p>Ob ein M3U-Link funktioniert, sehen Sie am schnellsten in VLC: Lädt die Senderliste und startet ein Sender, ist die Liste aktiv. Online-Tools („IPTV Checker online“) testen viele Streams auf einmal, sehen dafür aber Ihre Zugangsdaten. Geben Sie persönliche Listen deshalb nicht in fremde Websites ein.</p>'''),

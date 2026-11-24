@@ -19,7 +19,9 @@ PAGES.append(dict(
             ['<a href="/iptv-samsung-tv/">Samsung Smart TV</a>', 'SET IPTV, Flix IPTV, Smart IPTV', 'Ohne Zusatzgerät'],
             ['<a href="/iptv-lg-tv/">LG Smart TV</a>', 'SS IPTV, Smart IPTV, Flix IPTV', 'Ohne Zusatzgerät'],
             ['<a href="/iptv-smart-tv/">Hisense, Sony, Philips, Panasonic</a>', 'je nach System', 'Andere TV-Marken'],
+            ['<a href="/iptv-stick/">IPTV Stick (Google TV, Xiaomi)</a>', 'TiviMate, Smarters', 'Klein, günstig, jeder HDMI-Fernseher'],
             ['<a href="/iptv-box/">Android-TV-Box</a>', 'TiviMate, Smarters', 'Maximale Leistung, 4K'],
+            ['<a href="/formuler-iptv/">Formuler Box</a>', 'MyTVOnline 3', 'Receiver-Bedienung mit Android'],
             ['<a href="/mag-box-iptv/">MAG-Box</a>', 'Integriertes Portal', 'Bedienung wie Receiver'],
             ['<a href="/iptv-receiver/">Enigma2-Receiver</a>', 'Plugins', 'Sat + IPTV kombiniert'],
             ['<a href="/iptv-apple-tv-iphone/">Apple TV, iPhone, iPad</a>', 'IPTVX, Smarters Player Lite', 'Apple-Nutzer'],
@@ -63,7 +65,7 @@ PAGES.append(dict(
             '<b>Downloader installieren:</b> Auf der Startseite nach „Downloader“ suchen und die App aus dem Amazon Appstore laden.',
             '<b>Entwickleroptionen freischalten:</b> Einstellungen → Mein Fire TV → Info → siebenmal auf den Gerätenamen klicken.',
             '<b>Unbekannte Apps erlauben:</b> Einstellungen → Mein Fire TV → Entwickleroptionen → Apps unbekannter Herkunft → Downloader aktivieren.',
-            '<b>IPTV App laden:</b> In Downloader die offizielle Download-Adresse von <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a> oder <a href="/tivimate/">TiviMate</a> eingeben und installieren. TiviMate ist teils direkt im Appstore gelistet.',
+            '<b>IPTV App laden:</b> In Downloader die offizielle Download-Adresse von <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a> oder <a href="/tivimate/">TiviMate</a> eingeben und installieren. TiviMate ist teils direkt im Appstore gelistet. Ausführlich: <a href="/iptv-smarters-pro-firestick/">IPTV Smarters Pro auf dem Fire TV Stick installieren</a>.',
             '<b>Zugangsdaten eintragen:</b> App öffnen, Xtream-Codes-Login (Server, Benutzername, Passwort) eingeben.',
             '<b>Losschauen:</b> Sender öffnen, Favoriten anlegen, fertig.')
          + tip('Geben Sie in Downloader nur Adressen ein, deren Herkunft Sie kennen. Kurzcodes aus Foren können auf manipulierte Apps verweisen.', 'Sicherheit')),
@@ -79,7 +81,7 @@ PAGES.append(dict(
 ''' + checks(
             'Prüfen, ob eine passende IPTV App im Amazon Appstore für Ihr Gerät verfügbar ist.',
             'Den Stick zurückgeben und ein Fire-OS-Modell wie den Fire TV Stick 4K Max wählen.',
-            'Auf eine <a href="/iptv-box/">Android-TV-Box</a> oder einen Google TV Streamer ausweichen.')),
+            'Auf eine <a href="/iptv-box/">Android-TV-Box</a> oder einen Google-TV-Stick ausweichen – Vergleich im Ratgeber <a href="/iptv-stick/">IPTV Stick</a>.')),
         ('probleme', 'IPTV ruckelt auf dem Fire TV Stick?', table(['Ursache', 'Lösung'], [
             ['Schwaches WLAN', 'Stick mit HDMI-Verlängerung freier platzieren oder Ethernet-Adapter nutzen'],
             ['Voller Speicher', 'Cache unbenutzter Apps leeren, nicht genutzte Apps löschen'],
@@ -94,7 +96,7 @@ PAGES.append(dict(
         ('Woran erkenne ich, ob mein Fire TV Vega OS hat?', 'Unter Einstellungen → Mein Fire TV → Info wird das Betriebssystem angezeigt. Bei Vega OS fehlen außerdem die Entwickleroptionen für Apps unbekannter Herkunft.'),
         ('Ist IPTV auf dem Fire TV Stick legal?', 'Die Apps und die Installation sind legal. Entscheidend ist, dass Ihr IPTV-Anbieter die Inhalte rechtmäßig bereitstellt.'),
     ],
-    related=['tivimate', 'iptv-smarters-pro', 'iptv-4k', 'iptv-box', 'xtream-codes-iptv', 'iptv-geraete'],
+    related=['iptv-smarters-pro-firestick', 'tivimate', 'iptv-stick', 'iptv-4k', 'iptv-box', 'iptv-geraete'],
     card=('Fire TV Stick', 'IPTV mit Downloader, TiviMate oder Smarters – inklusive Vega-OS-Check.'),
 ))
 
@@ -249,7 +251,7 @@ PAGES.append(dict(
             'Unterwegs: In der App die Streamqualität reduzieren, um mobile Daten zu sparen.')),
         ('google-tv', 'Google TV, Android TV und Chromecast', '''
 <p>Der Chromecast mit Google TV und sein Nachfolger Google TV Streamer sind vollwertige Android-TV-Geräte: Sie installieren TiviMate oder Smarters direkt aus dem Play Store. Auch Fernseher von Sony, TCL und viele Philips-Modelle laufen mit Google TV – siehe <a href="/iptv-smart-tv/">IPTV auf dem Smart TV</a>.</p>
-<p>Ein älterer Chromecast ohne Fernbedienung kann keine Apps installieren. Dort öffnen Sie den Stream auf dem Handy und tippen auf das <strong>Cast-Symbol</strong> – unterstützt von IPTV Smarters und vielen anderen Playern.</p>'''),
+<p>Ein älterer Chromecast ohne Fernbedienung kann keine Apps installieren. Dort öffnen Sie den Stream auf dem Handy und tippen auf das <strong>Cast-Symbol</strong> – unterstützt von IPTV Smarters und vielen anderen Playern. Welche Sticks sich am besten eignen, zeigt der Ratgeber <a href="/iptv-stick/">IPTV Stick</a>.</p>'''),
         ('box', 'Android-TV-Box für mehr Leistung', '''
 <p>Für 4K, viele Sender und schnelle Umschaltzeiten lohnt sich eine leistungsstarke Box wie Nvidia Shield oder Homatics. Mehr dazu im Ratgeber <a href="/iptv-box/">IPTV Box kaufen</a>.</p>''' + LOGIN_TIP),
     ],
@@ -290,7 +292,15 @@ PAGES.append(dict(
         ], 'IPTV Boxen im Vergleich') + '''
 <p>Preise schwanken stark nach Händler und Modelljahr; vergleichen Sie aktuelle Angebote direkt beim Kauf.</p>'''),
         ('formuler', 'Formuler: IPTV Box mit eigener App', '''
-<p>Formuler-Boxen (Z Nano, Z Neo, Z+, Z7+, Z8, Z8 Pro, Z10 Pro, Z10 Pro Max, Z11) kommen mit der App <strong>MyTVOnline</strong>, die speziell für IPTV gebaut ist: Sie tragen Ihr Portal oder Ihren Xtream-Login ein und erhalten ein Programmführer-Raster wie beim Receiver. Zusätzlich laufen <a href="/tivimate/">TiviMate</a> und <a href="/iptv-smarters-pro/">Smarters</a>.</p>'''),
+<p>Formuler-Boxen (Z Nano, Z Neo, Z+, Z7+, Z8, Z8 Pro, Z10 Pro, Z10 Pro Max, Z11) kommen mit der App <strong>MyTVOnline</strong>, die speziell für IPTV gebaut ist: Sie tragen Ihr Portal oder Ihren Xtream-Login ein und erhalten ein Programmführer-Raster wie beim Receiver. Zusätzlich laufen <a href="/tivimate/">TiviMate</a> und <a href="/iptv-smarters-pro/">Smarters</a>. Modelle, MyTVOnline 3 und Einrichtung erklärt der Ratgeber <a href="/formuler-iptv/">Formuler IPTV Box</a>.</p>'''),
+        ('aliexpress', 'IPTV Box von Amazon, AliExpress oder Alibaba?', '''
+<p>Günstige IPTV Boxen werden massenhaft bei AliExpress und Alibaba sowie über Marktplatz-Händler bei Amazon angeboten. Viele davon sind technisch brauchbar, aber es gibt typische Fallstricke:</p>
+''' + checks(
+            '<strong>Kein zertifiziertes Android TV:</strong> Ohne Zertifizierung fehlen oft Play Store, Netflix in HD und Sicherheitsupdates.',
+            '<strong>Geschönte Angaben:</strong> „8K“, „Android 14“ oder „32 GB RAM“ stimmen bei Billigboxen häufig nicht.',
+            '<strong>Vorinstallierte Apps:</strong> Boxen „mit Sendern“ enthalten meist fragwürdige Apps und teils Schadsoftware.',
+            '<strong>CE-Kennzeichen, Garantie und Zoll:</strong> Bei Direktimport aus China fehlen Ansprechpartner in der EU; Einfuhrabgaben kommen hinzu.') + '''
+<p>Für einen fairen Preis und Ruhe im Betrieb greifen Sie lieber zu Markengeräten wie einer Google-TV-Box, einem <a href="/iptv-stick/">IPTV Stick</a> mit Fire OS oder Google TV oder einer Formuler. Testberichte großer Technikportale sind beim Vergleich hilfreicher als Sterne auf Marktplätzen.</p>'''),
         ('einrichten', 'IPTV Box einrichten', steps(
             'Box per HDMI mit dem Fernseher und per LAN mit dem Router verbinden.',
             'Mit Google-Konto anmelden und Systemupdates installieren.',
@@ -304,9 +314,10 @@ PAGES.append(dict(
         ('Welche ist die beste IPTV Box 2026?', 'Für maximale Leistung Nvidia Shield TV, für das beste Preis-Leistungs-Verhältnis eine Google-TV-Box wie Homatics, für IPTV-Spezialisten eine Formuler-Box mit MyTVOnline.'),
         ('Brauche ich eine IPTV Box?', 'Nein, aber sie lohnt sich, wenn Ihr Fernseher keine passende App hat oder Sie 4K, schnelles Umschalten und volle App-Auswahl wollen.'),
         ('Enthält eine IPTV Box Sender?', 'Seriöse Boxen enthalten keine Sender. Die Inhalte kommen aus Ihrem IPTV-Abo, dessen Zugangsdaten Sie in eine App eintragen.'),
+        ('Kann ich eine IPTV Box bei AliExpress kaufen?', 'Möglich, aber riskant: Billigboxen aus Direktimport sind oft nicht als Android TV zertifiziert, haben geschönte Leistungsangaben, keine Updates und mitunter Schadsoftware. Markengeräte aus dem Handel sind die sicherere Wahl.'),
         ('Was ist besser: Fire TV Stick oder Android-Box?', 'Ein Fire TV Stick 4K Max ist günstig und reicht für die meisten Haushalte. Eine Android-TV-Box bietet mehr Leistung, LAN-Anschluss und den vollen Play Store.'),
     ],
-    related=['mag-box-iptv', 'iptv-receiver', 'iptv-fire-tv-stick', 'tivimate', 'iptv-4k', 'iptv-geraete'],
+    related=['formuler-iptv', 'iptv-stick', 'mag-box-iptv', 'iptv-receiver', 'tivimate', 'iptv-geraete'],
     card=('IPTV Box', 'Die besten Android-TV-Boxen für IPTV im Vergleich.'),
 ))
 

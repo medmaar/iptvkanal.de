@@ -33,8 +33,17 @@ PAGES.append(dict(
             '<strong>Login-Typ:</strong> Xtream-Codes-Apps laden Mediathek und EPG automatisch; M3U-Apps brauchen manchmal eine separate EPG-Adresse.',
             '<strong>Programmführer:</strong> Wer viel linear schaut, profitiert von einem guten EPG-Raster.',
             '<strong>Kosten:</strong> Viele Player sind nach einer Testphase einmalig oder jährlich kostenpflichtig. Diese Gebühr geht an den App-Entwickler, nicht an den IPTV-Anbieter.')),
-        ('weitere', 'Weitere bekannte IPTV Apps', '''
-<p>Neben den Apps mit eigener Anleitung nutzen viele Zuschauer auch <strong>IBO Player</strong>, <strong>Duplecast</strong>, <strong>iMPlayer</strong>, <strong>OTT Navigator</strong>, <strong>GSE Smart IPTV</strong> und auf Apple-Geräten <strong>IPTVX</strong>. Sie funktionieren nach demselben Prinzip: App installieren, Gerät per MAC-Adresse oder Code verknüpfen, Playlist oder Xtream-Login eintragen. Für Fire-TV-Geräte wird zur Installation von Apps außerhalb des Amazon Appstores häufig die App <strong>Downloader</strong> verwendet – siehe <a href="/iptv-fire-tv-stick/">IPTV auf dem Fire TV Stick</a>.</p>'''),
+        ('weitere', 'Weitere bekannte IPTV Apps', table(['App', 'Geräte', 'Hinweis'], [
+            ['IBO Player', 'Samsung, LG, Android, Fire TV', 'Verknüpfung per MAC-Adresse, Aktivierung nach Testphase'],
+            ['Duplecast', 'Samsung, LG, Android', 'Playlist über die Website verknüpfen'],
+            ['iMPlayer', 'Android, Fire TV, Smart-TVs', 'Moderne Oberfläche, Xtream und M3U'],
+            ['OTT Navigator', 'Android, Google TV, Fire TV', 'Sehr anpassbar, Premium-Funktionen optional'],
+            ['GSE Smart IPTV', 'iPhone, iPad, Apple TV, Android', 'Klassiker für Apple-Geräte'],
+            ['IPTVX', 'iPhone, iPad, Apple TV, Mac', 'Elegante App für Apple – siehe <a href="/iptv-apple-tv-iphone/">Apple-Ratgeber</a>'],
+            ['IPTV Pro / IPTV Stream Player', 'Android', 'Einfache M3U-Player für Handy und Tablet'],
+            ['My IPTV Player', 'Windows', 'Desktop-Player für M3U – siehe <a href="/iptv-pc-mac/">IPTV am PC</a>'],
+        ], 'Weitere IPTV Apps') + '''
+<p>Sie funktionieren nach demselben Prinzip: App installieren, Gerät per MAC-Adresse oder Code verknüpfen, Playlist oder Xtream-Login eintragen. Für Fire-TV-Geräte wird zur Installation von Apps außerhalb des Amazon Appstores häufig die App <strong>Downloader</strong> verwendet – siehe <a href="/iptv-smarters-pro-firestick/">IPTV Smarters Pro auf dem Fire TV Stick</a>.</p>'''),
         ('kostenlos', 'Bester IPTV Player für Fire TV Stick – kostenlos und auf Deutsch?', '''
 <p>Eine häufige Suche lautet „bester IPTV Player für Fire TV Stick kostenlos deutsch“. Die ehrliche Antwort: <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a> ist kostenlos und auf Deutsch nutzbar, <a href="/tivimate/">TiviMate</a> ist in der Grundversion kostenlos und mit Premium deutlich komfortabler. Beide sind empfehlenswert – wichtiger als die App ist ein stabiler Zugang.</p>''' + LOGIN_TIP),
     ],
@@ -63,7 +72,8 @@ PAGES.append(dict(
                ['EPG-Raster schlichter als bei TiviMate', 'Nicht überall im offiziellen App-Store', 'Keine eigenen Sender – nur mit Abo nutzbar'])),
         ('download', 'IPTV Smarters Pro Download nach Gerät', table(['Gerät', 'Bezugsquelle'], [
             ['Android-Smartphone / Android-TV', 'Google Play Store oder APK von der offiziellen Website'],
-            ['<a href="/iptv-fire-tv-stick/">Fire TV Stick</a>', 'Über die App Downloader mit der APK-Adresse der offiziellen Website (nur Geräte mit Fire OS)'],
+            ['<a href="/iptv-fire-tv-stick/">Fire TV Stick</a>', 'Über die App Downloader mit der APK-Adresse der offiziellen Website (nur Geräte mit Fire OS) – <a href="/iptv-smarters-pro-firestick/">Anleitung für Fire TV</a>'],
+            ['Chromecast mit Google TV / Google TV Streamer', 'Google Play Store, alternativ vom Handy casten – siehe <a href="/iptv-stick/">IPTV Stick</a>'],
             ['<a href="/iptv-apple-tv-iphone/">iPhone, iPad, Apple TV</a>', 'App Store („Smarters Player Lite“)'],
             ['<a href="/iptv-samsung-tv/">Samsung</a> / <a href="/iptv-lg-tv/">LG</a>', 'Je nach Modell und Region im App-Store des Fernsehers'],
             ['<a href="/iptv-pc-mac/">Windows &amp; Mac</a>', 'Desktop-Version von der offiziellen Website'],
@@ -100,7 +110,7 @@ PAGES.append(dict(
         ('Was ist der Unterschied zwischen Smarters Pro und Smarters Lite?', 'Smarters Player Lite ist die Version für iPhone, iPad und Apple TV im App Store. Funktionen und Login-Möglichkeiten sind sehr ähnlich.'),
         ('Wer hilft, wenn IPTV Smarters Pro nicht funktioniert?', 'Bei App-Fehlern helfen die Tipps oben. Bei Fragen zu Zugangsdaten und Sendern hilft Ihr IPTV-Anbieter; IPTV Kanal erreichen Sie per E-Mail und WhatsApp.'),
     ],
-    related=['tivimate', 'iptv-fire-tv-stick', 'iptv-samsung-tv', 'xtream-codes-iptv', 'iptv-pc-mac', 'iptv-apps'],
+    related=['iptv-smarters-pro-firestick', 'tivimate', 'iptv-fire-tv-stick', 'iptv-samsung-tv', 'xtream-codes-iptv', 'iptv-apps'],
     card=('IPTV Smarters Pro', 'Download und Einrichtung auf Fire TV, Android, iPhone und PC.'),
 ))
 
@@ -131,7 +141,7 @@ PAGES.append(dict(
             'EPG-Quelle prüfen: Bei Xtream Codes kommt sie automatisch, bei M3U ggf. eine XMLTV-Adresse ergänzen.',
             'Fertig – mit der Taste nach links öffnen Sie das Menü, mit OK den Programmführer.')),
         ('premium', 'TiviMate Premium: Kosten und Freischaltung', '''
-<p>Die Grundversion ist kostenlos. <strong>TiviMate Premium</strong> schaltet unter anderem Aufnahmen, mehrere Playlists, Favoritenverwaltung, Catch-Up-Komfort und Anpassungen der Oberfläche frei. Gekauft wird Premium in der App <strong>TiviMate Companion</strong> auf einem Android-Smartphone; anschließend melden Sie sich mit dem Companion-Konto in TiviMate an. Ein Premium-Konto lässt sich auf mehreren eigenen Geräten nutzen. Die aktuellen Preise für Jahres- und Einmal-Lizenz zeigt die Companion-App.</p>
+<p>Die Grundversion ist kostenlos. <strong>TiviMate Premium</strong> schaltet unter anderem Aufnahmen, mehrere Playlists, Favoritenverwaltung, Catch-Up-Komfort und Anpassungen der Oberfläche frei. Gekauft wird Premium in der App <strong>TiviMate Companion</strong> auf einem Android-Smartphone; anschließend melden Sie sich mit dem Companion-Konto in TiviMate an. Ein Premium-Konto lässt sich auf mehreren eigenen Geräten nutzen. Die aktuellen Preise für Jahres- und Einmal-Lizenz zeigt die Companion-App. Kauf, Geräteanzahl und Freischaltung erklärt unser Ratgeber <a href="/tivimate-premium/">TiviMate Premium</a>.</p>
 ''' + tip('„TiviMate Premium APK“ von Drittseiten ist eine geknackte Version. Sie verstößt gegen die Lizenz, bekommt keine Updates und kann Schadcode enthalten. Die offizielle Lizenz kostet nur wenige Euro im Jahr.', 'Achtung')),
         ('einstellungen', 'Die besten TiviMate-Einstellungen', checks(
             '<strong>Wiedergabe → Decoder:</strong> Hardware; bei Bildfehlern Software testen.',
@@ -155,7 +165,7 @@ PAGES.append(dict(
         ('Wie bekomme ich TiviMate auf den Fire TV Stick?', 'Über den Amazon Appstore, wenn verfügbar, oder mit der App Downloader und der offiziellen Quelle. Modelle mit Vega OS unterstützen TiviMate nicht.'),
         ('Ist TiviMate ein IPTV Anbieter?', 'Nein. TiviMate ist nur ein Player und enthält keine Sender. Die Inhalte kommen aus Ihrem IPTV-Abo.'),
     ],
-    related=['iptv-smarters-pro', 'iptv-fire-tv-stick', 'iptv-box', 'iptv-android', 'iptv-4k', 'iptv-apps'],
+    related=['tivimate-premium', 'iptv-smarters-pro', 'iptv-fire-tv-stick', 'iptv-box', 'iptv-4k', 'iptv-apps'],
     card=('TiviMate', 'Einrichtung, Premium und beste Einstellungen für Fire TV und Android TV.'),
 ))
 
