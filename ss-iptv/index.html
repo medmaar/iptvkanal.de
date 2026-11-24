@@ -7,6 +7,8 @@
   <meta name="description" content="SS IPTV (Simple Smart IPTV) auf LG und Samsung einrichten: Verbindungscode erzeugen, M3U-Liste über den Playlist-Editor laden und häufige Probleme lösen.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="canonical" href="https://iptvkanal.de/ss-iptv/">
+  <link rel="alternate" hreflang="de" href="https://iptvkanal.de/ss-iptv/">
+  <link rel="alternate" hreflang="x-default" href="https://iptvkanal.de/ss-iptv/">
   <meta name="theme-color" content="#0d0e14">
   <link rel="icon" href="/assets/favicon.svg?v=950d3015b9a1" type="image/svg+xml">
   <meta property="og:type" content="article">
@@ -18,19 +20,74 @@
   <meta property="og:image" content="https://iptvkanal.de/assets/img/og-iptvkanal.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="IPTV Kanal – Fernsehen über das Internet">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="IPTV Kanal – Fernsehen über das Internet in bis zu 4K">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="SS IPTV: Playlist laden mit Verbindungscode (Anleitung)">
   <meta name="twitter:description" content="SS IPTV (Simple Smart IPTV) auf LG und Samsung einrichten: Verbindungscode erzeugen, M3U-Liste über den Playlist-Editor laden und häufige Probleme lösen.">
   <meta name="twitter:image" content="https://iptvkanal.de/assets/img/og-iptvkanal.jpg">
+  <meta name="twitter:image:alt" content="IPTV Kanal – Fernsehen über das Internet in bis zu 4K">
+  <link rel="preload" href="/assets/fonts/sora-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/base.css?v=a1940dfae1ff">
-  <link rel="stylesheet" href="/assets/template.css?v=71b2c305068e">
+  <link rel="stylesheet" href="/assets/template.css?v=5f11c0ec7e3a">
   <script type="application/ld+json">
 {
  "@context": "https://schema.org",
  "@graph": [
   {
+   "@type": "Organization",
+   "@id": "https://iptvkanal.de/#organization",
+   "name": "IPTV Kanal",
+   "url": "https://iptvkanal.de/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://iptvkanal.de/assets/favicon.svg"
+   },
+   "email": "kontakt@iptvkanal.de",
+   "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer support",
+    "email": "kontakt@iptvkanal.de",
+    "availableLanguage": [
+     "de"
+    ]
+   }
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://iptvkanal.de/#website",
+   "name": "IPTV Kanal",
+   "url": "https://iptvkanal.de/",
+   "inLanguage": "de-DE",
+   "publisher": {
+    "@id": "https://iptvkanal.de/#organization"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://iptvkanal.de/ss-iptv/#webpage",
+   "url": "https://iptvkanal.de/ss-iptv/",
+   "name": "SS IPTV: Playlist laden mit Verbindungscode (Anleitung)",
+   "description": "SS IPTV (Simple Smart IPTV) auf LG und Samsung einrichten: Verbindungscode erzeugen, M3U-Liste über den Playlist-Editor laden und häufige Probleme lösen.",
+   "inLanguage": "de-DE",
+   "isPartOf": {
+    "@id": "https://iptvkanal.de/#website"
+   },
+   "breadcrumb": {
+    "@id": "https://iptvkanal.de/ss-iptv/#breadcrumb"
+   },
+   "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://iptvkanal.de/assets/img/og-iptvkanal.jpg",
+    "width": 1200,
+    "height": 630
+   },
+   "dateModified": "2026-11-24"
+  },
+  {
    "@type": "BreadcrumbList",
+   "@id": "https://iptvkanal.de/ss-iptv/#breadcrumb",
    "itemListElement": [
     {
      "@type": "ListItem",
@@ -60,6 +117,10 @@
   },
   {
    "@type": "FAQPage",
+   "@id": "https://iptvkanal.de/ss-iptv/#faq",
+   "isPartOf": {
+    "@id": "https://iptvkanal.de/ss-iptv/#webpage"
+   },
    "mainEntity": [
     {
      "@type": "Question",
@@ -92,27 +153,39 @@
       "@type": "Answer",
       "text": "Ja, SS IPTV ist auch für Android erhältlich. Auf Android-TV-Geräten bieten TiviMate oder IPTV Smarters jedoch mehr Komfort."
      }
+    },
+    {
+     "@type": "Question",
+     "name": "Wie lade ich eine M3U-Liste in SS IPTV?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Code in den App-Einstellungen unter „Allgemein“ erzeugen, im Playlist-Editor auf der SS-IPTV-Website eingeben, den M3U-Link als externe Playlist hinzufügen und speichern. Danach die App neu laden."
+     }
     }
    ]
   },
   {
    "@type": "Article",
+   "@id": "https://iptvkanal.de/ss-iptv/#article",
    "headline": "SS IPTV: Anleitung für LG & Samsung",
    "description": "SS IPTV (Simple Smart IPTV) auf LG und Samsung einrichten: Verbindungscode erzeugen, M3U-Liste über den Playlist-Editor laden und häufige Probleme lösen.",
    "inLanguage": "de-DE",
-   "mainEntityOfPage": "https://iptvkanal.de/ss-iptv/",
-   "image": "https://iptvkanal.de/assets/img/og-iptvkanal.jpg",
+   "mainEntityOfPage": {
+    "@id": "https://iptvkanal.de/ss-iptv/#webpage"
+   },
+   "image": {
+    "@type": "ImageObject",
+    "url": "https://iptvkanal.de/assets/img/og-iptvkanal.jpg",
+    "width": 1200,
+    "height": 630
+   },
    "datePublished": "2026-11-24",
    "dateModified": "2026-11-24",
    "author": {
-    "@type": "Organization",
-    "name": "IPTV Kanal",
-    "url": "https://iptvkanal.de/"
+    "@id": "https://iptvkanal.de/#organization"
    },
    "publisher": {
-    "@type": "Organization",
-    "name": "IPTV Kanal",
-    "url": "https://iptvkanal.de/"
+    "@id": "https://iptvkanal.de/#organization"
    }
   }
  ]
@@ -162,13 +235,14 @@
     <h1 class="display" id="page-title">SS IPTV: Anleitung für LG &amp; Samsung</h1>
     <p class="lead">SS IPTV (Simple Smart IPTV) ist ein kostenloser IPTV Player für Smart-TVs. Externe Playlists verbinden Sie über einen Code, den die App am Fernseher erzeugt.</p>
     <div class="hero-actions cta-pair"><a class="btn btn-primary" href="/kostenlos-testen/">Kostenlos testen <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-ghost" href="/preise/">Preise</a></div>
+    <ul class="trust-row" aria-label="Ihre Vorteile bei IPTV Kanal"><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span><b>Kostenlos testen</b> ohne Zahlungsdaten</span></li><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span><b>Einmal zahlen</b>, keine automatische Verlängerung</span></li><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span><b>Deutscher Support</b> per E-Mail &amp; WhatsApp</span></li><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span><b>1 bis 5 Geräte</b>, 4K inklusive</span></li></ul>
     <p class="page-meta">Aktualisiert am <time datetime="2026-11-24">24.11.2026</time> · Lesezeit ca. 2 Min.</p>
   </div>
 </section>
 <section class="article" aria-label="Ratgeber">
   <div class="container">
     <div class="answer-box"><b>Kurz erklärt</b><p>SS IPTV ist ein kostenloser, werbefinanzierter IPTV Player für LG- und Samsung-Fernseher. In den App-Einstellungen erzeugen Sie unter „Allgemein“ einen Verbindungscode, geben ihn im Playlist-Editor auf der SS-IPTV-Website ein und laden dort Ihren M3U-Link hoch. Alternativ fügen Sie den Link direkt in der App als externe Playlist hinzu.</p></div>
-    <nav class="toc" aria-label="Inhaltsverzeichnis"><b>Inhalt</b><ol><li><a href="#was">Was ist SS IPTV?</a></li><li><a href="#code">SS IPTV Playlist per Verbindungscode laden</a></li><li><a href="#direkt">Alternative: Link direkt in der App</a></li><li><a href="#probleme">SS IPTV funktioniert nicht?</a></li><li><a href="#faq">Häufige Fragen</a></li></ol></nav>
+    <nav class="toc" aria-label="Inhaltsverzeichnis"><b>Inhalt</b><ol><li><a href="#was">Was ist SS IPTV?</a></li><li><a href="#code">SS IPTV Playlist per Verbindungscode laden</a></li><li><a href="#direkt">Alternative: Link direkt in der App</a></li><li><a href="#probleme">SS IPTV funktioniert nicht?</a></li><li><a href="#geraete">SS IPTV auf Samsung, LG und Android</a></li><li><a href="#m3u8">SSIPTV Liste: M3U oder M3U8?</a></li><li><a href="#faq">Häufige Fragen</a></li></ol></nav>
     <div class="prose">
 <h2 id="was">Was ist SS IPTV?</h2>
 <p>SS IPTV gehört zu den ältesten IPTV-Apps für Smart-TVs. Sie ist kostenlos, finanziert sich über Werbung und unterstützt <a href="/m3u-playlist/">M3U- und M3U8-Listen</a>. Besonders verbreitet ist sie auf LG-Fernsehern mit webOS, sie ist aber auch für Samsung und Android erhältlich.</p>
@@ -176,12 +250,23 @@
 
 <h2 id="code">SS IPTV Playlist per Verbindungscode laden</h2>
 <ol class="howto"><li>SS IPTV am Fernseher öffnen und das <b>Zahnrad (Einstellungen)</b> wählen.</li><li>Unter <b>„Allgemein“</b> auf „Code erhalten“ klicken. Der Code ist 24 Stunden gültig.</li><li>Am PC oder Handy den Playlist-Editor auf der offiziellen SS-IPTV-Website öffnen und den Code eingeben.</li><li>Ihren M3U-Link als externe Playlist hinzufügen und speichern.</li><li>App am Fernseher neu laden – die Playlist erscheint als eigene Kachel.</li></ol>
+<div class="inline-cta"><p><strong>Direkt auf Ihrem Gerät ausprobieren:</strong> Testen Sie IPTV Kanal kostenlos und ohne Zahlungsdaten. Unser Support hilft per E-Mail oder WhatsApp bei der Einrichtung.</p><div class="cta-pair"><a class="btn btn-primary" href="/kostenlos-testen/">Kostenlos testen <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-ghost" href="/preise/">Preise</a></div></div>
 
 <h2 id="direkt">Alternative: Link direkt in der App</h2>
 <p>In den Einstellungen unter „Inhalte → Extern“ können Sie eine Playlist auch direkt per Fernbedienung hinzufügen. Das Tippen langer Links ist allerdings mühsam – der Weg über den Verbindungscode ist schneller.</p>
 
 <h2 id="probleme">SS IPTV funktioniert nicht?</h2>
 <ul class="check-list"><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span>Code abgelaufen: einen neuen Code erzeugen.</span></li><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span>Playlist leer: Link im Browser testen und auf Tippfehler prüfen.</span></li><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span>Bild hängt: in den Einstellungen den Player wechseln oder auf <a href="/iptv-lg-tv/">LG</a> die App neu installieren.</span></li><li><svg aria-hidden="true"><use href="#i-check-c"/></svg><span>Mehr Komfort gewünscht: <a href="/flix-iptv/">Flix IPTV</a> oder <a href="/set-iptv/">SET IPTV</a> bieten ein moderneres EPG.</span></li></ul><div class="tip"><p><strong>Hinweis:</strong> Ihre Zugangsdaten von IPTV Kanal funktionieren in dieser App. Fragen Sie im <a href="/kostenlos-testen/">kostenlosen Test</a> direkt nach dem passenden Format (Xtream Codes oder M3U).</p></div>
+
+<h2 id="geraete">SS IPTV auf Samsung, LG und Android</h2>
+<p>Auf <a href="/iptv-lg-tv/">LG-Fernsehern</a> finden Sie SS IPTV direkt im LG Content Store – dort ist die App am weitesten verbreitet. Auf <a href="/iptv-samsung-tv/">Samsung-Modellen</a> hängt die Verfügbarkeit vom Modelljahr und der Region ab. Die Android-Version (SSIPTV Android) läuft auf Smartphones, Tablets und Android-TV-Geräten; dort sind <a href="/tivimate/">TiviMate</a> oder <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a> allerdings komfortabler.</p>
+
+<h2 id="m3u8">SSIPTV Liste: M3U oder M3U8?</h2>
+<p>SS IPTV liest beide Formate. <strong>M3U8</strong> ist dieselbe Liste in UTF-8-Kodierung, was Umlaute in Sendernamen korrekt darstellt. Für eine übersichtliche SSIPTV Liste fordern Sie bei Ihrem Anbieter am besten eine Playlist im Format <code>m3u_plus</code> an: Sie enthält Gruppen und Senderlogos, die SS IPTV als Kategorien anzeigt. Wie eine Playlist aufgebaut ist, erklärt der Ratgeber <a href="/m3u-playlist/">M3U Playlist</a>.</p>
+<div class="tip"><p><strong>Achtung:</strong> Speichern Sie im Playlist-Editor nur Links, die Sie selbst von Ihrem Anbieter erhalten haben. Öffentlich verbreitete „SSIPTV Listen“ sind meist veraltet und rechtlich problematisch.</p></div>
+
+<h2 id="quellen">Quellen und offizielle Websites</h2>
+<p>Weiterführende Informationen direkt bei Herstellern, Behörden und Nachschlagewerken:</p><ul class="source-list"><li><a href="https://ss-iptv.com/" rel="noopener" target="_blank">SS IPTV (offizielle Website)</a></li><li><a href="https://de.wikipedia.org/wiki/M3U" rel="noopener" target="_blank">Wikipedia: M3U-Dateiformat</a></li></ul>
 </div>
   </div>
 </section>
@@ -208,6 +293,10 @@
             <summary>Gibt es SS IPTV für Android?<i aria-hidden="true"></i></summary>
             <p>Ja, SS IPTV ist auch für Android erhältlich. Auf Android-TV-Geräten bieten TiviMate oder IPTV Smarters jedoch mehr Komfort.</p>
           </details>
+          <details>
+            <summary>Wie lade ich eine M3U-Liste in SS IPTV?<i aria-hidden="true"></i></summary>
+            <p>Code in den App-Einstellungen unter „Allgemein“ erzeugen, im Playlist-Editor auf der SS-IPTV-Website eingeben, den M3U-Link als externe Playlist hinzufügen und speichern. Danach die App neu laden.</p>
+          </details>
         </div>
       </div>
     </section>
@@ -217,7 +306,7 @@
 </div></section>
 <section class="cta-section"><div class="container"><div class="cta-box"><span class="eyebrow">LUST AUF MEHR?</span><h2 class="display">Der nächste gute Abend<br><span>fängt hier an.</span></h2><p>Testen Sie IPTV Kanal kostenlos oder wählen Sie gleich Ihr Paket. Bei Fragen helfen wir Ihnen beim Start.</p><div class="cta-pair"><a class="btn btn-primary" href="/kostenlos-testen/">Kostenlos testen <svg><use href="#i-arrow"/></svg></a><a href="/preise/" class="btn btn-ghost">Preise <svg><use href="#i-arrow"/></svg></a></div><p class="cta-contact">Fragen? <a href="/go/wa" rel="noopener">WhatsApp</a> · <a href="mailto:kontakt@iptvkanal.de">kontakt@iptvkanal.de</a></p><div class="cta-perks"><span>1–5 Geräte</span><span>Keine automatische Verlängerung</span><span>Persönliche Hilfe</span></div></div></div></section>
 </main>
-<footer class="footer"><div class="container"><div class="footer-grid footer-wide"><div><a class="logo" href="/" aria-label="IPTV Kanal Startseite"><span class="wordmark" translate="no"><b>IPTV</b><span>KANAL</span></span></a><p>Live-TV, Filme und Serien.<br>Auf Ihrem Bildschirm zu Hause.</p></div><div><p class="footer-title">Entdecken</p><a href="/#inhalte">Unterhaltung</a><a href="/iptv-geraete/">Geräte &amp; Apps</a><a href="/preise/">Pakete &amp; Preise</a><a href="/kostenlos-testen/">Kostenlos testen</a></div><div><p class="footer-title">Service</p><a href="mailto:kontakt@iptvkanal.de">kontakt@iptvkanal.de</a><a href="/go/wa" rel="noopener">WhatsApp</a><a href="/#faq">Häufige Fragen</a><a href="/#bewertungen">Bewertungen</a></div><div><p class="footer-title">Ratgeber</p><a href="/was-ist-iptv/">Was ist IPTV?</a><a href="/iptv-kaufen/">IPTV kaufen</a><a href="/iptv-anbieter-vergleich/">IPTV Anbieter Vergleich</a><a href="/m3u-playlist/">M3U Playlist</a><a href="/iptv-4k/">IPTV in 4K</a><a href="/iptv-senderliste/">IPTV Senderliste</a><a href="/ratgeber/">Alle Ratgeber</a></div><div><p class="footer-title">Geräte &amp; Apps</p><a href="/iptv-fire-tv-stick/">Fire TV Stick</a><a href="/iptv-stick/">IPTV Stick</a><a href="/iptv-samsung-tv/">Samsung TV</a><a href="/iptv-lg-tv/">LG TV</a><a href="/iptv-smarters-pro/">IPTV Smarters Pro</a><a href="/tivimate/">TiviMate</a><a href="/iptv-apps/">Alle IPTV Apps</a></div><div><p class="footer-title">Rechtliches</p><a href="/impressum.html">Impressum</a><a href="/datenschutz.html">Datenschutz</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> IPTV Kanal</span><a class="back-to-top" href="#top">Nach oben <svg aria-hidden="true" width="14" height="14" style="display:inline-block;vertical-align:middle;transform:rotate(-90deg)"><use href="#i-arrow"/></svg></a></div></div></footer>
+<footer class="footer"><div class="container"><div class="footer-grid footer-wide"><div><a class="logo" href="/" aria-label="IPTV Kanal Startseite"><span class="wordmark" translate="no"><b>IPTV</b><span>KANAL</span></span></a><p>Live-TV, Filme und Serien.<br>Auf Ihrem Bildschirm zu Hause.</p></div><div><p class="footer-title">Entdecken</p><a href="/#inhalte">Unterhaltung</a><a href="/iptv-geraete/">Geräte &amp; Apps</a><a href="/preise/">Pakete &amp; Preise</a><a href="/kostenlos-testen/">Kostenlos testen</a></div><div><p class="footer-title">Service</p><a href="mailto:kontakt@iptvkanal.de">kontakt@iptvkanal.de</a><a href="/go/wa" rel="noopener">WhatsApp</a><a href="/#faq">Häufige Fragen</a><a href="/#bewertungen">Bewertungen</a></div><div><p class="footer-title">Ratgeber</p><a href="/was-ist-iptv/">Was ist IPTV?</a><a href="/iptv-kaufen/">IPTV kaufen</a><a href="/iptv-anbieter-vergleich/">IPTV Anbieter Vergleich</a><a href="/m3u-playlist/">M3U Playlist</a><a href="/iptv-4k/">IPTV in 4K</a><a href="/iptv-senderliste/">IPTV Senderliste</a><a href="/ratgeber/">Alle Ratgeber</a></div><div><p class="footer-title">Geräte &amp; Apps</p><a href="/iptv-fire-tv-stick/">Fire TV Stick</a><a href="/iptv-stick/">IPTV Stick</a><a href="/iptv-samsung-tv/">Samsung TV</a><a href="/iptv-lg-tv/">LG TV</a><a href="/iptv-smarters-pro/">IPTV Smarters Pro</a><a href="/tivimate/">TiviMate</a><a href="/iptv-apps/">Alle IPTV Apps</a></div><div><p class="footer-title">Rechtliches</p><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> IPTV Kanal</span><a class="back-to-top" href="#top">Nach oben <svg aria-hidden="true" width="14" height="14" style="display:inline-block;vertical-align:middle;transform:rotate(-90deg)"><use href="#i-arrow"/></svg></a></div></div></footer>
 <script src="/assets/main.js?v=db9e9322744a" defer></script>
 </body>
 </html>

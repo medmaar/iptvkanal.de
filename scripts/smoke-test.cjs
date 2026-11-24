@@ -294,7 +294,7 @@ const { chromium } = require('playwright');
     const homeCards = await page.locator('#plans').evaluate(element => element.innerHTML);
     await page.goto(base + '/preise/');
     assert.equal(await page.locator('#plans').evaluate(element => element.innerHTML), homeCards, 'Pricing cards must match the homepage exactly');
-    assert.equal(await page.locator('h1').textContent(), 'Preise & Pakete');
+    assert.equal(await page.locator('h1').textContent(), 'IPTV Preise & Pakete');
     assert.equal(await page.locator('[data-request-form], #bestellung').count(), 0, 'The catalogue must not contain the order form');
     assert.equal(await page.locator('[data-starting-price]').textContent(), '9');
 

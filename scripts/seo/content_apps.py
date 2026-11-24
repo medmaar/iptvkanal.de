@@ -61,7 +61,7 @@ PAGES.append(dict(
 PAGES.append(dict(
     slug='iptv-smarters-pro', parent='apps', kind='guide',
     title='IPTV Smarters Pro: Download, Einrichtung & Tipps (Deutsch)',
-    description='IPTV Smarters Pro auf Fire TV Stick, Samsung TV, Android, iPhone & Windows einrichten: Download, Xtream-Login, M3U, beste Einstellungen und Lösungen bei Fehlern.',
+    description='IPTV Smarters Pro einrichten auf Fire TV Stick, Samsung TV, Android, iPhone und Windows: Download, Xtream-Login, M3U, Einstellungen und Fehlerlösungen.',
     eyebrow='APP-ANLEITUNG', h1='IPTV Smarters Pro: Anleitung auf Deutsch',
     lead='IPTV Smarters Pro ist einer der meistgenutzten IPTV Player. Wir zeigen Download und Einrichtung für jedes Gerät, die besten Einstellungen und was bei Fehlern hilft.',
     answer='IPTV Smarters Pro ist ein kostenloser IPTV Player für Android, Fire TV, iPhone/iPad, Windows und Mac. Nach der Installation wählen Sie „Login mit Xtream Codes API“, tragen Name, Benutzername, Passwort und Server-URL Ihres IPTV-Abos ein und laden Live-TV, Filme, Serien und EPG automatisch. Die App selbst enthält keine Sender.',
