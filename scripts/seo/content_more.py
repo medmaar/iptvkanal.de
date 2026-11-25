@@ -151,10 +151,10 @@ COMMUNITY_SETUP = steps(
 PAGES.append(dict(
     slug='iptv-international', parent='ratgeber', kind='hub', hub='international',
     title='IPTV International: Sender in Ihrer Sprache in Deutschland',
-    description='IPTV International: Fernsehen auf Albanisch, Bosnisch, Kroatisch, Serbisch, Rumänisch, Russisch, Türkisch und Englisch in Deutschland – Sendergruppen, Apps und Einrichtung.',
+    description='IPTV International: Fernsehen auf Albanisch, Bosnisch, Serbisch, Rumänisch, Russisch, Türkisch, Georgisch und Englisch in Deutschland – Sender und Apps.',
     eyebrow='IPTV INTERNATIONAL', h1='IPTV International: Fernsehen in Ihrer Sprache',
     lead='Millionen Menschen in Deutschland schauen gern Programme aus ihrer Heimat. Mit IPTV brauchen Sie dafür keine zweite Satellitenschüssel – nur die richtige Senderliste in Ihrer App.',
-    answer='Mit IPTV schauen Sie internationale Sender über Ihre Internetleitung, ohne zusätzliche Schüssel oder Receiver. In der App blenden Sie die Sendergruppen Ihrer Sprache ein, legen Favoriten an und erhalten den Programmführer in deutscher Zeit. Unsere Ratgeber zeigen beliebte Sender und Einrichtungstipps für Albanisch, Balkan-Sprachen, Rumänisch, Russisch und Türkisch.',
+    answer='Mit IPTV schauen Sie internationale Sender über Ihre Internetleitung, ohne zusätzliche Schüssel oder Receiver. In der App blenden Sie die Sendergruppen Ihrer Sprache ein, legen Favoriten an und erhalten den Programmführer in deutscher Zeit. Unsere Ratgeber zeigen beliebte Sender und Einrichtungstipps für Albanisch, Balkan-Sprachen, Rumänisch, Russisch, Türkisch und Georgisch.',
     sections=[
         ('warum', 'Warum IPTV für internationale Sender?', checks(
             '<strong>Keine zweite Schüssel:</strong> Viele Heimatsender sind per Satellit nur mit anderer Ausrichtung oder gar nicht zu empfangen.',
@@ -171,7 +171,7 @@ PAGES.append(dict(
         ('Gibt es BBC iPlayer in Deutschland?', 'Offiziell nein. BBC iPlayer ist auf Großbritannien beschränkt. Englischsprachige Nachrichten wie BBC News sind in Deutschland über Kabel- und IPTV-Angebote verbreitet.'),
     ],
     related=['iptv-senderliste', 'iptv-apps', 'iptv-geraete', 'was-ist-iptv', 'iptv-kaufen', 'm3u-playlist'],
-    card=('IPTV International', 'Sender auf Albanisch, Balkan, Rumänisch, Russisch und Türkisch.'),
+    card=('IPTV International', 'Sender auf Albanisch, Balkan, Rumänisch, Russisch, Türkisch und Georgisch.'),
 ))
 
 

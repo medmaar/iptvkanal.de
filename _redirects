@@ -227,8 +227,8 @@
 /kodinerds-iptv/          /iptv-playlist-deutsch/    301
 /iptv-12-months/          /bestellen/1-jahr/         301
 /my-siptv/                /smart-iptv/               301
-/iptv-smarters-pro-samsung-tv/ /iptv-samsung-tv/          301
-/tivimate-samsung-tv/     /iptv-samsung-tv/          301
+/iptv-smarters-pro-samsung-tv/ /iptv-smarters-pro-smart-tv/ 301
+/tivimate-samsung-tv/     /tivimate-andere-geraete/  301
 /iptv-premium/            /iptv-4k/                  301
 /iptv-premium-4k/         /iptv-4k/                  301
 /iptv-premier-league/     /iptv-fussball/            301
@@ -243,3 +243,30 @@
 /iptv-gratis-testen/      /kostenlos-testen/         301
 /iptv-abo-kaufen/         /iptv-kaufen/              301
 /iptv-amazon-stick/       /iptv-fire-tv-stick/       301
+
+# Keyword gap-fill round 4 (25.11.2026): aliases for the new guides.
+/iptv-anbieter-a-z/       /iptv-anbieter-liste/      301
+/iptv-bestenliste/        /iptv-anbieter-liste/      301
+/iptv-liste-anbieter/     /iptv-anbieter-liste/      301
+/hot-iptv/                /iptv-anbieter-liste/      301
+/mega-iptv/               /iptv-anbieter-liste/      301
+/upiptv/                  /iptv-anbieter-liste/      301
+/pandar-tv/               /iptv-anbieter-liste/      301
+/forevertv/               /iptv-anbieter-liste/      301
+/iptv-smarters-samsung/   /iptv-smarters-pro-smart-tv/ 301
+/iptv-smarters-lg/        /iptv-smarters-pro-smart-tv/ 301
+/iptv-smarters-pro-lg/    /iptv-smarters-pro-smart-tv/ 301
+/iptv-smarters-smart-tv/  /iptv-smarters-pro-smart-tv/ 301
+/iptv-smarters-roku/      /iptv-smarters-pro-smart-tv/ 301
+/tivimate-pc/             /tivimate-andere-geraete/  301
+/tivimate-windows/        /tivimate-andere-geraete/  301
+/tivimate-mac/            /tivimate-andere-geraete/  301
+/tivimate-iphone/         /tivimate-andere-geraete/  301
+/tivimate-ios/            /tivimate-andere-geraete/  301
+/tivimate-apple-tv/       /tivimate-andere-geraete/  301
+/tivimate-lg-tv/          /tivimate-andere-geraete/  301
+/iptv-ge/                 /iptv-georgisch/           301
+/iptv-georgien/           /iptv-georgisch/           301
+/georgisches-tv/          /iptv-georgisch/           301
+/imedi-tv/                /iptv-georgisch/           301
+/rustavi-2/               /iptv-georgisch/           301

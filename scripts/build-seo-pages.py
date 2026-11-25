@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from seo import content_core, content_apps, content_devices, content_extra, content_more, content_depth  # noqa: E402
 from seo import content_local, content_devices2, content_apps2  # noqa: E402
-from seo import content_kw, content_kw2  # noqa: E402
+from seo import content_kw, content_kw2, content_kw3  # noqa: E402
 
 DOMAIN = 'https://iptvkanal.de'
 UPDATED_ISO = '2026-11-25'
@@ -48,7 +48,7 @@ FONT_PRELOAD = ('<link rel="preload" href="/assets/fonts/sora-latin-variable.wof
                 '  <link rel="preload" href="/assets/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>')
 
 PAGES = (content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES + content_more.PAGES
-         + content_devices2.PAGES + content_apps2.PAGES + content_kw.PAGES + content_kw2.PAGES + content_local.PAGES)
+         + content_devices2.PAGES + content_apps2.PAGES + content_kw.PAGES + content_kw2.PAGES + content_kw3.PAGES + content_local.PAGES)
 BY_SLUG = {p['slug']: p for p in PAGES}
 
 HUBS = {
@@ -87,10 +87,12 @@ for _page in PAGES:
         _page['lead'] = content_depth.LEAD[_slug]
     _page['sections'] = list(_page['sections']) + content_depth.EXTRA_SECTIONS.get(_slug, [])
     _page['faq'] = list(_page['faq']) + content_depth.EXTRA_FAQ.get(_slug, [])
+    _page['sections'] = list(_page['sections']) + content_kw3.EXTRA_SECTIONS.get(_slug, [])
+    _page['faq'] = list(_page['faq']) + content_kw3.EXTRA_FAQ.get(_slug, [])
     _page['sources'] = content_depth.SOURCES.get(_slug, _page.get('sources', []))
 
 # Keyword-cluster pass: link the new pages from related existing guides.
-for _new, _targets in content_kw2.LINK_FROM.items():
+for _new, _targets in list(content_kw2.LINK_FROM.items()) + list(content_kw3.LINK_FROM.items()):
     for _target in _targets:
         if _new not in BY_SLUG[_target]['related']:
             BY_SLUG[_target]['related'] = list(BY_SLUG[_target]['related']) + [_new]
