@@ -9,6 +9,8 @@ import zlib
 
 from .data_local import STATES, CITIES, REGIONS, BROADCASTER_SHOW, NATIONAL_ISP, NOMINATIVE
 from .helpers import steps, checks, tip, table, chips
+from .content_local_unique import CITY as LOCAL_CITY, REGION as LOCAL_REGION
+from .content_audit import BROADCASTER_URL, LOCAL_SOURCES
 
 PAGES = []
 
@@ -31,6 +33,12 @@ def region_slug(r):
 
 def pick(key, options, salt=''):
     return options[zlib.crc32((key + salt).encode()) % len(options)]
+
+
+def rotate(key, options, salt=''):
+    """All options, starting with the one pick() would choose, so fit() prefers the varied choice."""
+    i = zlib.crc32((key + salt).encode()) % len(options)
+    return options[i:] + options[:i]
 
 
 def fit(candidates, lo, hi):
@@ -78,6 +86,34 @@ DEVICE_CHECKS = checks(
     '<strong><a href="/mag-box-iptv/">MAG-Box</a> oder <a href="/iptv-receiver/">Enigma2-Receiver</a>:</strong> für alle, die eine klassische Fernbedienung mit Receiver-Gefühl möchten.')
 
 
+DEVICE_VARIANTS = [
+    checks(
+        '<strong><a href="/iptv-fire-tv-stick/">Fire TV Stick</a>:</strong> günstig, an jeden HDMI-Fernseher anschließbar, mit TiviMate oder IPTV Smarters Pro.',
+        '<strong><a href="/iptv-samsung-tv/">Samsung</a> und <a href="/iptv-lg-tv/">LG</a>:</strong> direkt mit einer Smart-TV-App wie SET IPTV oder Flix IPTV, ohne Zusatzgerät.',
+        '<strong><a href="/iptv-apple-tv/">Apple TV</a>, iPhone und iPad:</strong> mit Apps wie IPTVX oder iPlayTV aus dem App Store.'),
+    '<p>Am häufigsten nutzen unsere Kunden einen <a href="/iptv-stick/">Streaming-Stick</a> am HDMI-Anschluss, weil er auch ältere Fernseher aufrüstet. '
+    'Wer einen aktuellen <a href="/iptv-smart-tv/">Smart TV</a> hat, installiert die App direkt; für Fans der klassischen Fernbedienung gibt es '
+    '<a href="/mag-box-iptv/">MAG-Boxen</a> und <a href="/iptv-receiver/">Enigma2-Receiver</a>.</p>',
+    checks(
+        '<strong><a href="/iptv-google-tv/">Google TV</a> oder <a href="/iptv-android/">Android TV</a>:</strong> größte App-Auswahl im Play Store, ideal für TiviMate.',
+        '<strong><a href="/iptv-box/">Android-TV-Box</a> oder <a href="/iptv-nvidia-shield/">Nvidia Shield</a>:</strong> viel Leistung für große Senderlisten und 4K.',
+        '<strong><a href="/iptv-pc-mac/">PC, Laptop oder Mac</a>:</strong> mit VLC oder im Browser – praktisch fürs Arbeitszimmer.'),
+    '<p>Kurz gesagt: Für fast jeden Fernseher genügt ein <a href="/iptv-fire-tv-stick/">Fire TV Stick</a> mit <a href="/tivimate/">TiviMate</a> oder '
+    '<a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>. Auf Samsung- und LG-Geräten geht es auch ohne Stick, unterwegs reicht das Smartphone '
+    'mit <a href="/iptv-android/">Android</a> oder <a href="/iptv-apple-tv-iphone/">iPhone</a>.</p>',
+]
+
+ORDER_VARIANTS = [
+    '<p>So einfach geht es {place}: kostenlosen Test über <a href="/kostenlos-testen/">kostenlos testen</a> anfordern, Zugangsdaten in Ihre App eintragen, '
+    'danach Laufzeit und Geräteanzahl auf der <a href="/preise/">Preisseite</a> wählen. Sie zahlen einmal – ohne Vertrag und ohne automatische Verlängerung.</p>',
+    '<p>Der Ablauf {place} ist in wenigen Minuten erledigt: Test ohne Zahlungsdaten anfordern, App einrichten (unser Support hilft per E-Mail oder WhatsApp), '
+    'Paket wählen. Wie Sie bezahlen können, erklärt <a href="/iptv-bezahlen/">IPTV bezahlen</a>.</p>',
+    steps('<b>Testen:</b> Zugang über <a href="/kostenlos-testen/">kostenlos testen</a> anfordern – ohne Zahlungsdaten, auch {place}.',
+          '<b>Einrichten:</b> Xtream-Login oder M3U-Link in die App eintragen; bei Fragen hilft der deutschsprachige Support.',
+          '<b>Bestellen:</b> Paket auf der <a href="/preise/">Preisseite</a> wählen und einmalig bezahlen – keine automatische Verlängerung.'),
+]
+
+
 def order_steps(place):
     return steps(
         f'<b>Kostenlos testen:</b> Test über <a href="/kostenlos-testen/">kostenlos testen</a> anfordern – ohne Zahlungsdaten, auch {place}.',
@@ -96,19 +132,21 @@ def city_page(i, c):
     is_citystate = slug is None
     isp_regional = c['isp']
 
-    title = fit([
-        pick(k, [f'IPTV {name}: Anbieter, Abo & kostenloser Test',
-                 f'IPTV {name} – Abo kaufen, Anbieter & Test',
-                 f'IPTV in {name}: Anbieter, Preise & Gratis-Test']),
+    title = fit(rotate(k, [f'IPTV {name}: Anbieter, Abo ab 9 € & kostenloser Test',
+                           f'IPTV {name} – Abo kaufen, Anbieter & kostenloser Test',
+                           f'IPTV in {name}: Anbieter, Preise & kostenloser Test']) + [
+        f'IPTV {name}: Anbieter, Abo & kostenloser Test',
         f'IPTV {name}: Anbieter, Abo & Test',
         f'IPTV {short}: Anbieter, Abo & Test',
-        f'IPTV {short}: Abo & Test',
-    ], 20, 60)
-    description = fit([
-        f'IPTV in {name}: Live-TV, Filme und Serien bis 4K über Ihre Internetleitung – ohne Schüssel und ohne Vertrag. Anbieter, Abo ab 9 € und kostenloser Test.',
+    ], 50, 60)
+    description = fit(rotate(k, [
+        f'IPTV in {name}: Live-TV, Filme und Serien bis 4K über Ihre Internetleitung – ohne Schüssel und ohne Vertrag. Abo ab 9 €, kostenloser Test.',
+        f'IPTV {name}: Fernsehen bis 4K über das Internet, ohne Kabelvertrag und Schüssel. Anbieter, Geräte, Abo ab 9 € und kostenloser Test.',
+        f'IPTV in {name} einrichten: welche Leitung reicht, welches Gerät passt und wie Sie ohne Vertrag ab 9 € schauen. Jetzt kostenlos testen.',
+    ], 'desc') + [
         f'IPTV in {name}: Fernsehen bis 4K über das Internet, ohne Schüssel und Vertrag. Anbieter, Abo ab 9 € und kostenloser Test.',
         f'IPTV in {short}: TV bis 4K über das Internet, ohne Schüssel und Vertrag. Abo ab 9 €, kostenloser Test.',
-    ], 120, 160)
+    ], 120, 155)
     h1 = pick(k, [f'IPTV in {name}', f'IPTV {name}: Fernsehen über das Internet', f'IPTV in {name}: Anbieter, Abo und Test'], 'h1')
     lead = pick(k, [
         f'Fernsehen über das Internet funktioniert in {name} in jedem Stadtteil – von {d[0]} bis {d[-1]}. Hier erfahren Sie, welche Leitung Sie brauchen, welche Geräte passen und wie Sie IPTV in {short} kostenlos testen.',
@@ -159,14 +197,18 @@ def city_page(i, c):
         f'<p>Welches Gerät in Ihrer Wohnung in {short} am besten passt, hängt vor allem vom Fernseher ab. Neuere Samsung- und LG-Modelle können IPTV direkt, bei allen anderen ist ein Stick die günstigste Lösung:</p>',
         f'<p>Sie brauchen in {name} kein spezielles Gerät aus dem Fachhandel. Fast jeder Fernseher der letzten Jahre lässt sich nutzen – entweder direkt oder mit einem Stick am HDMI-Anschluss:</p>',
         f'<p>Ob Wohnzimmer in {d[0]} oder Schlafzimmer in {d[-1]}: IPTV läuft auf fast allen modernen Geräten. Die wichtigsten Optionen im Überblick:</p>',
-    ], 'dev') + DEVICE_CHECKS + '<p>Alle Geräte und Apps vergleicht die <a href="/iptv-geraete/">Geräteübersicht</a>; den passenden Player finden Sie bei den <a href="/iptv-apps/">IPTV Apps</a>.</p>'
+    ], 'dev') + pick(k, DEVICE_VARIANTS, 'devlist') + pick(k, [
+        '<p>Alle Geräte und Apps vergleicht die <a href="/iptv-geraete/">Geräteübersicht</a>; den passenden Player finden Sie bei den <a href="/iptv-apps/">IPTV Apps</a>.</p>',
+        '<p>Welche App auf welchem Gerät am besten läuft, zeigt der Vergleich <a href="/bester-iptv-player/">Bester IPTV Player</a>.</p>',
+        '<p>Eine Schritt-für-Schritt-Anleitung für jedes Gerät finden Sie unter <a href="/iptv-einrichten/">IPTV einrichten</a>.</p>',
+    ], 'dev2')
 
     # 5 buying
     buy = pick(k, [
         f'<p>„IPTV kaufen {short}“ heißt nicht, dass Sie in ein Geschäft gehen müssen. Ein IPTV-Abo wird online gebucht und funktioniert in ganz Deutschland gleich – Sie bekommen Ihre Zugangsdaten per E-Mail oder WhatsApp und können sofort loslegen. Bei IPTV Kanal kostet ein Monat 9 €, das Jahresabo für ein Gerät 49 € (rund 4,08 € pro Monat), jeweils ohne automatische Verlängerung.</p>',
         f'<p>Einen IPTV Anbieter in {name} vor Ort brauchen Sie nicht: Der Zugang wird online bestellt und gilt deutschlandweit, auch wenn Sie umziehen oder verreisen. IPTV Kanal bietet Pakete von 1 bis 12 Monaten für 1 bis 5 Geräte – ab 9 € im Monat oder 49 € im Jahr, mit einmaliger Zahlung statt Vertrag.</p>',
         f'<p>Ein IPTV Abo für {short} schließen Sie bequem online ab. Wichtig ist, vorher zu testen, ob alles auf Ihrem Gerät und mit Ihrer Leitung läuft. Bei IPTV Kanal geht das kostenlos; danach wählen Sie zwischen 1, 3, 6 oder 12 Monaten – ab 9 € bzw. 49 € im Jahr, ohne Verlängerung.</p>',
-    ], 'buy') + order_steps('in ' + short) + pick(k, [
+    ], 'buy') + pick(k, ORDER_VARIANTS, 'order').format(place='in ' + short) + pick(k, [
         '<p>Woran Sie einen seriösen Anbieter erkennen, zeigt der <a href="/iptv-anbieter-vergleich/">IPTV Anbieter Vergleich</a>.</p>',
         '<p>Worauf Sie bei der Anbieterwahl achten sollten, steht im Ratgeber <a href="/iptv-anbieter/">IPTV Anbieter</a>.</p>',
         '<p>Alle Pakete und Laufzeiten erklärt der Ratgeber <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>',
@@ -187,6 +229,7 @@ def city_page(i, c):
 
     sections = [
         ('ueberblick', pick(k, [f'IPTV in {short}: so funktioniert es', f'Fernsehen über das Internet in {short}', f'Was IPTV in {short} bietet'], 's1'), overview),
+        ('vor-ort', LOCAL_CITY[k][0], LOCAL_CITY[k][1].strip()),
         ('internet', pick(k, [f'Internet in {short}: welche Leitung reicht für IPTV?', f'Welche Internetgeschwindigkeit brauchen Sie in {short}?'], 's2'), internet),
         ('regional', pick(k, [f'Regionalprogramm und Sport in {short}', f'{bc}, Lokalnachrichten und Sport aus {short}'], 's3'), regional),
         ('geraete', pick(k, [f'Die passenden Geräte für IPTV in {short}', f'Auf welchen Geräten läuft IPTV in {short}?'], 's4'), devices),
@@ -198,19 +241,26 @@ def city_page(i, c):
         (pick(k, [f'Gibt es IPTV in {name}?', f'Funktioniert IPTV überall in {name}?'], 'f1'),
          f'Ja. IPTV funktioniert in allen Stadtteilen von {name}, etwa in {d[0]}, {d[1]} oder {d[-1]}, sobald eine Internetleitung mit mindestens 10 bis 16 Mbit/s anliegt. Kabelanschluss oder Satellitenschüssel sind nicht nötig.'),
         (pick(k, [f'Welcher IPTV Anbieter ist der beste in {short}?', f'Brauche ich einen IPTV Anbieter aus {short}?'], 'f2'),
-         f'Ein lokaler Anbieter ist nicht nötig: IPTV-Zugänge funktionieren deutschlandweit gleich. Achten Sie auf einen kostenlosen Test, transparente Preise ohne automatische Verlängerung und deutschsprachigen Support – so wie bei IPTV Kanal.'),
+         pick(k, [f'Ein lokaler Anbieter ist nicht nötig: IPTV-Zugänge funktionieren deutschlandweit gleich. Achten Sie auf einen kostenlosen Test, transparente Preise ohne automatische Verlängerung und deutschsprachigen Support – so wie bei IPTV Kanal.',
+                  f'Nein, ein Anbieter mit Sitz in {short} bringt keinen Vorteil, denn der Stream kommt über das Internet. Entscheidend sind stabile Server, ein Test vor dem Kauf, Preise ohne Abofalle und Support auf Deutsch.',
+                  f'Der beste Anbieter für {short} ist der, der mit Ihrer Leitung und Ihrem Gerät im Test überzeugt. Prüfen Sie außerdem, ob Sie einmalig zahlen und ob der Support auf Deutsch per E-Mail oder WhatsApp erreichbar ist.'], 'fa2')),
         (f'Kann ich IPTV in {short} kostenlos testen?',
-         'Ja. Bei IPTV Kanal fordern Sie einen kostenlosen Test ohne Zahlungsdaten an und prüfen Sender, Bildqualität und App direkt auf Ihrem Gerät und mit Ihrer eigenen Leitung.'),
+         pick(k, ['Ja. Bei IPTV Kanal fordern Sie einen kostenlosen Test ohne Zahlungsdaten an und prüfen Sender, Bildqualität und App direkt auf Ihrem Gerät und mit Ihrer eigenen Leitung.',
+                  f'Ja. Den Test fordern Sie online an, die Zugangsdaten kommen per E-Mail oder WhatsApp. So sehen Sie vor dem Kauf, wie Sender und Bild an Ihrem Anschluss in {short} laufen.',
+                  'Ja, kostenlos und ohne Zahlungsdaten. Testen Sie am besten abends, wenn die Netze am stärksten ausgelastet sind – dann wissen Sie, wie IPTV im Alltag läuft.'], 'fa3')),
         (pick(k, [f'Was kostet ein IPTV Abo in {short}?', f'Wie teuer ist IPTV in {short}?'], 'f4'),
-         'Bei IPTV Kanal kostet ein Monat 9 €, drei Monate 29 €, sechs Monate 39 € und zwölf Monate 49 € für ein Gerät. Sie zahlen einmal, es gibt keine automatische Verlängerung.'),
+         pick(k, ['Bei IPTV Kanal kostet ein Monat 9 €, drei Monate 29 €, sechs Monate 39 € und zwölf Monate 49 € für ein Gerät. Sie zahlen einmal, es gibt keine automatische Verlängerung.',
+                  'Für ein Gerät zahlen Sie 9 € für einen Monat oder 49 € für ein Jahr, also rund 4 € im Monat. Pakete für bis zu fünf Geräte gibt es ebenfalls; abgerechnet wird einmalig ohne Vertrag.',
+                  'Die Preise sind überall in Deutschland gleich: ab 9 € pro Monat, 29 € für drei, 39 € für sechs und 49 € für zwölf Monate bei einem Gerät. Eine automatische Verlängerung gibt es nicht.'], 'fa4')),
         (pick(k, [f'Kann ich {bc} und Lokalnachrichten aus {short} per IPTV sehen?', f'Empfange ich das Regionalprogramm für {short} per IPTV?'], 'f5'),
          f'Ja, {der} gehört wie ARD und ZDF zu den Sendern, die per IPTV übertragen werden. Welche Regionalfenster und weiteren Sender Ihr Zugang enthält, sehen Sie im kostenlosen Test.'),
     ]
     related = ([slug] if slug else []) + [city_slug(CITY[n]) for n in c['nb'][:2]] + ['iptv-kaufen', 'iptv-fire-tv-stick', 'iptv-staedte']
     card_text = pick(k, [f'Anbieter, Abo und kostenloser Test in {short}.', f'Internet, Geräte und Abo für {short}.', f'IPTV in {short}: Leitung, Sender und Test.'], 'card')
+    sources = [(f'{bc}: Regionalprogramm', BROADCASTER_URL[bc])] + LOCAL_SOURCES
     return dict(slug=city_slug(c), parent='staedte', kind='guide', title=title, description=description,
                 eyebrow='IPTV IN IHRER STADT', h1=h1, lead=lead, answer=answer, sections=sections, faq=faq,
-                related=related, card=(f'IPTV {short}', card_text))
+                related=related, card=(f'IPTV {short}', card_text), sources=sources)
 
 
 # ====================================================================== REGION PAGES
@@ -234,16 +284,21 @@ def region_page(i, r):
     clubs = clubs[:4]
     label = f'{name} ({alt})' if alt and len(alt) < 6 else name
 
-    title = fit([
-        pick(k, [f'IPTV {name}: Anbieter, Abo & kostenloser Test', f'IPTV in {name}: Anbieter, Abo & Test',
-                 f'IPTV {name} – Abo kaufen, Anbieter & Gratis-Test']),
-        f'IPTV {name}: Anbieter, Abo & Test', f'IPTV {name}: Abo & Test',
-    ], 20, 60)
-    description = fit([
-        f'IPTV {prep}: Fernsehen bis 4K über das Internet – auch auf dem Land. Bandbreite, Geräte, Regionalprogramm, Abo ab 9 € und kostenloser Test.',
+    title = fit(rotate(k, [f'IPTV {prep}: Anbieter, Abo ab 9 € & kostenloser Test',
+                           f'IPTV {name}: Anbieter, Abo & kostenloser Test 2026',
+                           f'IPTV {prep}: Abo kaufen, Anbieter & kostenloser Test']) + [
+        f'IPTV {name}: Anbieter, Abo & kostenloser Test',
+        f'IPTV {prep}: Anbieter, Abo & Gratis-Test',
+        f'IPTV {name}: Anbieter, Abo & Test',
+    ], 50, 60)
+    description = fit(rotate(k, [
+        f'IPTV {prep}: Fernsehen bis 4K über das Internet – auch auf dem Land. Bandbreite, Geräte, Regionalprogramm, Abo ab 9 € und Test.',
+        f'IPTV {prep}: Live-TV, Filme und Serien über Ihre Internetleitung, in Stadt und Dorf. Leitung prüfen, Gerät wählen, ab 9 € kostenlos testen.',
+        f'IPTV {prep} ohne Kabel und Schüssel: welche Bandbreite reicht, welche Geräte passen und wie Sie ab 9 € ohne Vertrag schauen. Gratis testen.',
+    ], 'desc') + [
         f'IPTV {prep}: TV bis 4K über das Internet, auch auf dem Land. Bandbreite, Geräte, Abo ab 9 € und kostenloser Test.',
         f'IPTV {prep}: TV bis 4K über das Internet. Bandbreite, Geräte, Abo ab 9 € und kostenloser Test.',
-    ], 120, 160)
+    ], 120, 155)
     h1 = pick(k, [f'IPTV {prep}', f'IPTV {name}: Fernsehen über das Internet', f'IPTV {prep}: Anbieter, Abo und Test'], 'h1')
     h1 = h1[0].upper() + h1[1:]
     place_list = join_names(([CITY[c].get('short', CITY[c]['n']) for c in r['cities'][:3]] + towns)[:4])
@@ -287,19 +342,12 @@ def region_page(i, r):
         cities = f'<p>Zu den wichtigsten Orten {prep} gehören {join_names(towns)}. In allen funktioniert IPTV gleich, sobald die Internetleitung die nötige Bandbreite liefert.</p>'
     if near_links:
         cities += f'<p>Größere Städte in der Nähe mit eigenen Seiten: {join_names(near_links)}.</p>'
-    cities += pick(k, [
-        '<p>Ein IPTV-Zugang ist nicht an einen Ort gebunden. Wenn Sie umziehen oder pendeln, nehmen Sie ihn einfach mit – wichtig ist nur, dass nicht mehr Geräte gleichzeitig schauen, als Ihr Paket erlaubt.</p>',
-        '<p>Weil der Zugang an Ihre Zugangsdaten und nicht an eine Adresse gebunden ist, funktioniert er auch im Zweitwohnsitz oder bei Verwandten – solange die Zahl der gleichzeitig schauenden Geräte zum Paket passt.</p>',
-    ], 'cit2')
 
     # 3 bandwidth (rural angle)
     bandwidth = pick(k, [
         f'<p>{prep[0].upper() + prep[1:]} gibt es alle Anschlussarten: Glasfaser in Neubaugebieten und ausgebauten Orten, VDSL und Kabel in den Städten, DSL in vielen Dörfern. Wo das Festnetz langsam ist, können ein LTE- oder 5G-Router oder Satelliteninternet wie Starlink eine Alternative sein – IPTV funktioniert auch darüber, solange die Bandbreite stabil ist.</p>',
         f'<p>Für IPTV {prep} gilt: Messen statt schätzen. Ein Speedtest am Abend zeigt, ob Ihre Leitung für Full HD reicht. Wo nicht, wählen Sie in der App eine niedrigere Qualität oder nutzen einen LTE- bzw. 5G-Router. In vielen Orten bauen Telekom, Deutsche Glasfaser oder regionale Anbieter gerade Glasfaser aus – der Breitbandatlas der Bundesnetzagentur zeigt den Stand.</p>',
-    ], 'bw') + SPEED_TABLE + pick(k, [
-        '<p>Bei mobilem Internet zählt auch das Datenvolumen: Full HD verbraucht je nach Sender grob 3 bis 7 GB pro Stunde, 4K deutlich mehr. Für regelmäßiges Fernsehen über LTE oder 5G empfiehlt sich deshalb ein Tarif mit unbegrenztem Volumen.</p>',
-        '<p>Ein Tipp für langsamere Leitungen: Viele Apps wie <a href="/tivimate/">TiviMate</a> oder <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a> spielen dieselben Sender in mehreren Qualitätsstufen. Wählen Sie die HD-Variante, wenn Full HD ruckelt – der Unterschied ist auf kleineren Fernsehern kaum sichtbar.</p>',
-    ], 'bw2')
+    ], 'bw') + SPEED_TABLE
 
     # 4 programme
     show = BROADCASTER_SHOW[bc] if r['kind'] != 'district' else BROADCASTER_SHOW['BR']
@@ -309,29 +357,32 @@ def region_page(i, r):
     programme = pick(k, [
         f'<p>Das Regionalprogramm {prep} kommt vom {bc_name}, mit Sendungen wie {show}. Per IPTV empfangen Sie es zusammen mit ARD, ZDF, den Privatsendern und – je nach Zugang – vielen internationalen Programmen.{sport}</p>',
         f'<p>Regionalnachrichten liefert {prep} der {bc_name}, etwa {show}. Diese Sender gehören beim IPTV-Empfang ebenso dazu wie das Programm der großen deutschen Sender.{sport}</p>',
-    ], 'prog') + '<p>Welche Sendergruppen ein Zugang typischerweise enthält, zeigt die <a href="/iptv-senderliste/">IPTV Senderliste</a>; den genauen Umfang sehen Sie im <a href="/kostenlos-testen/">kostenlosen Test</a>.</p>'
+    ], 'prog')
 
     # 5 holiday or household
     if k in TOURIST:
-        extra_sec = ('ferienwohnung', pick(k, [f'IPTV in der Ferienwohnung {prep}', f'IPTV im Urlaub {prep}'], 'fw'),
-                     f'<p>{nom} ist Urlaubsregion – und viele Gäste möchten in der Ferienwohnung ihr gewohntes Programm sehen. Mit IPTV nehmen Sie Ihren Zugang einfach mit: Fire TV Stick in die Tasche, am Fernseher der Unterkunft einstecken, mit dem WLAN verbinden, fertig. Achten Sie darauf, dass nicht gleichzeitig zuhause jemand auf einem weiteren Gerät schaut, wenn Ihr Paket nur ein Gerät umfasst.</p>'
-                     + checks('Stick und Netzteil einpacken; viele Ferienwohnungen haben nur einen freien HDMI-Anschluss.',
-                              'Vorher prüfen, ob das Gäste-WLAN stabil ist – manche Unterkünfte drosseln Streaming.',
-                              'Für Vermieter: Ein Fernseher mit Google TV oder ein <a href="/iptv-fire-tv-stick/">Fire TV Stick</a> macht die Wohnung für Gäste mit eigenem Zugang attraktiv.')
-                     + '<p>Wie Sie den Stick einrichten, zeigt der Ratgeber <a href="/iptv-stick/">IPTV Stick</a>.</p>')
+        extra_sec = ('ferienwohnung', pick(k, [f'IPTV in der Ferienwohnung {prep}', f'IPTV im Urlaub {prep}', f'Checkliste für Gäste und Vermieter {prep}'], 'fw'), pick(k, [
+            '<p>Damit IPTV im Urlaub klappt, packen Sie Stick, Netzteil und Fernbedienung ein und notieren sich vorab Ihre Zugangsdaten. Fragen Sie die Unterkunft nach einem freien HDMI-Anschluss und nach dem WLAN-Passwort. Läuft das Bild ruckelig, wählen Sie in der App die HD-Variante des Senders. Wie Sie einen Stick in wenigen Minuten einrichten, zeigt <a href="/iptv-stick/">IPTV Stick</a>.</p>',
+            '<p>Für Vermieter lohnt sich ein Fernseher, auf dem Gäste Apps installieren können – etwa mit <a href="/iptv-google-tv/">Google TV</a> oder einem <a href="/iptv-fire-tv-stick/">Fire TV Stick</a>. Ein eigenes Gäste-WLAN ohne Drosselung und ein gut sichtbarer HDMI-Anschluss machen den Aufenthalt angenehmer. Gäste melden sich mit ihren eigenen Zugangsdaten an und nach der Abreise wieder ab.</p>',
+            '<p>Zwei Dinge sollten Sie im Urlaub beachten: Erstens zählt jedes gleichzeitig schauende Gerät – schaut zuhause jemand weiter, brauchen Sie ein Paket für zwei Geräte. Zweitens ist mobiles Internet nicht unbegrenzt; Full HD verbraucht grob 3 bis 7 GB pro Stunde. Mehr zu passenden Geräten im Ratgeber <a href="/iptv-geraete/">IPTV Geräte</a>.</p>',
+        ], 'fwt'))
     else:
         extra_sec = ('haushalt', pick(k, ['IPTV für mehrere Geräte im Haushalt', 'Mehrere Fernseher, ein Zugang?'], 'hh'),
-                     f'<p>In vielen Haushalten {prep} läuft der Fernseher im Wohnzimmer, während im Kinderzimmer oder auf dem Tablet ein anderes Programm geschaut wird. Bei IPTV Kanal wählen Sie deshalb zwischen Paketen für 1 bis 5 Geräte, die gleichzeitig schauen können. Jedes Gerät braucht seine eigene Bandbreite – zwei Full-HD-Streams also rund 32 Mbit/s.</p>'
-                     + checks('Ein Gerät: 9 € pro Monat oder 49 € pro Jahr.',
-                              'Zwei Geräte: 18 € pro Monat oder 89 € pro Jahr.',
-                              'Bis zu fünf Geräte: 45 € pro Monat oder 225 € pro Jahr.')
+                     pick(k, [
+                         f'<p>In vielen Haushalten {prep} läuft der Fernseher im Wohnzimmer, während im Kinderzimmer oder auf dem Tablet ein anderes Programm geschaut wird. Bei IPTV Kanal wählen Sie deshalb zwischen Paketen für 1 bis 5 Geräte, die gleichzeitig schauen können. Jedes Gerät braucht seine eigene Bandbreite – zwei Full-HD-Streams also rund 32 Mbit/s.</p>'
+                         + checks('Ein Gerät: 9 € pro Monat oder 49 € pro Jahr.',
+                                  'Zwei Geräte: 18 € pro Monat oder 89 € pro Jahr.',
+                                  'Bis zu fünf Geräte: 45 € pro Monat oder 225 € pro Jahr.'),
+                         f'<p>Familien {prep} schauen selten nur auf einem Bildschirm. Ein Paket für zwei oder drei Geräte erlaubt, dass im Wohnzimmer Fußball läuft und gleichzeitig im Kinderzimmer ein Film. Das Jahrespaket für zwei Geräte kostet 89 €, für drei Geräte 135 € – jeweils einmal bezahlt, ohne Verlängerung.</p>',
+                         f'<p>Ob WG, Familie oder Paar mit Homeoffice: Wer {prep} auf mehreren Geräten gleichzeitig schauen möchte, wählt einfach die passende Geräteanzahl. Planen Sie pro Full-HD-Stream etwa 16 Mbit/s ein und verbinden Sie den Hauptfernseher per LAN-Kabel – dann bleiben auch parallele Streams stabil.</p>',
+                     ], 'hhv')
                      + '<p>Alle Kombinationen stehen auf der <a href="/preise/">Preisseite</a>; was zu welchem Gerät passt, zeigt die <a href="/iptv-geraete/">Geräteübersicht</a>.</p>')
 
     # 6 buying
     buy = pick(k, [
         f'<p>Einen IPTV Anbieter {prep} vor Ort brauchen Sie nicht. IPTV-Abos werden online gebucht und funktionieren in ganz Deutschland – Sie erhalten die Zugangsdaten per E-Mail oder WhatsApp. Testen Sie vorher, ob Sender, Bild und App mit Ihrer Leitung zusammenpassen.</p>',
         f'<p>„IPTV kaufen {name}“ läuft komplett online: Test anfordern, App einrichten, Paket wählen. Weil IPTV über das Internet kommt, ist es egal, ob Sie in der Stadt oder auf dem Land wohnen – entscheidend ist der kostenlose Test mit Ihrer eigenen Leitung.</p>',
-    ], 'buy') + order_steps(prep) + pick(k, [
+    ], 'buy') + pick(k, ORDER_VARIANTS, 'order').format(place=prep) + pick(k, [
         '<p>Worauf Sie bei der Wahl achten sollten, zeigt der <a href="/iptv-anbieter-vergleich/">IPTV Anbieter Vergleich</a>.</p>',
         '<p>Mehr zu Laufzeiten und Preisen im Ratgeber <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>',
     ], 'buy2')
@@ -354,6 +405,7 @@ def region_page(i, r):
 
     sections = [
         ('ueberblick', pick(k, [f'IPTV {prep}: das Wichtigste', f'Fernsehen über das Internet {prep}'], 's1'), overview),
+        ('vor-ort', LOCAL_REGION[k][0], LOCAL_REGION[k][1].strip()),
         ('orte', pick(k, [f'Städte und Orte {prep}', f'IPTV in den Städten {prep}'], 's2'), cities),
         ('internet', pick(k, [f'Internet {prep}: reicht die Leitung für IPTV?', f'Bandbreite {prep}: Stadt und Land'], 's3'), bandwidth),
         ('programm', pick(k, [f'Regionalprogramm und Sport {prep}', f'{bc_name}, Regionalnachrichten und Sport'], 's4'), programme),
@@ -365,22 +417,27 @@ def region_page(i, r):
         (pick(k, [f'Gibt es IPTV {prep}?', f'Funktioniert IPTV überall {prep}?'], 'f1'),
          f'Ja. IPTV funktioniert {prep} überall, wo eine Internetleitung mit mindestens 6 bis 10 Mbit/s für HD anliegt – in Städten wie {place_list} ebenso wie in kleineren Orten.'),
         (pick(k, [f'Reicht das Internet auf dem Land {prep} für IPTV?', f'Was tun bei langsamem Internet {prep}?'], 'f2'),
-         'Für HD reichen 6 bis 10 Mbit/s, für Full HD rund 16 Mbit/s. Ist die Leitung langsamer, wählen Sie in der App eine niedrigere Qualität oder nutzen einen LTE- bzw. 5G-Router mit unbegrenztem Datenvolumen.'),
+         pick(k, ['Für HD reichen 6 bis 10 Mbit/s, für Full HD rund 16 Mbit/s. Ist die Leitung langsamer, wählen Sie in der App eine niedrigere Qualität oder nutzen einen LTE- bzw. 5G-Router mit unbegrenztem Datenvolumen.',
+                  f'Meist ja. Schon mit 6 bis 10 Mbit/s läuft HD stabil; Full HD braucht etwa 16 Mbit/s. Wo das Festnetz {prep} schwächelt, sind ein 5G-Router oder Satelliteninternet eine Option.',
+                  'Messen Sie zuerst abends die tatsächliche Geschwindigkeit. Reicht sie nicht für Full HD, schauen Sie in HD, verbinden das Gerät per LAN-Kabel oder ergänzen einen LTE- bzw. 5G-Router.'], 'fa2')),
         (pick(k, [f'Welcher IPTV Anbieter ist {prep} empfehlenswert?', f'Brauche ich einen regionalen IPTV Anbieter {prep}?'], 'f3'),
-         'Ein regionaler Anbieter ist nicht nötig, IPTV-Zugänge funktionieren deutschlandweit. Wichtig sind ein kostenloser Test, klare Preise ohne automatische Verlängerung und erreichbarer deutschsprachiger Support.'),
+         pick(k, ['Ein regionaler Anbieter ist nicht nötig, IPTV-Zugänge funktionieren deutschlandweit. Wichtig sind ein kostenloser Test, klare Preise ohne automatische Verlängerung und erreichbarer deutschsprachiger Support.',
+                  f'Nein. Ob Sie {prep} oder anderswo wohnen, der Stream kommt immer über das Internet. Achten Sie auf Testmöglichkeit, Einmalzahlung statt Abo und Hilfe auf Deutsch.'], 'fa3')),
         (f'Kann ich den {bc_name} per IPTV schauen?',
          f'Ja. Der {bc_name} gehört wie ARD und ZDF zu den Sendern, die per IPTV übertragen werden. Welche Regionalfenster und weiteren Sender Ihr Zugang enthält, zeigt der kostenlose Test.'),
         (pick(k, [f'Was kostet IPTV {prep}?', f'Kann ich IPTV {prep} kostenlos testen?'], 'f5'),
-         'Bei IPTV Kanal testen Sie zuerst kostenlos und ohne Zahlungsdaten. Danach kostet ein Monat 9 € und ein Jahr 49 € für ein Gerät – einmalig bezahlt, ohne automatische Verlängerung.'),
+         pick(k, ['Bei IPTV Kanal testen Sie zuerst kostenlos und ohne Zahlungsdaten. Danach kostet ein Monat 9 € und ein Jahr 49 € für ein Gerät – einmalig bezahlt, ohne automatische Verlängerung.',
+                  f'Die Preise gelten {prep} wie überall: 9 € für einen Monat, 49 € für zwölf Monate bei einem Gerät. Vorher testen Sie kostenlos, eine automatische Verlängerung gibt es nicht.'], 'fa5')),
     ]
     related = [region_slug(REGION[n]) for n in neigh_keys[:2]] + [city_slug(CITY[c]) for c in (r['cities'] + near)[:2]] + ['iptv-kaufen', 'iptv-regionen']
     related = list(dict.fromkeys(related))[:6]
     card_text = pick(k, [f'Leitung, Geräte und Abo {prep}.', f'IPTV {prep}: Stadt, Land und Test.', f'Bandbreite, Sender und Test {prep}.'], 'card')
     group = {'state': 'Bundesländer', 'metro': 'Metropolregionen', 'landscape': 'Regionen und Landschaften',
              'district': 'Bayerische Regierungsbezirke und Franken'}[r['kind'] if k != 'franken' else 'district']
+    sources = [(f'{bc_name}: Regionalprogramm', BROADCASTER_URL[bc_name])] + LOCAL_SOURCES
     return dict(slug=region_slug(r), parent='regionen', kind='guide', group=group, title=title, description=description,
                 eyebrow='IPTV IN IHRER REGION', h1=h1, lead=lead, answer=answer, sections=sections, faq=faq,
-                related=related, card=(f'IPTV {label}', card_text))
+                related=related, card=(f'IPTV {label}', card_text), sources=sources)
 
 
 NEIGHBOURS = {

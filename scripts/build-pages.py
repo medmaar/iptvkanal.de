@@ -174,7 +174,7 @@ trial = '''<section class="signup-page" aria-labelledby="trial-title">
       <span class="eyebrow">IHR KOSTENLOSER TESTZUGANG</span>
       <h1 class="display" id="trial-title">IPTV kostenlos testen</h1>
       <div class="trial-price"><b>0</b><span>€</span></div>
-      <p class="trial-meta">Live-TV, Sport, Filme und Serien kennenlernen. Ohne Zahlungsdaten.</p>
+      <p class="trial-meta">IPTV kostenlos testen: Live-TV, Sport, Filme und Serien kennenlernen. Ohne Zahlungsdaten.</p>
       <p class="order-instructions">Formular ausfüllen und absenden. Ihren Testzugang erhalten Sie anschließend per E-Mail oder WhatsApp.</p>
       ''' + TRUST + '''
     </div>''' + request_form('trial') + '''
@@ -254,7 +254,7 @@ pricing_page = '''<section class="page-intro" aria-labelledby="pricing-page-titl
     <span class="eyebrow">IHR PAKET. IHRE WAHL.</span>
     <h1 class="display" id="pricing-page-title">IPTV Preise &amp; Pakete</h1>
     <div class="trial-price"><small>ab</small><b data-starting-price>9</b><span>€</span></div>
-    <p class="trial-meta">Einmal zahlen. Keine automatische Verlängerung.</p>
+    <p class="trial-meta">IPTV Preise und Pakete für 1 bis 5 Geräte: einmal zahlen, keine automatische Verlängerung.</p>
     <p class="order-instructions">Wählen Sie die Anzahl Ihrer Geräte und klicken Sie auf Ihr Wunschpaket. Auf der eigenen Paketseite können Sie Ihre Bestellung absenden.</p>
     ''' + TRUST + '''
   </div>
@@ -291,7 +291,14 @@ PLAN_FAQ = {
     6: ('Wie viel spare ich mit dem 6-Monats-Paket?', 'Für ein Gerät zahlen Sie 39 € statt 54 € für sechs Monatspakete. Das entspricht 6,50 € pro Monat und rund 28 % Ersparnis.'),
     12: ('Wie viel spare ich mit dem Jahrespaket?', 'Für ein Gerät zahlen Sie 49 € statt 108 € für zwölf Monatspakete. Das entspricht 4,08 € pro Monat und rund 55 % Ersparnis.'),
 }
+PLAN_COMPARE = {
+    1: 'Ein Monat ist die flexibelste, aber pro Monat teuerste Laufzeit. Wer länger schaut, spart mit 3 Monaten (9,67 € pro Monat), 6 Monaten (6,50 €) oder dem Jahrespaket (4,08 €) deutlich. Für einen ersten Monat nach dem kostenlosen Test ist das Monatspaket trotzdem die beste Wahl.',
+    3: 'Mit drei Monaten zahlen Sie 9,67 € pro Monat – nur wenig mehr als im Monatspaket, aber ohne monatlich neu zu bestellen. Den größten Preisvorteil bieten das Halbjahres- und das Jahrespaket.',
+    6: 'Sechs Monate sind der Mittelweg: pro Monat 6,50 € statt 9 € im Monatspaket, und trotzdem keine Festlegung für ein ganzes Jahr. Nur das Jahrespaket ist mit 4,08 € pro Monat noch günstiger.',
+    12: 'Das Jahrespaket hat den niedrigsten Monatspreis aller Laufzeiten: 4,08 € statt 9 € im Monatspaket. Selbst gegenüber dem Halbjahrespaket sparen Sie pro Monat noch rund 2,40 €.',
+}
 PLAN_COMMON_FAQ = [
+    ('Kann ich vor der Bestellung kostenlos testen?', 'Ja. Über die Seite „Kostenlos testen“ erhalten Sie einen Testzugang ohne Zahlungsdaten. So prüfen Sie Sender, Bildqualität und Stabilität auf Ihrem Gerät, bevor Sie bestellen.'),
     ('Verlängert sich das Paket automatisch?', 'Nein. Sie zahlen einmalig für die gewählte Laufzeit. Es gibt keine automatische Verlängerung und keine Kündigungsfrist.'),
     ('Wie geht es nach dem Absenden weiter?', 'Wir melden uns per E-Mail oder WhatsApp mit Ihren Zugangsdaten und den Angaben zur Bezahlung. Bei der Einrichtung auf Ihrem Gerät hilft unser deutschsprachiger Support.'),
 ]
@@ -311,9 +318,23 @@ def plan_info(months, term, index):
       ''' + table(['Geräte gleichzeitig', f'Preis {term}', 'Pro Monat'], rows, f'{term} IPTV Preise nach Geräteanzahl') + f'''
       <p>Die Geräteanzahl stellen Sie auf der <a href="/preise/">Preisübersicht</a> ein. Andere Laufzeiten: {others}.</p>
       <h2 id="plan-inklusive">Im Paket enthalten</h2>
-      ''' + checks('20.000+ Sender, Filme und Serien (VOD)', '4K Ultra HD, Programmführer (EPG) und Catch-Up',
+      ''' + checks('20.000+ Sender, Filme und Serien (VOD) – siehe <a href="/iptv-senderliste/">IPTV Senderliste</a>', '4K Ultra HD, Programmführer (EPG) und Catch-Up – mehr unter <a href="/iptv-4k/">IPTV in 4K</a>',
                    'Alle gängigen Geräte: Smart TV, Fire TV Stick, Android, Apple, MAG und PC – siehe <a href="/iptv-geraete/">IPTV Geräte</a>',
-                   'Deutschsprachiger Support per E-Mail und WhatsApp mit Einrichtungshilfe') + '''
+                   'Deutschsprachiger Support per E-Mail und WhatsApp mit Einrichtungshilfe') + f'''
+      <h2 id="plan-vergleich">{term} im Vergleich zu den anderen Laufzeiten</h2>
+      <p>{PLAN_COMPARE[months]}</p>
+      ''' + table(['Laufzeit (1 Gerät)', 'Paketpreis', 'Pro Monat'],
+                  [[('<b>' + t + '</b>') if m == months else t, f'{PRICES[1][i]} €', euro(PRICES[1][i] / m)] for i, (m, _, t) in enumerate(TERMS)],
+                  'IPTV-Laufzeiten im Vergleich') + f'''
+      <h2 id="plan-ablauf">So bestellen Sie {term} IPTV</h2>
+      ''' + steps('<b>Formular absenden:</b> Name und E-Mail oder WhatsApp eintragen – alle Felder sind freiwillig, es entsteht noch keine Zahlungspflicht.',
+                  '<b>Bestätigung erhalten:</b> Wir melden uns mit Ihren Zugangsdaten und den Angaben zur Bezahlung.',
+                  '<b>App einrichten:</b> Zugangsdaten als Xtream-Codes-Login oder <a href="/m3u-playlist/">M3U-Link</a> in Ihre <a href="/iptv-apps/">IPTV App</a> eintragen – Anleitung unter <a href="/iptv-einrichten/">IPTV einrichten</a>.',
+                  '<b>Losschauen:</b> Live-TV, Filme und Serien auf bis zu so vielen Geräten gleichzeitig, wie Ihr Paket umfasst.') + '''
+      <h2 id="plan-sicherheit">Sicher bestellen: Zahlung, Laufzeit und Support</h2>
+      <p>Sie zahlen einmalig für die gewählte Laufzeit. Es gibt keinen Vertrag, keine Kündigungsfrist und keine automatische Verlängerung – nach Ablauf entscheiden Sie selbst, ob Sie weiterschauen. Eine Zahlung wird erst fällig, nachdem wir Ihre Anfrage bestätigt haben. Welche Zahlungswege beim IPTV-Kauf sinnvoll sind und worauf Sie achten sollten, erklärt der Ratgeber <a href="/iptv-bezahlen/">IPTV bezahlen</a>.</p>
+      <p>Bei Fragen zur Einrichtung hilft unser deutschsprachiger Support per E-Mail an <a href="mailto:kontakt@iptvkanal.de">kontakt@iptvkanal.de</a> oder per <a href="/go/wa">WhatsApp</a>. Schritt-für-Schritt-Anleitungen gibt es für den <a href="/iptv-fire-tv-stick/">Fire TV Stick</a>, <a href="/iptv-samsung-tv/">Samsung TV</a>, <a href="/iptv-lg-tv/">LG TV</a>, <a href="/tivimate/">TiviMate</a> und <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>.</p>
+      <div class="inline-cta"><p><strong>Noch unsicher?</strong> Testen Sie IPTV Kanal zuerst kostenlos und ohne Zahlungsdaten auf Ihrem eigenen Gerät.</p><div class="cta-pair"><a class="btn btn-primary" href="/kostenlos-testen/">Kostenlos testen <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn-ghost" href="/preise/">Preise</a></div></div>
     </div>
   </div>
 </section>
@@ -327,10 +348,10 @@ def plan_page(months, term, price):
     <div class="trial-summary">
       <nav aria-label="Brotkrümelnavigation"><ol class="breadcrumb"><li><a href="/">Start</a></li><li><a href="/preise/">Preise</a></li><li aria-current="page">{term}</li></ol></nav>
       <span class="eyebrow">IHR AUSGEWÄHLTES PAKET</span>
-      <h1 class="display" id="order-page-title"><span data-selected-term>{term}</span> IPTV</h1>
+      <h1 class="display" id="order-page-title"><span data-selected-term>{term}</span> IPTV bestellen</h1>
       <div class="trial-price"><b data-selected-price>{price}</b><span>€</span></div>
       <p class="trial-meta"><span data-selected-devices>1 Gerät</span> gleichzeitig · Einmaliger Paketpreis.<br>Keine automatische Verlängerung.</p>
-      <p class="order-instructions">Senden Sie das Formular für dieses Paket ab. Wir melden uns per E-Mail oder WhatsApp mit den Angaben zu Ihrem Zugang und zur Bezahlung.</p>
+      <p class="order-instructions">{term} IPTV bestellen: Senden Sie das Formular für dieses Paket ab. Wir melden uns per E-Mail oder WhatsApp mit den Angaben zu Ihrem Zugang und zur Bezahlung.</p>
       {TRUST}
       <a class="text-link" href="/preise/">Zur Paketübersicht</a>
     </div>''' + request_form('order', months, term, price) + '''
@@ -358,6 +379,9 @@ for index, (months, slug, term) in enumerate(TERMS):
         body=plan_page(months, term, price) + '\n' + info,
         extra_head=ld([
             ORG,
+            {'@type': 'WebPage', '@id': DOMAIN + path + '#webpage', 'url': DOMAIN + path, 'name': f'{term} IPTV bestellen',
+             'inLanguage': 'de-DE', 'isPartOf': {'@id': DOMAIN + '/#website'}, 'mainEntity': {'@id': DOMAIN + path + '#product'},
+             'breadcrumb': {'@id': DOMAIN + path + '#breadcrumb'}},
             {'@type': 'Product', '@id': DOMAIN + path + '#product', 'name': f'IPTV Kanal {term}',
              'description': f'IPTV-Paket für {term} mit 20.000+ Sendern, Filmen und Serien in bis zu 4K. Einmalig bezahlt, keine automatische Verlängerung.',
              'image': OG_IMAGE, 'brand': {'@type': 'Brand', 'name': 'IPTV Kanal'},
@@ -365,7 +389,7 @@ for index, (months, slug, term) in enumerate(TERMS):
                         'highPrice': str(PRICES[5][index]), 'offerCount': '5', 'url': DOMAIN + path,
                         'availability': 'https://schema.org/InStock', 'seller': {'@id': DOMAIN + '/#organization'}}},
             faq_ld(faq),
-            crumbs(('Start', '/'), ('IPTV Preise', '/preise/'), (f'{term} IPTV', path))]))
+            {**crumbs(('Start', '/'), ('IPTV Preise', '/preise/'), (f'{term} IPTV', path)), '@id': DOMAIN + path + '#breadcrumb'}]))
 
 for target, page in pages.items():
     out = ROOT / target

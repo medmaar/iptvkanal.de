@@ -270,3 +270,29 @@
 /georgisches-tv/          /iptv-georgisch/           301
 /imedi-tv/                /iptv-georgisch/           301
 /rustavi-2/               /iptv-georgisch/           301
+
+# Deep SEO audit 25.11.2026: umlaut-free spellings, singular hub names and a privacy-policy alias.
+/iptv-koln/                       /iptv-koeln/                  301
+/iptv-munchen/                    /iptv-muenchen/               301
+/iptv-dusseldorf/                 /iptv-duesseldorf/            301
+/iptv-nurnberg/                   /iptv-nuernberg/              301
+/iptv-munster/                    /iptv-muenster/               301
+/iptv-lubeck/                     /iptv-luebeck/                301
+/iptv-saarbrucken/                /iptv-saarbruecken/           301
+/iptv-osnabruck/                  /iptv-osnabrueck/             301
+/iptv-monchengladbach/            /iptv-moenchengladbach/       301
+/iptv-mulheim/                    /iptv-muelheim/               301
+/iptv-thuringen/                  /iptv-thueringen/             301
+/iptv-baden-wurttemberg/          /iptv-baden-wuerttemberg/     301
+/iptv-allgau/                     /iptv-allgaeu/                301
+/iptv-hunsruck/                   /iptv-hunsrueck/              301
+/iptv-luneburger-heide/           /iptv-lueneburger-heide/      301
+/iptv-tuerkei/                    /iptv-tuerkisch/              301
+/iptv-turkisch/                   /iptv-tuerkisch/              301
+/iptv-rumanisch/                  /iptv-rumaenisch/             301
+/iptv-gerate/                     /iptv-geraete/                301
+/iptv-stadt/                      /iptv-staedte/                301
+/iptv-region/                     /iptv-regionen/               301
+/iptv-lueneburg/                  /iptv-lueneburger-heide/      301
+/iptv-stuttgart-region/            /iptv-metropolregion-stuttgart/ 301
+/datenschutzerklaerung/           /datenschutz                  301

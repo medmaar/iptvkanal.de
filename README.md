@@ -45,6 +45,10 @@ Vertiefungen aus dem SEO-Audit (zusätzliche Abschnitte und FAQ, Lead-Texte mit 
 Quellenlinks zu Herstellern und Behörden) stehen in `scripts/seo/content_depth.py`. Jede Seite
 erhält Vertrauensleiste, Zwischen-CTA, hreflang, vollständige Open-Graph-/Twitter-Tags sowie
 WebPage-/Organization-Schema; Preis- und Bestellseiten zusätzlich Product-/Offer-Schema und FAQ.
+Der Deep-SEO-Audit vom 25.11.2026 steht in `scripts/seo/content_audit.py` (Meta-Descriptions 120–155 Zeichen, Titel,
+H1 und Lead mit Hauptkeyword, Quellenlinks zu Herstellern, Apps und Rundfunkanstalten, markenspezifische Abschnitte) und
+`scripts/seo/content_local_unique.py` (eigener Lokaltext für alle 97 Stadt- und Regionsseiten gegen Duplicate Content).
+`build-seo-pages.py` verlinkt zusätzlich jede Seite mit ihren Nachbarn in derselben Hub-Gruppe.
 Impressum und Datenschutz werden als saubere URLs (`/impressum`, `/datenschutz`) verlinkt. Der Smoke-Test nutzt
 `CHROMIUM_PATH`, falls Chromium nicht unter `/usr/bin/chromium` liegt.
 

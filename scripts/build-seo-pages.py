@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from seo import content_core, content_apps, content_devices, content_extra, content_more, content_depth  # noqa: E402
 from seo import content_local, content_devices2, content_apps2  # noqa: E402
-from seo import content_kw, content_kw2, content_kw3  # noqa: E402
+from seo import content_kw, content_kw2, content_kw3, content_audit  # noqa: E402
 
 DOMAIN = 'https://iptvkanal.de'
 UPDATED_ISO = '2026-11-25'
@@ -91,12 +91,37 @@ for _page in PAGES:
     _page['faq'] = list(_page['faq']) + content_kw3.EXTRA_FAQ.get(_slug, [])
     _page['sources'] = content_depth.SOURCES.get(_slug, _page.get('sources', []))
 
+# Deep SEO audit (25.11.2026): description/title/H1/lead fixes and outbound sources, applied last.
+for _page in PAGES:
+    _slug = _page['slug']
+    for _field, _table in (('description', content_audit.DESCRIPTION), ('title', content_audit.TITLE),
+                           ('h1', content_audit.H1), ('lead', content_audit.LEAD)):
+        if _slug in _table:
+            _page[_field] = _table[_slug]
+    _page['sections'] = list(_page['sections']) + content_audit.EXTRA_SECTIONS.get(_slug, [])
+    _seen = {href for _, href in _page['sources']}
+    _page['sources'] = list(_page['sources']) + [s for s in content_audit.SOURCES.get(_slug, []) if s[1] not in _seen]
+
 # Keyword-cluster pass: link the new pages from related existing guides.
 for _new, _targets in list(content_kw2.LINK_FROM.items()) + list(content_kw3.LINK_FROM.items()):
     for _target in _targets:
         if _new not in BY_SLUG[_target]['related']:
             BY_SLUG[_target]['related'] = list(BY_SLUG[_target]['related']) + [_new]
 
+
+# Deep SEO audit: sibling ring. Every guide links to its previous and next sibling in the same hub group, so
+# long-tail pages (brands, niche apps, cities, regions) get topical inbound links beyond the hub list.
+_groups = {}
+for _page in PAGES:
+    if _page.get('parent') and _page['kind'] != 'hub':
+        _groups.setdefault((_page['parent'], _page.get('group')), []).append(_page)
+for _members in _groups.values():
+    if len(_members) < 3:
+        continue
+    for _i, _page in enumerate(_members):
+        for _sib in (_members[_i - 1], _members[(_i + 1) % len(_members)]):
+            if _sib['slug'] not in _page['related'] and _sib['slug'] != _page['slug']:
+                _page['related'] = list(_page['related']) + [_sib['slug']]
 
 SPORT = ['iptv-fussball', 'iptv-sport', 'sky-iptv']
 
