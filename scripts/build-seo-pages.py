@@ -15,10 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from seo import content_core, content_apps, content_devices, content_extra, content_more, content_depth  # noqa: E402
 from seo import content_local, content_devices2, content_apps2  # noqa: E402
+from seo import content_kw, content_kw2  # noqa: E402
 
 DOMAIN = 'https://iptvkanal.de'
-UPDATED_ISO = '2026-11-24'
-UPDATED_DE = '24.11.2026'
+UPDATED_ISO = '2026-11-25'
+UPDATED_DE = '25.11.2026'
 OG_IMAGE = DOMAIN + '/assets/img/og-iptvkanal.jpg'
 OG_ALT = 'IPTV Kanal – Fernsehen über das Internet in bis zu 4K'
 ORG_ID = DOMAIN + '/#organization'
@@ -47,7 +48,7 @@ FONT_PRELOAD = ('<link rel="preload" href="/assets/fonts/sora-latin-variable.wof
                 '  <link rel="preload" href="/assets/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>')
 
 PAGES = (content_core.PAGES + content_apps.PAGES + content_devices.PAGES + content_extra.PAGES + content_more.PAGES
-         + content_devices2.PAGES + content_apps2.PAGES + content_local.PAGES)
+         + content_devices2.PAGES + content_apps2.PAGES + content_kw.PAGES + content_kw2.PAGES + content_local.PAGES)
 BY_SLUG = {p['slug']: p for p in PAGES}
 
 HUBS = {
@@ -86,7 +87,13 @@ for _page in PAGES:
         _page['lead'] = content_depth.LEAD[_slug]
     _page['sections'] = list(_page['sections']) + content_depth.EXTRA_SECTIONS.get(_slug, [])
     _page['faq'] = list(_page['faq']) + content_depth.EXTRA_FAQ.get(_slug, [])
-    _page['sources'] = content_depth.SOURCES.get(_slug, [])
+    _page['sources'] = content_depth.SOURCES.get(_slug, _page.get('sources', []))
+
+# Keyword-cluster pass: link the new pages from related existing guides.
+for _new, _targets in content_kw2.LINK_FROM.items():
+    for _target in _targets:
+        if _new not in BY_SLUG[_target]['related']:
+            BY_SLUG[_target]['related'] = list(BY_SLUG[_target]['related']) + [_new]
 
 
 SPORT = ['iptv-fussball', 'iptv-sport', 'sky-iptv']
@@ -285,7 +292,9 @@ PAGE = '''<!doctype html>
   <meta name="description" content="{description}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="canonical" href="{canonical}">
-  <link rel="alternate" hreflang="de" href="{canonical}">
+  <link rel="alternate" hreflang="de-DE" href="{canonical}">
+  <link rel="alternate" hreflang="de-AT" href="{canonical}">
+  <link rel="alternate" hreflang="de-CH" href="{canonical}">
   <link rel="alternate" hreflang="x-default" href="{canonical}">
   <meta name="theme-color" content="#0d0e14">
   {favicon}

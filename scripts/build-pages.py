@@ -77,7 +77,9 @@ PAGE = '''<!doctype html>
   <meta name="description" content="{description}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <link rel="canonical" href="https://iptvkanal.de{path}">
-  <link rel="alternate" hreflang="de" href="https://iptvkanal.de{path}">
+  <link rel="alternate" hreflang="de-DE" href="https://iptvkanal.de{path}">
+  <link rel="alternate" hreflang="de-AT" href="https://iptvkanal.de{path}">
+  <link rel="alternate" hreflang="de-CH" href="https://iptvkanal.de{path}">
   <link rel="alternate" hreflang="x-default" href="https://iptvkanal.de{path}">
   <meta name="theme-color" content="#0d0e14">
   {favicon}

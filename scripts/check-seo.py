@@ -54,7 +54,7 @@ for url, text in pages.items():
         canonical = re.search(r'<link rel="canonical" href="([^"]+)">', head)
         if not canonical or canonical.group(1) != 'https://iptvkanal.de' + url:
             errors.append(f'{url}: canonical missing or not self-referencing')
-        for tag in ('hreflang="de"', 'hreflang="x-default"', 'property="og:image"', 'property="og:title"',
+        for tag in ('hreflang="de-DE"', 'hreflang="de-AT"', 'hreflang="de-CH"', 'hreflang="x-default"', 'property="og:image"', 'property="og:title"',
                     'property="og:description"', 'name="twitter:card"', 'name="twitter:title"', 'name="robots"'):
             if tag not in head:
                 errors.append(f'{url}: missing {tag}')

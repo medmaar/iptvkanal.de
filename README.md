@@ -31,6 +31,9 @@ Die Ratgeberseiten (Grundlagen, Geräte, Apps, Kaufberatung, Städte und Regione
 Lokale Seiten (50 Städte, 47 Regionen, Hubs `/iptv-staedte/` und `/iptv-regionen/`) erzeugt
 `content_local.py` aus den Daten in `data_local.py`; weitere Geräte- und App-Seiten stehen in
 `content_devices2.py` und `content_apps2.py`.
+Die Keyword-Cluster-Seiten aus der Deutschland-Keywordliste (IPTV einrichten, Bester IPTV Player, TiviMate auf Fire TV,
+Chromecast, Browser, Downloader, Plex/Jellyfin, Aufnahme, SAT>IP, Streaming/VOD, Lifetime, Server, Englisch, Playlist Deutsch)
+stehen in `content_kw.py` und `content_kw2.py`; `LINK_FROM` in `content_kw2.py` verlinkt sie aus bestehenden Ratgebern.
 `python3 scripts/build-pages.py` erzeugt sie mit Kopf- und Fußzeile der Startseite,
 Brotkrümelnavigation, sichtbaren FAQ samt FAQPage-/BreadcrumbList-JSON-LD und
 aktualisiert `sitemap.xml`. `python3 scripts/check-seo.py` prüft interne Links,
