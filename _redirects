@@ -1,3 +1,8 @@
+# Excluded-market pages removed (SEO market filter, 2026-11-25)
+/iptv-tuerkisch / 301
+/iptv-tuerkisch/ / 301
+/iptv-tuerkisch.html / 301
+
 # Clean German aliases for the guide pages (301, no chains). Canonical URLs use a trailing slash.
 # SEO audit 24.11.2026: plan, device and spelling aliases.
 /bestellen                /preise/                   301
@@ -116,8 +121,8 @@
 /iptv-ex-yu/              /iptv-balkan/              301
 /iptv-romania/            /iptv-rumaenisch/          301
 /ru-iptv/                 /iptv-russisch/            301
-/iptv-turkce/             /iptv-tuerkisch/           301
-/tuerkisches-iptv/        /iptv-tuerkisch/           301
+/iptv-turkce/ / 301
+/tuerkisches-iptv/ / 301
 /cloud-stream/            /cloudstream/              301
 /iptv-paysafecard/        /iptv-bezahlen/            301
 /iptv-reseller-panel/     /iptv-reseller/            301
@@ -287,8 +292,8 @@
 /iptv-allgau/                     /iptv-allgaeu/                301
 /iptv-hunsruck/                   /iptv-hunsrueck/              301
 /iptv-luneburger-heide/           /iptv-lueneburger-heide/      301
-/iptv-tuerkei/                    /iptv-tuerkisch/              301
-/iptv-turkisch/                   /iptv-tuerkisch/              301
+/iptv-tuerkei/ / 301
+/iptv-turkisch/ / 301
 /iptv-rumanisch/                  /iptv-rumaenisch/             301
 /iptv-gerate/                     /iptv-geraete/                301
 /iptv-stadt/                      /iptv-staedte/                301

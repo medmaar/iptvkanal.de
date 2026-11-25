@@ -237,7 +237,6 @@ SOURCES.update({
     'iptv-nokia-streaming-box': [_ANDROID_TV, ('Google TV Hilfe', 'https://support.google.com/googletv/')],
     'iptv-strong-thomson-box': [_ANDROID_TV, ('Google TV Hilfe', 'https://support.google.com/googletv/')],
     'tvip-box': [('Wikipedia: Set-Top-Box', 'https://de.wikipedia.org/wiki/Set-Top-Box'), _ANDROID_TV],
-    'iptv-tuerkisch': [('TRT – türkischer öffentlicher Rundfunk', 'https://www.trt.net.tr/'), _WIKI_IPTV],
     'iptv-albanisch': [('RTSH – albanischer öffentlicher Rundfunk', 'https://www.rtsh.al/'), _WIKI_IPTV],
     'iptv-balkan': [('HRT – kroatischer öffentlicher Rundfunk', 'https://www.hrt.hr/'), ('RTS – serbischer öffentlicher Rundfunk', 'https://www.rts.rs/'), ('BHRT – Rundfunk Bosnien und Herzegowina', 'https://www.bhrt.ba/')],
     'iptv-rumaenisch': [('TVR – rumänischer öffentlicher Rundfunk', 'https://www.tvr.ro/'), _WIKI_IPTV],
