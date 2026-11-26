@@ -284,7 +284,7 @@ PAGES.append(dict(
             ['Sport', 'Sportnachrichten und Übertragungen'],
             ['Österreich &amp; Schweiz', 'Programme aus dem deutschsprachigen Ausland'],
         ], 'Typische deutsche Sendergruppen') + '''
-<p>Sender in anderen Sprachen finden Sie in eigenen Gruppen; Tipps dazu in unseren Ratgebern zu <a href="/iptv-tuerkisch/">türkischen</a>, <a href="/iptv-russisch/">russischsprachigen</a>, <a href="/iptv-rumaenisch/">rumänischen</a>, <a href="/iptv-albanisch/">albanischen</a> und <a href="/iptv-balkan/">Balkan-Sendern</a>.</p>
+<p>Sender in anderen Sprachen finden Sie in eigenen Gruppen; Tipps dazu in unseren Ratgebern zu <a href="/iptv-russisch/">russischsprachigen</a>, <a href="/iptv-rumaenisch/">rumänischen</a>, <a href="/iptv-albanisch/">albanischen</a> und <a href="/iptv-balkan/">Balkan-Sendern</a>.</p>
 <p>Die genaue Zusammensetzung hängt vom Zugang ab. Die beste Möglichkeit, Ihre Wunschsender zu prüfen, ist der <a href="/kostenlos-testen/">kostenlose IPTV-Test</a>: Sie sehen die vollständige Senderliste mit allen Gruppen auf Ihrem eigenen Gerät.</p>'''),
         ('sortieren', 'Senderliste sortieren: so geht es in Ihrer App', table(['App', 'Gruppen ausblenden', 'Favoriten anlegen'], [
             ['<a href="/tivimate/">TiviMate</a>', 'Einstellungen → Playlists → Gruppen verwalten', 'Sender lange gedrückt halten → Zu Favoriten (Premium)'],
