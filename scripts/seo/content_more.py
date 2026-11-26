@@ -231,7 +231,7 @@ PAGES.append(community(
      ('Was kostet IPTV für Balkan-Sender?', 'Bei IPTV Kanal enthalten alle Pakete dieselben Inhalte. Ein Monat kostet 9 €, ein Jahr 49 € für ein Gerät, ohne automatische Verlängerung.'),
      ('Werden kyrillische Sendernamen richtig angezeigt?', 'Ja, wenn die Playlist als M3U8 mit UTF-8-Kodierung geladen wird oder Sie einen Xtream-Codes-Login nutzen.')],
     ('IPTV Balkan', 'IP televizija: Sender aus Bosnien, Kroatien und Serbien.'),
-    ['iptv-international', 'iptv-albanisch', 'iptv-rumaenisch', 'iptv-tuerkisch', 'iptv-senderliste', 'iptv-kaufen']))
+    ['iptv-international', 'iptv-albanisch', 'iptv-rumaenisch', 'iptv-senderliste', 'iptv-kaufen']))
 
 PAGES.append(community(
     'iptv-rumaenisch', 'IPTV Rumänisch: Canale românești in Deutschland',
@@ -272,28 +272,6 @@ PAGES.append(community(
      ('Gibt es IPTV-Apps auf Russisch?', 'Ja. IPTV Smarters Pro, TiviMate und viele andere Player bieten eine russische Oberfläche.')],
     ('IPTV Russisch', 'Russischsprachiges TV in Deutschland: Sender, EPG und Regeln.'),
     ['iptv-international', 'iptv-senderliste', 'iptv-smarters-pro', 'tivimate', 'm3u-playlist', 'iptv-apps']))
-
-PAGES.append(community(
-    'iptv-tuerkisch', 'IPTV Türkisch: Türkische Sender in Deutschland',
-    'Türkisches Fernsehen per IPTV in Deutschland: TRT, Show TV, Star TV, Kanal D, ATV, Beyaz TV und Now – beliebte Sender, Apps, EPG und Einrichtung.',
-    'IPTV Türkisch: türkische Sender in Deutschland',
-    'Hoş geldiniz! Türkisches Fernsehen gehört für Millionen Haushalte in Deutschland dazu. Per IPTV kommen Serien, Shows und Nachrichten aus der Türkei ohne zweite Schüssel auf Ihren Fernseher.',
-    'Mit IPTV schauen Sie türkische Sender in Deutschland über Ihre Internetleitung, ohne auf Türksat ausgerichtete Schüssel. In der IPTV-App öffnen Sie die türkischen Sendergruppen, legen Favoriten an und nutzen den Programmführer in deutscher Zeit. Welche türkischen Kanäle Ihr Zugang enthält, sehen Sie im kostenlosen Test.',
-    '''<p><strong>Hoş geldiniz!</strong> Türkische Serien (dizi), Shows und Nachrichten sind in Deutschland seit Jahrzehnten beliebt. Früher brauchte man dafür eine zweite Schüssel auf Türksat; per IPTV reicht die Internetleitung. Auch nach einzelnen Sendern wird gezielt gesucht, etwa „Beyaz IPTV“ für Beyaz TV.</p>''',
-    [['TRT 1 / TRT Türk', 'Öffentlich-rechtlicher Rundfunk der Türkei'], ['Show TV', 'Serien und Shows'], ['Star TV', 'Serien und Unterhaltung'],
-     ['Kanal D', 'Serien, Nachrichten'], ['ATV', 'Serien und Shows'], ['Beyaz TV', 'Unterhaltung und Familienprogramm'],
-     ['Now (ehemals FOX Türkiye)', 'Serien und Nachrichten'], ['TV8', 'Shows und Wettbewerbe']],
-    ('tipps', 'Tipps für türkische Sender'), checks(
-        'Sendergruppen heißen meist „TR“ oder „Türkiye“.',
-        'Türkische Zeichen (ç, ğ, ı, ö, ş, ü) werden mit M3U8 (UTF-8) oder Xtream-Codes-Login korrekt angezeigt.',
-        'Die Türkei liegt im Winter zwei Stunden, im Sommer eine Stunde vor Deutschland – mit Zeitzone Europa/Berlin rechnet der Programmführer automatisch um.',
-        'Für Serien lohnt sich Catch-Up: verpasste Folgen der letzten Tage nachholen, sofern der Sender Catch-Up unterstützt.'),
-    [('Kann ich türkische Sender in Deutschland per IPTV schauen?', 'Ja. Per IPTV kommen türkische Programme über Ihre Internetleitung, ohne Türksat-Schüssel. Welche Kanäle Ihr Zugang enthält, zeigt der kostenlose Test.'),
-     ('Was ist Beyaz IPTV?', 'Mit „Beyaz IPTV“ suchen viele nach dem türkischen Sender Beyaz TV per IPTV. Ob er in Ihrer Senderliste enthalten ist, sehen Sie im kostenlosen Test.'),
-     ('Wie heißt FOX TV in der Türkei heute?', 'Der frühere Sender FOX Türkiye heißt seit 2024 Now. Bei der Suche nach „Fox TV IPTV“ ist häufig dieser Sender gemeint.'),
-     ('Warum sind die Sendezeiten verschoben?', 'Die Türkei hat keine Sommerzeit und liegt im Winter zwei Stunden vor Deutschland. Stellen Sie die Zeitzone in der App auf Europa/Berlin.')],
-    ('IPTV Türkisch', 'Türkische Sender wie TRT, Show TV und Beyaz TV per IPTV.'),
-    ['iptv-international', 'iptv-balkan', 'iptv-russisch', 'iptv-senderliste', 'iptv-smarters-pro', 'tivimate']))
 
 # ================================================================ CloudStream
 PAGES.append(dict(
@@ -428,9 +406,6 @@ _MORE = {
     'iptv-rumaenisch': ('catchup', 'Serien und Shows nachholen: Catch-Up für rumänische Sender', '''
 <p>Viele rumänische Zuschauer in Deutschland arbeiten im Schichtdienst und verpassen die Hauptsendezeit in Bukarest, die wegen der Zeitverschiebung ohnehin eine Stunde früher liegt. Unterstützt ein Sender Catch-Up, erkennen Sie das in TiviMate und IPTV Smarters Pro an einem kleinen Uhr-Symbol im Programmführer. Wählen Sie eine vergangene Sendung aus und starten Sie sie von Anfang an. Für Nachrichtensender lohnt sich außerdem eine eigene Favoritengruppe, damit Sie morgens schnell zwischen Digi24, TVR und deutschen Nachrichten wechseln.</p>
 <p>Auf Smart-TVs von Samsung und LG eignen sich Player wie <a href="/smart-iptv/">Smart IPTV</a> oder <a href="/set-iptv/">SET IPTV</a>; auf einem <a href="/iptv-stick/">IPTV Stick</a> mit Fire OS oder Google TV ist <a href="/tivimate/">TiviMate</a> die komfortabelste Wahl.</p>'''),
-    'iptv-tuerkisch': ('dizi', 'Türkische Serien (Dizi) komfortabel schauen', '''
-<p>Türkische Serien laufen oft wöchentlich mit Folgen von zwei Stunden und mehr. Drei Funktionen machen das Schauen per IPTV angenehmer: <strong>Catch-Up</strong> für verpasste Folgen (sofern der Sender es unterstützt), <strong>Timeshift</strong> zum Pausieren während der Sendung und <strong>Favoritenlisten</strong> mit Ihren Lieblingssendern ganz oben. In TiviMate Premium können Sie Folgen zusätzlich auf einen USB-Speicher aufnehmen. Viele Zuschauer nutzen außerdem die Mediathek-Apps der Sender, die neben der IPTV-App auf Fire TV und Google TV laufen.</p>
-<p>Für Haushalte mit mehreren Fernsehern: Wenn Eltern türkische und Kinder deutsche Sender schauen, brauchen Sie ein Paket mit zwei gleichzeitigen Geräten – Preise unter <a href="/iptv-kaufen/">IPTV kaufen</a>.</p>'''),
     'cloudstream': ('installation', 'Warum wir keine Installationsanleitung für CloudStream geben', '''
 <p>Für CloudStream kursieren zahlreiche Anleitungen mit Downloader-Codes und Listen von Repositories. Wir verzichten bewusst darauf: Welche Erweiterungen auf welche Quellen zugreifen, lässt sich von außen kaum prüfen, und Repositories ändern sich häufig. Wer die App trotzdem ausprobieren möchte, sollte sie nur aus dem offiziellen Projekt-Repository beziehen, keine Zugangsdaten anderer Dienste darin eingeben und die Berechtigungen der App prüfen.</p>
 <p>Für den Fernseher im Wohnzimmer empfehlen wir eine stabile Kombination aus Gerät und App: einen <a href="/iptv-stick/">IPTV Stick</a> mit Fire OS oder Google TV, darauf <a href="/tivimate/">TiviMate</a> oder <a href="/iptv-smarters-pro/">IPTV Smarters Pro</a>, und einen Zugang mit Programmführer und Support. Wie die Installation auf dem Fire TV sicher gelingt, zeigt der Ratgeber <a href="/iptv-smarters-pro-firestick/">Smarters auf dem Fire TV Stick</a>.</p>'''),

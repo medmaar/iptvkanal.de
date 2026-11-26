@@ -403,10 +403,12 @@ for target, page in pages.items():
 LEGAL_META = {
     'impressum.html': dict(path='/impressum', title='Impressum | IPTV Kanal – iptvkanal.de'),
     'datenschutz.html': dict(path='/datenschutz', title='Datenschutzerklärung | IPTV Kanal – iptvkanal.de'),
+    'agb.html': dict(path='/agb', title='AGB | IPTV Kanal – iptvkanal.de'),
+    'widerruf.html': dict(path='/widerruf', title='Widerrufsbelehrung | IPTV Kanal – iptvkanal.de'),
     '404.html': dict(title='Seite nicht gefunden (404) | IPTV Kanal',
                      description='Diese Seite gibt es nicht (mehr). Zur Startseite, zu den IPTV Preisen, zum kostenlosen Test oder zum IPTV Ratgeber von IPTV Kanal.'),
 }
-for target in ('impressum.html', 'datenschutz.html', '404.html'):
+for target in ('impressum.html', 'datenschutz.html', 'agb.html', 'widerruf.html', '404.html'):
     out = ROOT / target
     text = out.read_text()
     text = re.sub(r'<header class="header"[^>]*>.*?</header>', lambda _: header, text, count=1, flags=re.S)
